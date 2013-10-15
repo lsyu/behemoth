@@ -1,0 +1,104 @@
+/*
+ * Labs4Physics - visualisation of physics process
+ * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef LUAMANAGER_H
+#define LUAMANAGER_H
+
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "lua/lua.h"
+
+namespace Core {
+
+class Entity;
+
+/**
+ * @brief Менеджер работы с Lua.
+ *
+ * Архитектура - singleton.
+ * Является оберткой над функциями Lua.
+ *
+ * На данный момент загружаются следующие объекты:
+ * - glm::vec2 (конструктор)
+ * - glm::vec3 (конструктор)
+ * - Rectangle
+ */
+class LuaManager
+{
+public:
+    /**
+     * @brief Получить экземпляр менеджера работы с Lua.
+     */
+    static LuaManager *getInstance();
+
+    ~LuaManager();
+
+    /**
+     * @brief Выполнить скрипт @a file.
+     * @return true если скрипт выполнен, false в противном случае.
+     */
+    bool doFile(const std::string &file);
+
+    Entity *getObject(const std::string &id);
+    Entity *getObject(int num);
+    const std::vector< std::shared_ptr<Entity> >& getObjects() const;
+
+    template<class T>
+    void addObject(Entity *entity);
+
+protected:
+    /**
+     * @brief Закрытие.
+     */
+    void close();
+    /**
+     * @brief Инициализация и регистрирование всех доп. возможностей.
+     */
+    void init();
+    /**
+     * @brief Регистрация таблицы ui
+     */
+    void registerUI();
+    /**
+     * @brief Регистрация glm::vec2
+     */
+    void registerVec2();
+    /**
+     * @brief Регистрация glm::vec3
+     */
+    void registerVec3();
+    /**
+     * @brief Регистрация прямоугольника.
+     */
+    void registerRectangle();
+
+private:
+    LuaManager();
+
+    static std::shared_ptr<LuaManager> instance;
+public:
+    lua_State *lua;
+    std::vector< std::shared_ptr<Core::Entity> > objects;
+};
+
+} // namespace Core
+
+#endif // LUAMANAGER_H

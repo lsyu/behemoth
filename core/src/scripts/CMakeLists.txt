@@ -1,0 +1,14 @@
+# scripts
+
+set ( SCRIPT_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui.lua
+    ${CMAKE_CURRENT_SOURCE_DIR}/vec.lua
+#    ${CMAKE_CURRENT_SOURCE_DIR}/triangle.lua
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.lua
+    ${CMAKE_CURRENT_SOURCE_DIR}/test.lua
+
+
+    PARENT_SCOPE
+)
+
+set (SCRIPT_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)

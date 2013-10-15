@@ -1,0 +1,101 @@
+/*
+ * Labs4Physics - visualisation of physics process
+ * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef RESOURCEMANAGER_H
+#define RESOURCEMANAGER_H
+
+#include <string>
+#include <memory>
+#include <map>
+
+namespace Core {
+/**
+ * @brief Менеджер ресурсов.
+ *
+ * Архитектура - singleton.
+ * Предоставляет интерфейс для чтения файла конфигурации и загрузки ресурсов.
+ * @todo Переделать на декларативное описание ресурсов lua-like
+ */
+class ResourceManager
+{
+public:
+
+    /**
+     * @brief Получить экземпляр менеджера ресурсов.
+     * @return экземпляр менеджера ресурсов.
+     */
+    static ResourceManager* getInstance();
+    virtual ~ResourceManager();
+
+    /**
+     * @brief Прочитать файл конфигурации (core.conf)
+     *
+     * Каждая строка файла конфигурации представляет собой пару вида ключ: значение.
+     * Например, строка
+     *
+     * shader: material/shader
+     *
+     * означает, что шейдерные программы необходимо искать по относительному путь material/shader
+     *
+     * @note В файле конфигурации обязательно должны быть строки:
+     * - mesh
+     * - material
+     * - shader
+     * - texture
+     *
+     * @param name название конфигурационного файла.
+     * @return true, если данные успешно згружены, false иначе.
+     */
+    bool readConfigurationFile(const std::string &name);
+
+    /**
+     * @return string относительный путь до папки с файлами геометрии.
+     */
+    std::string getMeshFolder() const;
+
+    /**
+     * @return string относительный путь до папки с файлами материалов.
+     */
+    std::string getMaterialFolder() const;
+
+    /**
+     * @return string относительный путь до папки с файлами шейдерных программ.
+     */
+    std::string getShaderFolder() const;
+
+    /**
+     * @return string относительный путь до папки с файлами текстур.
+     */
+    std::string getTextureFolder() const;
+
+    /**
+     * @return string разделитель.
+     */
+    std::string getFileSeparator() const;
+
+private:
+    ResourceManager();
+
+    std::map<std::string, std::string> mapOfParam;
+    static std::shared_ptr<ResourceManager> instance;
+}; // class ResourceManager
+
+} // namespace Core
+
+#endif // RESOURCEMANAGER_H
