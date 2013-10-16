@@ -26,6 +26,8 @@
 
 namespace Core {
 
+class __TextureLoaderManagerImplDel;
+
 /**
  * @brief Менеджер загрузки текстур.
  *
@@ -36,13 +38,13 @@ namespace Core {
 class TextureLoadManager
 {
 public:
+    friend class __TextureLoaderManagerImplDel;
 
     /**
      * @brief Получить экземпляр менеджера текстур.
      * @return экземпляр менеджера текстур.
      */
     static TextureLoadManager* getInstance();
-    virtual ~TextureLoadManager();
 
     /**
    * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
@@ -65,8 +67,11 @@ public:
 
 private:
     TextureLoadManager();
+    ~TextureLoadManager();
+    TextureLoadManager(const TextureLoadManager&);
+    TextureLoadManager &operator=(const TextureLoadManager&);
     
-    static std::shared_ptr<TextureLoadManager> instance;
+    static TextureLoadManager *instance;
     std::map<std::string, uint> textures;
 }; // class TextureLoadManager
 

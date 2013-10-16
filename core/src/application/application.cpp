@@ -33,13 +33,23 @@
 
 namespace Core {
 
-std::shared_ptr<Application> Application::instance = nullptr;
+Application *Application::instance = nullptr;
+
+class __ApplicationImplDel {
+public:
+    explicit __ApplicationImplDel(Application *app) : app(app) {}
+    ~__ApplicationImplDel() {delete app;}
+private:
+    Application *app;
+};
 
 Application* Application::getInstance()
 {
-    if (!instance)
-        instance = std::shared_ptr<Application>(new Application);
-    return instance.get();
+    if (!instance) {
+        instance = new Application;
+        static __ApplicationImplDel delHelper(instance);
+    }
+    return instance;
 }
 
 Application::Application()
@@ -65,10 +75,6 @@ void Application::clear()
 
     if (queue)
         al_destroy_event_queue(queue);
-
-//    al_shutdown_font_addon();
-//    al_shutdown_ttf_addon();
-//    al_shutdown_image_addon();
 }
 
 void Application::setWindowTitle(const std::string &title)
@@ -161,8 +167,8 @@ bool Application::prepareDisplay()
 {
     al_set_new_display_flags(ALLEGRO_OPENGL_3_0 | ALLEGRO_OPENGL_FORWARD_COMPATIBLE);
     al_set_new_display_option(ALLEGRO_DEPTH_SIZE, static_cast<int>(depth), ALLEGRO_SUGGEST);
-    al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-    al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST); // 2, 4, 8, 16
+    //al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
+    //al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST); // 2, 4, 8, 16
 
     if (fullScreen) {
         ALLEGRO_DISPLAY_MODE disp_data;
@@ -291,6 +297,7 @@ void Application::exec()
 
             duration<float> time_span = duration_cast< duration<double> >(t2 - t1);
             secOfLastFrame = time_span.count();
+            std::cout << secOfLastFrame << "\n";
         }
     }
 }

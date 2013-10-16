@@ -29,7 +29,27 @@
 
 namespace Core {
 
-std::shared_ptr<LuaManager> LuaManager::instance = nullptr;
+LuaManager *LuaManager::instance = nullptr;
+
+class __LuaManagerImplDel {
+public:
+    explicit __LuaManagerImplDel(LuaManager *luaManager) : luaManager(luaManager) {}
+    ~__LuaManagerImplDel() {delete luaManager;}
+private:
+    LuaManager *luaManager;
+};
+
+LuaManager *LuaManager::getInstance()
+{
+    if (!instance) {
+        instance = new LuaManager();
+        static __LuaManagerImplDel delHelper(instance);
+        instance->registerVec2();
+        instance->registerVec3();
+        instance->registerRectangle();
+    }
+    return instance;
+}
 
 LuaManager::LuaManager()
 {
@@ -39,17 +59,6 @@ LuaManager::LuaManager()
 LuaManager::~LuaManager()
 {
     close();
-}
-
-LuaManager *LuaManager::getInstance()
-{
-    if (!instance) {
-        instance = std::shared_ptr<LuaManager>(new LuaManager());
-        instance->registerVec2();
-        instance->registerVec3();
-        instance->registerRectangle();
-    }
-    return instance.get();
 }
 
 bool LuaManager::doFile(const std::string &file)

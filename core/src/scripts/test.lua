@@ -8,14 +8,14 @@ ui:rectangle "root"
   height = 1.2,
   color = vec3(0.0, 0.0, 1.0),
 
-  radius = 1.1,
+  radius = 0.1,
   radiusOfB = 0.5,
   radiusOfA = 1.0,
   radiusOfC = 1.0,
 
   border = {
     color = vec3(0.5, 0.5, 0.5),
-    width = 0.1
+    width = 0.2
   },
 
   ui:rectangle "parent1"
@@ -26,12 +26,12 @@ ui:rectangle "root"
     width = 1.8,
     height = 0.4,
 
-    radiusOfB = 0.2,
+    radius = 0.4,
     radiusOfA = 1.0,
     radiusOfC = 1.0,
     border = {
       color = vec3(0.5, 0.5, 0.5),
-      width = 0.5
+      width = 0.2
     },
   }, -- rectangle "parent1"
 } -- rectangle "root"

@@ -97,7 +97,7 @@ void Rectangle::configure()
         height = height * scHeight;
     }
 
-    float halfOfMinSide = 0.5f * std::min(width, height) - 0.001f;
+    float halfOfMinSide = 0.5f * std::min(width, height) - 0.001f; // correct in min
     rA *= halfOfMinSide;
     rB *= halfOfMinSide;
     rC *= halfOfMinSide;

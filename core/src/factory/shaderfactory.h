@@ -28,17 +28,19 @@
 
 namespace Core {
 
+class __ShaderFactoryImplDel;
+
 /**
  * @brief Фабрика получения шейдеров
  */
 class ShaderFactory
 {
 public:
+    friend class __ShaderFactoryImplDel;
     /**
      * @brief Получить экземпляр фабрики шейдеров.
      */
     static ShaderFactory * getInstance();
-    virtual ~ShaderFactory();
     /**
      * @brief Получить шейдер по имени.
      * @param name имя шейдера
@@ -47,8 +49,11 @@ public:
     Shader* getShader(const std::string &name);
 private:
     ShaderFactory();
+    ~ShaderFactory();
+    ShaderFactory(const ShaderFactory&);
+    ShaderFactory &operator=(const ShaderFactory&);
 
-    static std::shared_ptr<ShaderFactory> instance;
+    static ShaderFactory *instance;
     std::string prefix;
     std::map< std::string, std::shared_ptr<Shader> > shaders;
 }; // class ShaderFactory

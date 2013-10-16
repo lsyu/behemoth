@@ -25,19 +25,29 @@ namespace Core {
 
 using namespace std;
 
-std::shared_ptr<ResourceManager> ResourceManager::instance = nullptr;
+ResourceManager *ResourceManager::instance = nullptr;
 
-ResourceManager::ResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
-ResourceManager::~ResourceManager() {}
+class __ResourceManagerImplDel {
+public:
+    explicit __ResourceManagerImplDel(ResourceManager *resourceManager) : resourceManager(resourceManager) {}
+    ~__ResourceManagerImplDel() {delete resourceManager;}
+private:
+    ResourceManager *resourceManager;
+};
+
 
 ResourceManager* ResourceManager::getInstance()
 {
     if (!instance) {
-        instance = std::shared_ptr<ResourceManager>(new ResourceManager);
+        instance = new ResourceManager;
+        static __ResourceManagerImplDel deleteHelper(instance);
         instance->readConfigurationFile("core.conf");
     }
-    return instance.get();
+    return instance;
 }
+
+ResourceManager::ResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
+ResourceManager::~ResourceManager() {}
 
 bool ResourceManager::readConfigurationFile(const string &name)
 {

@@ -40,18 +40,12 @@ DefaultScene::~DefaultScene()
 
 void DefaultScene::prepareGL()
 {
+    // TODO: путь из ресурсов
     LuaManager::getInstance()->doFile("scripts/test.lua");
 
-    glShadeModel(GL_SMOOTH);    // ???
+    //glShadeModel(GL_SMOOTH);    // ???
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
-
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    glOrtho(0.0, 800, 600, 0.0, -1.0, 10.0);
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    glDisable(GL_CULL_FACE);
 }
 
 bool DefaultScene::updateGL(ALLEGRO_EVENT *e)
@@ -67,7 +61,7 @@ bool DefaultScene::updateGL(ALLEGRO_EVENT *e)
 void DefaultScene::paintGL()
 {
     // TODO: После рисования 3d сцены чистить не нужно!
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
     glDisable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -87,7 +81,7 @@ void DefaultScene::paintGL()
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_MULTISAMPLE);
+    //glDisable(GL_MULTISAMPLE);
 }
 
 } // namespace Core

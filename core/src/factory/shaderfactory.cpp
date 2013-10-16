@@ -23,13 +23,23 @@
 
 namespace Core {
 
-std::shared_ptr<ShaderFactory> ShaderFactory::instance = nullptr;
+ShaderFactory *ShaderFactory::instance = nullptr;
+
+class __ShaderFactoryImplDel {
+public:
+    explicit __ShaderFactoryImplDel(ShaderFactory *shaderFactory) : shaderFactory(shaderFactory) {}
+    ~__ShaderFactoryImplDel() {delete shaderFactory;}
+private:
+    ShaderFactory *shaderFactory;
+};
 
 ShaderFactory *ShaderFactory::getInstance()
 {
-    if (!instance)
-        instance = std::shared_ptr<ShaderFactory>(new ShaderFactory());
-    return instance.get();
+    if (!instance) {
+        instance = new ShaderFactory();
+        static __ShaderFactoryImplDel delHelper(instance);
+    }
+    return instance;
 }
 
 ShaderFactory::ShaderFactory() : prefix(Core::ResourceManager::getInstance()->getShaderFolder()

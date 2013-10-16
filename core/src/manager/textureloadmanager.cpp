@@ -27,24 +27,32 @@ namespace Core {
 
 using namespace std;
 
-std::shared_ptr<TextureLoadManager> TextureLoadManager::instance = nullptr;
+TextureLoadManager *TextureLoadManager::instance = nullptr;
+
+class __TextureLoaderManagerImplDel {
+public:
+    explicit __TextureLoaderManagerImplDel(TextureLoadManager *tlManager) : tlManager(tlManager) {}
+    ~__TextureLoaderManagerImplDel() {delete tlManager;}
+private:
+    TextureLoadManager *tlManager;
+};
 
 TextureLoadManager* TextureLoadManager::getInstance()
 {
-    if (!instance)
-        instance = std::shared_ptr<TextureLoadManager>(new TextureLoadManager());
-    return instance.get();
+    if (!instance) {
+        instance = new TextureLoadManager();
+        static __TextureLoaderManagerImplDel delHelper(instance);
+    }
+    return instance;
 }
 
 
 TextureLoadManager::TextureLoadManager() : textures(std::map<std::string, uint>())
 {
-    cout << "constructor\n";
 }
 
 TextureLoadManager::~TextureLoadManager()
 {
-    cout << "!destructor!\n";
     for (std::map<std::string, uint>::const_iterator it = textures.begin(), end = textures.end();
             it != end; ++it)
         glDeleteTextures(1, &(it->second));

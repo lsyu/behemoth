@@ -29,6 +29,7 @@
 namespace Core {
 
 class Entity;
+class __LuaManagerImplDel;
 
 /**
  * @brief Менеджер работы с Lua.
@@ -44,12 +45,11 @@ class Entity;
 class LuaManager
 {
 public:
+    friend class __LuaManagerImplDel; /**< Даже не думайте его использовать:) */
     /**
      * @brief Получить экземпляр менеджера работы с Lua.
      */
     static LuaManager *getInstance();
-
-    ~LuaManager();
 
     /**
      * @brief Выполнить скрипт @a file.
@@ -92,8 +92,11 @@ protected:
 
 private:
     LuaManager();
+    ~LuaManager();
+    LuaManager(const LuaManager &);
+    LuaManager &operator=(const LuaManager&);
 
-    static std::shared_ptr<LuaManager> instance;
+    static LuaManager *instance;
 public:
     lua_State *lua;
     std::vector< std::shared_ptr<Core::Entity> > objects;

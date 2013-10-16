@@ -25,6 +25,9 @@
 #include <map>
 
 namespace Core {
+
+class __ResourceManagerImplDel;
+
 /**
  * @brief Менеджер ресурсов.
  *
@@ -35,13 +38,13 @@ namespace Core {
 class ResourceManager
 {
 public:
+    friend class __ResourceManagerImplDel;
 
     /**
      * @brief Получить экземпляр менеджера ресурсов.
      * @return экземпляр менеджера ресурсов.
      */
     static ResourceManager* getInstance();
-    virtual ~ResourceManager();
 
     /**
      * @brief Прочитать файл конфигурации (core.conf)
@@ -91,9 +94,12 @@ public:
 
 private:
     ResourceManager();
+    ~ResourceManager();
+    ResourceManager(const ResourceManager&);
+    ResourceManager &operator=(const ResourceManager&);
 
     std::map<std::string, std::string> mapOfParam;
-    static std::shared_ptr<ResourceManager> instance;
+    static ResourceManager *instance;
 }; // class ResourceManager
 
 } // namespace Core

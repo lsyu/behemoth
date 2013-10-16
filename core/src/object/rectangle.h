@@ -26,7 +26,6 @@
 #include "core/ogl/vertexarrayobject.h"
 
 class Shader;
-struct ALLEGRO_FONT;
 
 namespace Core {
 

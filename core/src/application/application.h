@@ -63,6 +63,7 @@ union ALLEGRO_EVENT;
 namespace Core {
 
 class Painter;
+class __ApplicationImplDel;
 
 /**
  * @brief Перечисления класса @a Application
@@ -91,16 +92,12 @@ class Application
 {
 public:
     friend class Painter;
+    friend class __ApplicationImplDel;
     /**
      * @brief Получить экземпляр приложения.
      * @return экземпляр приложения.
      */
     static Application* getInstance();
-
-    /**
-     * @brief Деструктор.
-     */
-    virtual ~Application();
 
     /**
      * @brief Установить заголовок окна.
@@ -252,6 +249,9 @@ private:
      * @brief Конструктор по-умолчанию.
      */
     Application();
+    ~Application();
+    Application(const Application&);
+    Application &operator=(const Application&);
 
     /**
      * @brief Подготовить дисплей.
@@ -278,7 +278,7 @@ private:
      */
     void prepareEventQueue();
 
-    static std::shared_ptr<Application> instance;
+    static Application *instance;
 
     std::string title; /**< Заголовок окна. */
     bool fullScreen; /**< Полный ли экран. */
