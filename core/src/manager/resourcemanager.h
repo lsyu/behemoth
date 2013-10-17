@@ -27,21 +27,26 @@
 namespace Core {
 
 class __ResourceManagerImplDel;
+class LuaManager;
 
 /**
  * @brief Менеджер ресурсов.
  *
  * Архитектура - singleton.
  * Предоставляет интерфейс для чтения файла конфигурации и загрузки ресурсов.
- * @todo Переделать на декларативное описание ресурсов lua-like
+ * @note Файл конфигурации называется core.conf и находится в той же директории,
+ * что и исполняемый файл!
+ * @todo Написать пример файла конфигурации
  */
 class ResourceManager
 {
 public:
-    friend class __ResourceManagerImplDel;
+    friend class __ResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
+    friend class LuaManager;
 
     /**
      * @brief Получить экземпляр менеджера ресурсов.
+     * @note Инициализация ресурсов происходит при первом обращении к экземпляру менеджера ресурсов.
      * @return экземпляр менеджера ресурсов.
      */
     static ResourceManager* getInstance();
@@ -61,7 +66,7 @@ public:
      * - material
      * - shader
      * - texture
-     *
+     * @note При каждом чтении файла конфигурации данные перечитываются!
      * @param name название конфигурационного файла.
      * @return true, если данные успешно згружены, false иначе.
      */

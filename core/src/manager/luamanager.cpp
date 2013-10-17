@@ -22,10 +22,13 @@
 #include "core/objects/entity.h"
 #include "core/objects/2d/rectangle.h"
 
+#include "core/manager/resourcemanager.h"
+
 #include "glm/glm.h"
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 namespace Core {
 
@@ -44,57 +47,81 @@ LuaManager *LuaManager::getInstance()
     if (!instance) {
         instance = new LuaManager();
         static __LuaManagerImplDel delHelper(instance);
-        instance->registerVec2();
-        instance->registerVec3();
-        instance->registerRectangle();
+        // При инициализации хорошо бы прочитать, где что находится.
+        // Важно, чтобы сначала прочитались ресурсы, а уже потом - объекты.
+        instance->init(TaskConfig);
     }
     return instance;
 }
 
-LuaManager::LuaManager()
+LuaManager::LuaManager() : lua(), objects(), config()
 {
-    init();
 }
 
 LuaManager::~LuaManager()
 {
-    close();
+}
+
+bool LuaManager::parseFile(const std::string &fileName, CurrentTask task)
+{
+    if (!lua)
+        init(task);
+    bool ret = !luaL_dofile(lua, fileName.c_str());
+    // TODO: Залогировать
+    if(!ret)
+        std::cout << "Lua error: " << luaL_checkstring(lua, -1) << std::endl;
+    close(task);
+    return ret;
 }
 
 bool LuaManager::doFile(const std::string &file)
 {
-    if (!lua)
-        init();
-    bool ret = !luaL_dofile(lua, file.c_str());
-    if(!ret)
-        std::cout << "Lua error: " << luaL_checkstring(LuaManager::getInstance()->lua, -1) << std::endl;
-    close();
-    return ret;
+    return parseFile(file, TaskGUI);
+}
+
+bool LuaManager::readConfFile(const std::string &file)
+{
+    return parseFile(file, TaskConfig);
 }
 
 void LuaManager::registerUI()
 {
-    //! TODO: Загрузка всех стандартных скриптов
+    //! TODO: Загрузка всех скриптов объектов сцены
     std::string tmp = "scripts/";
     luaL_dofile(lua, std::string(tmp + "vec.lua").c_str());
     luaL_dofile(lua, std::string(tmp + "ui.lua").c_str());
     luaL_dofile(lua, std::string(tmp + "triangle.lua").c_str());
     luaL_dofile(lua, std::string(tmp + "rectangle.lua").c_str());
+
+    registerVec2();
+    registerVec3();
+    registerRectangle();
 }
 
-void LuaManager::close()
+void LuaManager::registerConf()
+{
+    //! TODO: Загрузка всех скриптов для системы конфигурации
+    std::string tmp = "scripts/";
+    luaL_dofile(lua, std::string(tmp + "conf.lua").c_str());
+    luaL_dofile(lua, std::string(tmp + "folders.lua").c_str());
+
+    registerFolders();
+}
+
+void LuaManager::close(CurrentTask task)
 {
     if (lua) {
         lua_close(lua);
         lua = nullptr;
-        for(int i = 0, n = objects.size(); i < n; i++) {
-            // Подготовим к работе
-            objects[i]->configure();
+        if (task == TaskGUI) {
+            // Подготовим к работе наши сущности UI
+            for(auto obj: objects)
+                obj->configure();
         }
     }
 }
 
-void LuaManager::init()
+void LuaManager::init(CurrentTask task)
 {
     lua = luaL_newstate();
     if (lua) {
@@ -112,22 +139,27 @@ void LuaManager::init()
             lib->func(lua);
             lua_settop(lua, 0);
         }
-        registerUI();
+        if (task == TaskGUI)
+            registerUI();
+        else if (task == TaskConfig)
+            registerConf();
     }
 }
 
 Core::Entity *LuaManager::getObject(const std::string &id)
 {
-    for(int i = 0, n = objects.size();i < n; i++) {
-        if (objects[i]->getId() == id)
-            return objects[i].get();
-    }
-    return nullptr;
+    std::vector< std::shared_ptr<Core::Entity> >::iterator it
+            = std::find_if(objects.begin(), objects.end(),
+            [&id](const std::shared_ptr<Core::Entity> &obj)
+            {
+                return obj->getId() == id;
+            });
+    return it != objects.end() ? static_cast<Core::Entity*>(&(*it->get())) : nullptr;
 }
 
 Core::Entity *LuaManager::getObject(int num)
 {
-    if (num < 0 || num >= objects.size())
+    if (num < 0 || num >= static_cast<int>(objects.size()))
         return nullptr;
     return objects[num].get();
 }
@@ -472,6 +504,79 @@ void LuaManager::registerRectangle()
     lua_setglobal(lua, "Rectangle");
 }
 //******************************!!!!!!!!!!!!!!!!!**********
+
+void LuaManager::registerFolders()
+{
+    luaL_Reg sFooRegs[] =
+    {
+        {
+            "new", [](lua_State *l) -> int
+            {
+                luaL_checkstring(l, 1);
+                ResourceManager ** resMan
+                        = static_cast<ResourceManager **>(
+                                lua_newuserdata(l, sizeof(ResourceManager *)));
+                *resMan = ResourceManager::getInstance();
+                luaL_getmetatable(l, "luaL_Folders");
+                lua_setmetatable(l, -2);
+                return 1;
+            }
+        },
+
+        {
+            "setMeshDir", [](lua_State *l) -> int
+            {
+                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                const char *str = luaL_checkstring(l, 2);
+                foo->mapOfParam["mesh"] = std::string(str);
+                return 1;
+            }
+        },
+
+        {
+            "setMaterialDir", [](lua_State *l) -> int
+            {
+                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                const char *str = luaL_checkstring(l, 2);
+                foo->mapOfParam["material"] = std::string(str);
+                return 1;
+            }
+        },
+
+        {
+            "setTextureDir", [](lua_State *l) -> int
+            {
+                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                const char *str = luaL_checkstring(l, 2);
+                foo->mapOfParam["texture"] = std::string(str);
+                return 1;
+            }
+        },
+
+        {
+            "setShaderDir", [](lua_State *l) -> int
+            {
+                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                const char *str = luaL_checkstring(l, 2);
+                foo->mapOfParam["shader"] = std::string(str);
+                return 1;
+            }
+        },
+
+        "__gc", [](lua_State * l)
+        {
+            // Т.к синглтон, и он нам еще понадобится, ничего не удаляем!
+            return 0;
+        },
+
+        { NULL, NULL }
+    }; //luaL_Reg sFooRegs
+    luaL_newmetatable(lua, "luaL_Folders");
+    luaL_setfuncs (lua, sFooRegs, 0);
+    lua_pushvalue(lua, -1);
+    lua_setfield(lua, -1, "__index");
+    lua_setglobal(lua, "Folders");
+}
 
 } // namespace Core
 

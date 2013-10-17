@@ -23,6 +23,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "lua/lua.h"
 
@@ -53,9 +54,20 @@ public:
 
     /**
      * @brief Выполнить скрипт @a file.
+     *
+     * После парсинга скрипталуа наши декларативно описанные элементы
+     * сохраняются в вектор, получить доступ к которым можно, воспользовавшись
+     * методами @sa getObject, getObjects
      * @return true если скрипт выполнен, false в противном случае.
      */
     bool doFile(const std::string &file);
+
+    /**
+     * @brief Прочитать файл конфигурации.
+     * @param file название файла конфигурации.
+     * @return true, если файл конфигурации корректен и данные успешно прочитаны, false иначе.
+     */
+    bool readConfFile(const std::string &file);
 
     Entity *getObject(const std::string &id);
     Entity *getObject(int num);
@@ -66,13 +78,22 @@ public:
 
 protected:
     /**
+     * @brief Текущая задача скрипта.
+     *
+     * Необходим для корректной подготовки стека Lua для работы с нашими объектами
+     */
+    enum CurrentTask {
+        TaskGUI = 0,
+        TaskConfig
+    }; // enum Init
+    /**
      * @brief Закрытие.
      */
-    void close();
+    void close(CurrentTask task);
     /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
      */
-    void init();
+    void init(CurrentTask task);
     /**
      * @brief Регистрация таблицы ui
      */
@@ -90,16 +111,27 @@ protected:
      */
     void registerRectangle();
 
+    /**
+     * @brief Регистрация таблицы conf.
+     */
+    void registerConf();
+    /**
+     * @brief регистрация методов для загрузки пути до файлов ресурсов.
+     */
+    void registerFolders();
+
 private:
     LuaManager();
     ~LuaManager();
     LuaManager(const LuaManager &);
     LuaManager &operator=(const LuaManager&);
 
+    bool parseFile(const std::string &fileName, CurrentTask task = TaskGUI);
+
     static LuaManager *instance;
-public:
     lua_State *lua;
-    std::vector< std::shared_ptr<Core::Entity> > objects;
+    std::vector< std::shared_ptr<Core::Entity> > objects; /**< Элементы сцены.(Пока только GUI) */
+    std::map<std::string, std::string> config; /**< Значения настроек конф. файлов. */
 };
 
 } // namespace Core

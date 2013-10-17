@@ -7,6 +7,9 @@ set ( SCRIPT_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.lua
     ${CMAKE_CURRENT_SOURCE_DIR}/test.lua
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/conf.lua
+    ${CMAKE_CURRENT_SOURCE_DIR}/folders.lua
+
 
     PARENT_SCOPE
 )

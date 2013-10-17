@@ -18,7 +18,10 @@
  */
 
 #include "resourcemanager.h"
+
 #include "core/algorithm/algostring.h"
+#include "core/manager/luamanager.h"
+
 #include <fstream>
 
 namespace Core {
@@ -41,7 +44,8 @@ ResourceManager* ResourceManager::getInstance()
     if (!instance) {
         instance = new ResourceManager;
         static __ResourceManagerImplDel deleteHelper(instance);
-        instance->readConfigurationFile("core.conf");
+        LuaManager::getInstance()->readConfFile("core.conf");
+        //instance->readConfigurationFile("core.conf");
     }
     return instance;
 }
@@ -51,6 +55,8 @@ ResourceManager::~ResourceManager() {}
 
 bool ResourceManager::readConfigurationFile(const string &name)
 {
+    mapOfParam.clear();
+    LuaManager::getInstance()->doFile(name);
     if (mapOfParam.empty()) {
         ifstream file(name);
         if (!file.is_open())

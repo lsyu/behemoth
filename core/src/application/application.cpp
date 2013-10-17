@@ -25,6 +25,8 @@
 
 #include "core/algorithm/algostring.h"
 
+#include "core/manager/resourcemanager.h"
+
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_opengl.h"
 
@@ -59,6 +61,8 @@ Application::Application()
       isTimer(false), isKeyboard(false), isMouse(false),
       isTouch(false), isDisplay(false), isInit(false), secOfLastFrame(0)
 {
+    // Инициализация ресурсов.
+    ResourceManager::getInstance();
 }
 
 Application::~Application()
