@@ -147,6 +147,14 @@ public:
      * @param value значение.
      * @throw ShaderException в случае, если такого названия нет среди uniform переменных.
      */
+    void setUniform(const std::string &nameOfParam, int value);
+
+    /**
+     * @brief Установить значение uniform.
+     * @param nameOfParam название в шейдере.
+     * @param value значение.
+     * @throw ShaderException в случае, если такого названия нет среди uniform переменных.
+     */
     void setUniform(const std::string &nameOfParam, float value);
 
     /**

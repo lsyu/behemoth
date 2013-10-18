@@ -12,6 +12,8 @@ function ui:rectangle(id)
         r:setHeight(v)
       elseif k == "color" then
         r:setColor(v)
+      elseif k == "texture" then
+        r:setTexture(v)
       elseif k == "radius" then
         r:setRadius(v)
       elseif k == "radiusOfA" then

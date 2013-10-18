@@ -33,14 +33,14 @@ target_link_libraries(hello_world
 add_custom_target(TEST_TARGET ALL DEPENDS)
 add_custom_command(TARGET TEST_TARGET
     PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/bin/shaders
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/bin/res/shaders
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/bin/scripts
 )
 
 foreach( FILE_I ${GLSL_FILES})
 add_custom_command(TARGET TEST_TARGET
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_I} ${CMAKE_BINARY_DIR}/bin/shaders
+    COMMAND ${CMAKE_COMMAND} -E copy ${FILE_I} ${CMAKE_BINARY_DIR}/bin/res/shaders
 )
 endforeach(FILE_I)
 

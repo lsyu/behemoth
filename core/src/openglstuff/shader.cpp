@@ -152,6 +152,12 @@ int Shader::makeUniformLocation(const std::string &nameOfParam)
     return location;
 }
 
+void Shader::setUniform(const std::string &nameOfParam, int value)
+{
+    int location = makeUniformLocation(nameOfParam);
+    glUniform1i(location, value);
+}
+
 void Shader::setUniform(const std::string &nameOfParam, float value)
 {
     int location = makeUniformLocation(nameOfParam);

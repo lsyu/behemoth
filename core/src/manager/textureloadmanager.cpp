@@ -20,8 +20,10 @@
 #include "textureloadmanager.h"
 #include "resourcemanager.h"
 #include <iostream>
+
+#include "core/ogl/ogl.h"
 #include "gli/gli.h"
-#include <GL/gl.h>
+#include "gli/glitexture2d.h"
 
 namespace Core {
 
@@ -58,46 +60,54 @@ TextureLoadManager::~TextureLoadManager()
         glDeleteTextures(1, &(it->second));
 }
 
-bool TextureLoadManager::loadTexture(const string &name, const string &fileName)
+uint TextureLoadManager::loadTexture(const string &name, const string &fileName)
 {
     if (textures.find(name) != textures.end())
         return false; // уже загружена
 
-    gli::texture2D im(gli::loadStorageDDS(
-            ResourceManager::getInstance()->getTextureFolder()
-            + ResourceManager::getInstance()->getFileSeparator()
-            + fileName));
+//    gli::texture2D im(gli::loadStorageDDS(fileName));
 
-    if (im.empty())
-        return false; // файл не найден или невозможно открыть
+//    if (im.empty())
+//        return 0; // файл не найден или невозможно открыть
 
-    // генерим текстуру
-    uint t;
-    glGenTextures(1, &t);
+//    // генерим текстуру
+//    uint t;
+//    glActiveTexture(GL_TEXTURE0);
+//    glGenTextures(1, &t);
+//    //glEnable(GL_TEXTURE_2D);
+//    //glActiveTexture(GL_TEXTURE0);
 
-    // делаем ее активной
-    glBindTexture(GL_TEXTURE_2D, t);
+//    // делаем ее активной
+//    glBindTexture(GL_TEXTURE_2D, t);
+//    GLenum error = glGetError();
 
-    // фильтрации текстуры - линейная фильтрация
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    // фильтрации текстуры - линейная фильтрация
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // параметры "оборачивания" текстуры - отсутствие оборачивания
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//    // параметры "оборачивания" текстуры - отсутствие оборачивания
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // загрузм данные о цвете
-    //! TODO: Подумать над форматами
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 gli::internal_format(im.format())/*GL_RGB8*/,
-                 im.dimensions().x, im.dimensions().y,
-                 0,
-                 gli::type_format(im.format())/*GL_BGR*/,
-                 GL_UNSIGNED_BYTE,
-                 im.data());
+//    error = glGetError();
+//    // загрузм данные о цвете
+//    //! TODO: Подумать над форматами
+
+//    glTexImage2D(GL_TEXTURE_2D,
+//                 im.levels(),
+//                 gli::internal_format(im.format())/*GL_RGB8*/,
+//                 im.dimensions().x, im.dimensions().y,
+//                 0,
+//                 gli::type_format(im.format())/*GL_BGR*/,
+//                 GL_UNSIGNED_BYTE,
+//                 im.data());
+
+//    error = glGetError();
+
 
     //! TODO: сделать проверку корректности bool checkOGL();
+
+    uint t = gli::createTexture2D(fileName);
 
     // добавим в наш словарь
     textures[name] = t;
@@ -105,13 +115,16 @@ bool TextureLoadManager::loadTexture(const string &name, const string &fileName)
     // возвращаем начальное состояние
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return true;
+    return t;
 }
 
-uint TextureLoadManager::getTexture(const string &name) const
+uint TextureLoadManager::getTexture(const string &name)
 {
     std::map<std::string, uint>::const_iterator texture = textures.find(name);
-    return (texture == textures.end()) ? 0 : texture->second;
+    ResourceManager *res = ResourceManager::getInstance();
+    if (texture == textures.end())
+        return loadTexture(name, res->getTextureFolder()+ res->getFileSeparator() + name + ".dds");
+    return texture->second;
 }
 
 } // namespace Core

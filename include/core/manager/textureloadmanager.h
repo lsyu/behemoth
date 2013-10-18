@@ -1,1 +1,1 @@
-#include "../../../core/src/managet/textureloadmanager.h"
+#include "../../../core/src/manager/textureloadmanager.h"

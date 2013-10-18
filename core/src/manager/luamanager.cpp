@@ -476,6 +476,16 @@ void LuaManager::registerRectangle()
         },
 
         {
+            "setTexture", [](lua_State *l) -> int
+            {
+                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                const char *textureName = luaL_checkstring(l, 2);
+                foo->setTexture(textureName);
+                return 1;
+            }
+        },
+
+        {
             "addChild", [](lua_State *l) -> int
             {
                 // TODO: Подумать, как возвращать указатель на Entity

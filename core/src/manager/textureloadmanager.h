@@ -31,9 +31,10 @@ class __TextureLoaderManagerImplDel;
 /**
  * @brief Менеджер загрузки текстур.
  *
- * Архитектура - singleton.
- * Во время запуска программы загружает все текстуры.
+ * Архитектура - singleton. @n
  * Каждая текстура загружается один раз.
+ * Для загрузки текстур используется библиотека GLI.
+ * @note Текстуры должны храниться в формате *.dds
  */
 class TextureLoadManager
 {
@@ -42,34 +43,35 @@ public:
 
     /**
      * @brief Получить экземпляр менеджера текстур.
+     * Во время первого обращения загружаются все изображения.
      * @return экземпляр менеджера текстур.
      */
     static TextureLoadManager* getInstance();
 
     /**
-   * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
-   *
-   * Необходимо указывать только файл изображения. Предполагается, что он находится в директории
-   * тектур (описывается в файле конфигурации).
-   *
-   * @param name имя текстуры.
-   * @param textureName имя файла изображения.
-   * @return  true если текстура удачно загружена, false в противном случае.
-   */
-    bool loadTexture(const std::string &name, const std::string &textureName);
-
-    /**
-   * @brief Получить текстуру по имени.
-   * @param name название текстуры.
-   * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
-   */
-    uint getTexture(const std::string &name) const;
+     * @brief Получить текстуру по имени.
+     * @param name название текстуры без расширения, т.е. для "texture.dds" имя текстуры будет "texture".
+     * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
+     */
+    uint getTexture(const std::string &name);
 
 private:
     TextureLoadManager();
     ~TextureLoadManager();
     TextureLoadManager(const TextureLoadManager&);
     TextureLoadManager &operator=(const TextureLoadManager&);
+
+    /**
+     * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
+     *
+     * Необходимо указывать только файл изображения. Предполагается, что он находится в директории
+     * тектур (описывается в файле конфигурации).
+     *
+     * @param name имя текстуры.
+     * @param textureName имя файла изображения.
+     * @return id текстуры в случае удачной загрузки, 0 в противном случае.
+     */
+    uint loadTexture(const std::string &name, const std::string &textureName);
     
     static TextureLoadManager *instance;
     std::map<std::string, uint> textures;

@@ -100,16 +100,21 @@ public:
      * @brief Установить цвет границы
      */
     void setBorderColor(const glm::vec3 &color);
+    /**
+     * @brief Получение текстуры при помощи менеджера текстур.
+     * @param name имя файла текстуры без расширения .dds
+     */
+    void setTexture(const std::string &name);
 
 protected:
     virtual void configure();
 
 private:
     Shader *shader;
-//    ALLEGRO_FONT *font;
     VertexArrayObject vao;
     VertexBufferObject vertex;
     VertexBufferObject color;
+    VertexBufferObject uv;
 
     float aspect;
     float x;
@@ -120,6 +125,7 @@ private:
     float rB;
     float rC;
     float rD;
+    uint texture;
     Border border;
 }; //class Rectangle
 

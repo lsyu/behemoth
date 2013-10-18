@@ -20,20 +20,23 @@
 #include "rectangle.h"
 #include "core/ogl/ogl.h"
 #include "core/factory/shaderfactory.h"
+#include "core/manager/textureloadmanager.h"
 #include "core/application.h"
 
 namespace Core {
 
 Rectangle::Rectangle() : Entity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
-    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), border()
+    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), texture(0), border()
 {
 }
 
 Rectangle::Rectangle(const std::string &id) : Entity(id), shader(nullptr), vao(), vertex(),
-    color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), border()
+    color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
+    texture(0),border()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
+    vUV.reserve(4);
 
     vPos2 = {
         glm::vec2(-1.0f, -1.0f),
@@ -47,6 +50,14 @@ Rectangle::Rectangle(const std::string &id) : Entity(id), shader(nullptr), vao()
         glm::vec3(1.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 0.0f, 0.0f)
+    };
+
+    // Перевернутое
+    vUV = {
+        glm::vec2(0.0f, 1.0f - 0.0f),
+        glm::vec2(1.0f, 1.0f - 0.0f),
+        glm::vec2(1.0f, 1.0f - 1.0f),
+        glm::vec2(0.0f, 1.0f - 1.0f)
     };
 
     rA = rB = rC = rD = 0.0f;
@@ -73,9 +84,25 @@ void Rectangle::paint() const
     shader->setUniform("borderWidth", border.width);
     shader->setUniform("borderColor", border.color);
 
+    if (texture) {
+        shader->setUniform("textureUse", 1);
+        shader->setUniform("texture", 0);
+    } else {
+        shader->setUniform("textureUse", 0);
+    }
+
+    if (texture) {
+        glEnable(GL_TEXTURE_2D);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
     vao.bind();
     glDrawArrays(GL_QUADS, 0, 4);
     vao.disable();
+
+    if (texture)
+        glDisable(GL_TEXTURE_2D);
 
     //shader->disable();
 
@@ -127,6 +154,19 @@ void Rectangle::configure()
     color.genBuffer();
     color.setData(&vColor);
     shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
+
+    if (texture) {
+        uv.genBuffer();
+        uv.setData(&vUV);
+        shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
+    }
+
+//    if (texture) {
+//        shader->setUniform("textureUse", 1);
+//        shader->setUniform("texture", 0);
+//    } else {
+//        shader->setUniform("textureUse", 0);
+//    }
 
     vao.disable();
 }
@@ -231,6 +271,11 @@ void Rectangle::setBorderWidth(float width)
 void Rectangle::setBorderColor(const glm::vec3 &color)
 {
     this->border.color = color;
+}
+
+void Rectangle::setTexture(const std::string &name)
+{
+    this->texture = TextureLoadManager::getInstance()->getTexture(name);
 }
 
 } // namespace Core
