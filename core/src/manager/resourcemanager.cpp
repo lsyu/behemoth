@@ -53,33 +53,6 @@ ResourceManager* ResourceManager::getInstance()
 ResourceManager::ResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
 ResourceManager::~ResourceManager() {}
 
-bool ResourceManager::readConfigurationFile(const string &name)
-{
-    mapOfParam.clear();
-    LuaManager::getInstance()->doFile(name);
-    if (mapOfParam.empty()) {
-        ifstream file(name);
-        if (!file.is_open())
-            return false;
-
-        try {
-            while (file.good()) {
-                std::string line;
-                getline(file, line);
-                std::vector<std::string> list = Algorithm::Str::splitAndSpaceRemove(line, ':');
-                if (list.size() > 1)
-                    mapOfParam[list[0]] = list[1];
-            }
-        } catch (...) {
-            file.close();
-            return false;
-        }
-        file.close();
-        return true;
-    }
-    return false;
-}
-
 string ResourceManager::getMeshFolder() const
 {
     if (mapOfParam.find("mesh") != mapOfParam.end())
