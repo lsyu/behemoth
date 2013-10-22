@@ -15,12 +15,16 @@ if(${CMAKE_SYSTEM} MATCHES "Linux")
         set(ALLEGRO_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86/allegro5)
         set(LUA_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86/lua52)
     endif()
+    if(${CMAKE_SYSTEM} MATCHES "x86_64")
+        set(OperatingSystem "Linux x86_64")
+        message("DETECTED ${OperatingSystem}")
+        set(ALLEGRO_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x64/allegro5)
+        set(LUA_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x64/lua52)
+    endif()
 
     set(ALLEGRO_LIBRARIES
         m
         pthread
-        SM
-        ICE
         X11
         Xext
         Xcursor

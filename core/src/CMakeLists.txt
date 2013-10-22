@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 include_directories(../../include)
+include_directories(.)
 
 add_subdirectory(algorithm)
 add_subdirectory(application)
