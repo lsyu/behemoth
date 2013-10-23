@@ -32,7 +32,7 @@
 #include <iostream>
 #include <chrono>
 
-namespace Core {
+namespace core {
 
 CApplication *CApplication::instance = nullptr;
 
@@ -60,7 +60,7 @@ CApplication::CApplication()
       isTouchInitialized(false), isDisplayInitialized(false), isInitialized(false), secOfLastFrame(0)
 {
     // Инициализация ресурсов.
-    ResourceManager::getInstance();
+    CResourceManager::getInstance();
 }
 
 CApplication::~CApplication()

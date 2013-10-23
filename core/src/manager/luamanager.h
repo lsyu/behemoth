@@ -27,15 +27,15 @@
 
 #include "lua/lua.h"
 
-namespace Core {
+namespace core {
 
-class Entity;
-class __LuaManagerImplDel;
+class AbstractEntity;
+class __CLuaManagerImplDel;
 
 /**
  * @brief Менеджер работы с Lua.
  *
- * Архитектура - singleton.
+ * Архитектура - singleton. @n
  * Является оберткой над функциями Lua.
  *
  * На данный момент загружаются следующие объекты:
@@ -43,24 +43,24 @@ class __LuaManagerImplDel;
  * - glm::vec3 (конструктор)
  * - Rectangle
  */
-class LuaManager
+class CLuaManager
 {
 public:
-    friend class __LuaManagerImplDel; /**< Даже не думайте его использовать:) */
+    friend class __CLuaManagerImplDel; /**< Даже не думайте его использовать:) */
     /**
      * @brief Получить экземпляр менеджера работы с Lua.
      */
-    static LuaManager *getInstance();
+    static CLuaManager *getInstance();
 
     /**
-     * @brief Выполнить скрипт @a file.
+     * @brief Прочитать файл описания интерфейса @a file.
      *
-     * После парсинга скрипталуа наши декларативно описанные элементы
+     * После парсинга скрипта луа наши декларативно описанные элементы
      * сохраняются в вектор, получить доступ к которым можно, воспользовавшись
      * методами @sa getObject, getObjects
      * @return true если скрипт выполнен, false в противном случае.
      */
-    bool doFile(const std::string &file);
+    bool readGui(const std::string &file);
 
     /**
      * @brief Прочитать файл конфигурации.
@@ -69,12 +69,12 @@ public:
      */
     bool readConfFile(const std::string &file);
 
-    Entity *getObject(const std::string &id);
-    Entity *getObject(int num);
-    const std::vector< std::shared_ptr<Entity> >& getObjects() const;
+    AbstractEntity *getObject(const std::string &id);
+    AbstractEntity *getObject(int num);
+    const std::vector< std::shared_ptr<AbstractEntity> >& getObjects() const;
 
     template<class T>
-    void addObject(Entity *entity);
+    void addObject(AbstractEntity *entity);
 
 protected:
     /**
@@ -121,16 +121,16 @@ protected:
     void registerFolders();
 
 private:
-    LuaManager();
-    ~LuaManager();
-    LuaManager(const LuaManager &);
-    LuaManager &operator=(const LuaManager&);
+    CLuaManager();
+    ~CLuaManager();
+    CLuaManager(const CLuaManager &);
+    CLuaManager &operator=(const CLuaManager&);
 
     bool parseFile(const std::string &fileName, CurrentTask task = TaskGUI);
 
-    static LuaManager *instance;
+    static CLuaManager *instance;
     lua_State *lua;
-    std::vector< std::shared_ptr<Core::Entity> > objects; /**< Элементы сцены.(Пока только GUI) */
+    std::vector< std::shared_ptr<core::AbstractEntity> > objects; /**< Элементы сцены.(Пока только GUI) */
     std::map<std::string, std::string> config; /**< Значения настроек конф. файлов. */
 };
 

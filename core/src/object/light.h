@@ -23,7 +23,7 @@
 #include "glm/glm.h"
 #include "camera.h"
 
-namespace Core {
+namespace core {
 
 /**
  * @brief Источник света.

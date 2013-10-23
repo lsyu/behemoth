@@ -20,25 +20,25 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include "entity.h"
+#include "basic2dentity.h"
 
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
 
 class Shader;
 
-namespace Core {
+namespace core {
 
-class Rectangle : public Entity
+class CRectangle : public Basic2dEntity
 {
 public:
-    Rectangle();
+    CRectangle();
     /**
      * @brief Прямоугольник красного цвета с вершинами в точках (-1, -1) (-1, 1) (1, 1) (1, -1).
      */
-    explicit Rectangle(const std::string &id);
+    explicit CRectangle(const std::string &id);
 
-    virtual ~Rectangle();
+    virtual ~CRectangle();
 
     virtual void paint() const;
     virtual void setColor(const glm::vec3 &color);
@@ -110,6 +110,7 @@ protected:
     virtual void configure();
 
 private:
+    // Получаю с фабрики, не надо чистить память
     Shader *shader;
     VertexArrayObject vao;
     VertexBufferObject vertex;

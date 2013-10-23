@@ -4,7 +4,7 @@
 
 int main()
 {
-    using namespace Core;
+    using namespace core;
 
     CApplication *app = CApplication::getInstance();
     app->setWindowTitle("Test");

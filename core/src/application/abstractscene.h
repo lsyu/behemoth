@@ -22,7 +22,7 @@
 
 union ALLEGRO_EVENT;
 
-namespace Core {
+namespace core {
 
 /**
  * @brief Интерфейс сцены.

@@ -2,10 +2,8 @@
 
 set(CORE_SRCS
     ${CORE_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/material.cpp
 
-#    ${CMAKE_CURRENT_SOURCE_DIR}/triangle.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
@@ -16,10 +14,8 @@ set(CORE_SRCS
 
 set(CORE_HEADERS
     ${CORE_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/entity.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/material.h
-
-#    ${CMAKE_CURRENT_SOURCE_DIR}/triangle.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/abstractentity.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/light.h

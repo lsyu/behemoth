@@ -21,7 +21,7 @@
 #include "../constants.h"
 #include "glm/ext.h"
 
-namespace Core {
+namespace core {
 
 using namespace glm;
 

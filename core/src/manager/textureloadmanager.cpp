@@ -19,48 +19,49 @@
 
 #include "textureloadmanager.h"
 #include "resourcemanager.h"
+
 #include <iostream>
 
 #include "core/ogl/ogl.h"
 #include "gli/gli.h"
 #include "gli/glitexture2d.h"
 
-namespace Core {
+namespace core {
 
 using namespace std;
 
-TextureLoadManager *TextureLoadManager::instance = nullptr;
+CTextureLoadManager *CTextureLoadManager::instance = nullptr;
 
-class __TextureLoaderManagerImplDel {
+class __CTextureLoaderManagerImplDel {
 public:
-    explicit __TextureLoaderManagerImplDel(TextureLoadManager *tlManager) : tlManager(tlManager) {}
-    ~__TextureLoaderManagerImplDel() {delete tlManager;}
+    explicit __CTextureLoaderManagerImplDel(CTextureLoadManager *tlManager) : tlManager(tlManager) {}
+    ~__CTextureLoaderManagerImplDel() {delete tlManager;}
 private:
-    TextureLoadManager *tlManager;
+    CTextureLoadManager *tlManager;
 };
 
-TextureLoadManager* TextureLoadManager::getInstance()
+CTextureLoadManager* CTextureLoadManager::getInstance()
 {
     if (!instance) {
-        instance = new TextureLoadManager();
-        static __TextureLoaderManagerImplDel delHelper(instance);
+        instance = new CTextureLoadManager();
+        static __CTextureLoaderManagerImplDel delHelper(instance);
     }
     return instance;
 }
 
 
-TextureLoadManager::TextureLoadManager() : textures(std::map<std::string, uint>())
+CTextureLoadManager::CTextureLoadManager() : textures(std::map<std::string, uint>())
 {
 }
 
-TextureLoadManager::~TextureLoadManager()
+CTextureLoadManager::~CTextureLoadManager()
 {
     for (std::map<std::string, uint>::const_iterator it = textures.begin(), end = textures.end();
             it != end; ++it)
         glDeleteTextures(1, &(it->second));
 }
 
-uint TextureLoadManager::loadTexture(const string &name, const string &fileName)
+uint CTextureLoadManager::loadTexture(const string &name, const string &fileName)
 {
     if (textures.find(name) != textures.end())
         return false; // уже загружена
@@ -118,10 +119,10 @@ uint TextureLoadManager::loadTexture(const string &name, const string &fileName)
     return t;
 }
 
-uint TextureLoadManager::getTexture(const string &name)
+uint CTextureLoadManager::getTexture(const string &name)
 {
     std::map<std::string, uint>::const_iterator texture = textures.find(name);
-    ResourceManager *res = ResourceManager::getInstance();
+    CResourceManager *res = CResourceManager::getInstance();
     if (texture == textures.end())
         return loadTexture(name, res->getTextureFolder()+ res->getFileSeparator() + name + ".dds");
     return texture->second;

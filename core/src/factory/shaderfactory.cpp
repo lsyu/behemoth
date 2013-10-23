@@ -21,37 +21,37 @@
 
 #include "core/manager/resourcemanager.h"
 
-namespace Core {
+namespace core {
 
-ShaderFactory *ShaderFactory::instance = nullptr;
+CShaderFactory *CShaderFactory::instance = nullptr;
 
-class __ShaderFactoryImplDel {
+class __CShaderFactoryImplDel {
 public:
-    explicit __ShaderFactoryImplDel(ShaderFactory *shaderFactory) : shaderFactory(shaderFactory) {}
-    ~__ShaderFactoryImplDel() {delete shaderFactory;}
+    explicit __CShaderFactoryImplDel(CShaderFactory *shaderFactory) : shaderFactory(shaderFactory) {}
+    ~__CShaderFactoryImplDel() {delete shaderFactory;}
 private:
-    ShaderFactory *shaderFactory;
+    CShaderFactory *shaderFactory;
 };
 
-ShaderFactory *ShaderFactory::getInstance()
+CShaderFactory *CShaderFactory::getInstance()
 {
     if (!instance) {
-        instance = new ShaderFactory();
-        static __ShaderFactoryImplDel delHelper(instance);
+        instance = new CShaderFactory();
+        static __CShaderFactoryImplDel delHelper(instance);
     }
     return instance;
 }
 
-ShaderFactory::ShaderFactory() : prefix(Core::ResourceManager::getInstance()->getShaderFolder()
-        + Core::ResourceManager::getInstance()->getFileSeparator()), shaders()
+CShaderFactory::CShaderFactory() : prefix(core::CResourceManager::getInstance()->getShaderFolder()
+        + core::CResourceManager::getInstance()->getFileSeparator()), shaders()
 {
 }
 
-ShaderFactory::~ShaderFactory()
+CShaderFactory::~CShaderFactory()
 {
 }
 
-Shader *ShaderFactory::getShader(const std::string &name)
+Shader *CShaderFactory::getShader(const std::string &name)
 {
     std::map< std::string, std::shared_ptr<Shader> >::const_iterator it
             = shaders.find(name);

@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef ABSTRACTENTITY_H
+#define ABSTRACTENTITY_H
 
 #include <string>
 #include <vector>
@@ -28,38 +28,22 @@
 /**
  * @brief Содержит классы, структуры и перечисления, необходимые для функционирования графики.
  */
-namespace Core {
+namespace core {
 
-class LuaManager;
-
-struct Border {
-    Border() : width(0), color(0.0f, 0.0f, 0.0f) {}
-    Border(const Border &other) : width(other.width), color(other.color) {}
-
-    float width;
-    glm::vec3 color;
-};
+class CLuaManager;
 
 /**
- * @brief Предоставляет интерфейс загрузки сущности объекта.
- *
- * Сущность объекта - это
- * - координаты вершин;
- * - нормали вершин;
- * - текстурные координаты вершин;
- * - материал объекта.
- *
- * @sa Core::Material
+ * @brief Абстрактная сущность объекта сцены.
  */
-class Entity
+class AbstractEntity
 {
 public:
 
-    friend class LuaManager;
+    friend class CLuaManager;
 
-    Entity();
-    explicit Entity(const std::string &id);
-    virtual ~Entity();
+    AbstractEntity() {}
+    explicit AbstractEntity(const std::string &id) {}
+    virtual ~AbstractEntity() {}
 
     /**
      * @brief Нарисовать сущность.
@@ -90,71 +74,45 @@ public:
     /**
      * @brief Вернуть идентификатор сущности.
      */
-    std::string getId() const;
+    virtual std::string getId() const = 0;
 
     /**
      * @brief Установить родителя.
      */
-    void setParent(Entity *parent);
+    virtual void setParent(AbstractEntity *parent) = 0;
+
     /**
      * @brief Получить родителя сущности.
      */
-    const Entity* getParent() const;
-    /**
-     * @brief Получить родителя сущности.
-     */
-    Entity* getParent();
+    virtual AbstractEntity* getParent() const = 0;
     /**
      * @brief isRoot Является элемент корневым.
      */
-    bool isRoot() const;
+    virtual bool isRoot() const = 0;
 
     /**
      * @brief Добавить ребенка сущности.
      */
-    void addChild(Entity *child);
+    virtual void addChild(AbstractEntity *child) = 0;
+
     /**
      * @brief getChild Получить ребенка сущности по его имени.
      * @note В случае, если ребенка с именем id не найдено, вернется nullptr.
      */
-    const Entity* getChild(const std::string &id) const;
-    /**
-     * @brief getChild Получить ребенка сущности по его имени.
-     * @note В случае, если ребенка с именем id не найдено, вернется nullptr.
-     */
-    Entity* getChild(const std::string &id);
+    virtual AbstractEntity* getChild(const std::string &id) = 0;
     /**
      * @brief getChilds Получить вектор детей сущности.
      */
-    const std::vector<Entity*>& getChilds() const;
+    virtual const std::vector<AbstractEntity*>& getChilds() const = 0;
 
 protected:
-//    /**
-//     * @brief Загрузка геометрии.
-//     * @param fileName файл геометрии.
-//     * @return true в случае спеха, false иначе.
-//     */
-//    bool loadData(const std::string &fileName);
 
     /**
      * @brief Конфигурирование сущности после загрузки данных.
      */
     virtual void configure() = 0;
-
-    std::vector<glm::vec2> vPos2;      /**< вектор координат */
-    std::vector<glm::vec3> vPos3;      /**< вектор координат */
-    std::vector<glm::vec3> vNormal;    /**< вектор нормалей */
-    std::vector<glm::vec2> vUV;        /**< вектор текстурных координат */
-    std::vector<glm::vec3> vColor;     /**< вектор цветов вершин */
-    std::vector<Entity*> vChilds;      /**< вектор детей */
-    Entity *parent;                    /**< родитель */
-    bool root;
-    // Material material; //! TODO: Подумать над материалом!
-
-private:
-    std::string id;
-}; // class Entity
+}; // class AbstractEntity
 
 } // namespace Core
 
-#endif // ENTITY_H
+#endif // ABSTRACTENTITY_H

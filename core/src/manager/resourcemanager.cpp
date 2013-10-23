@@ -24,64 +24,64 @@
 
 #include <fstream>
 
-namespace Core {
+namespace core {
 
 using namespace std;
 
-ResourceManager *ResourceManager::instance = nullptr;
+CResourceManager *CResourceManager::instance = nullptr;
 
-class __ResourceManagerImplDel {
+class __CResourceManagerImplDel {
 public:
-    explicit __ResourceManagerImplDel(ResourceManager *resourceManager) : resourceManager(resourceManager) {}
-    ~__ResourceManagerImplDel() {delete resourceManager;}
+    explicit __CResourceManagerImplDel(CResourceManager *resourceManager) : resourceManager(resourceManager) {}
+    ~__CResourceManagerImplDel() {delete resourceManager;}
 private:
-    ResourceManager *resourceManager;
+    CResourceManager *resourceManager;
 };
 
 
-ResourceManager* ResourceManager::getInstance()
+CResourceManager* CResourceManager::getInstance()
 {
     if (!instance) {
-        instance = new ResourceManager;
-        static __ResourceManagerImplDel deleteHelper(instance);
-        LuaManager::getInstance()->readConfFile("core.conf");
+        instance = new CResourceManager;
+        static __CResourceManagerImplDel deleteHelper(instance);
+        CLuaManager::getInstance()->readConfFile("core.conf");
         //instance->readConfigurationFile("core.conf");
     }
     return instance;
 }
 
-ResourceManager::ResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
-ResourceManager::~ResourceManager() {}
+CResourceManager::CResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
+CResourceManager::~CResourceManager() {}
 
-string ResourceManager::getMeshFolder() const
+string CResourceManager::getMeshFolder() const
 {
     if (mapOfParam.find("mesh") != mapOfParam.end())
         return mapOfParam.at("mesh");
     return "";
 }
 
-string ResourceManager::getMaterialFolder() const
+string CResourceManager::getMaterialFolder() const
 {
     if (mapOfParam.find("material") != mapOfParam.end())
         return mapOfParam.at("material");
     return "";
 }
 
-string ResourceManager::getShaderFolder() const
+string CResourceManager::getShaderFolder() const
 {
     if (mapOfParam.find("shader") != mapOfParam.end())
         return mapOfParam.at("shader");
     return "";
 }
 
-string ResourceManager::getTextureFolder() const
+string CResourceManager::getTextureFolder() const
 {
     if (mapOfParam.find("texture") != mapOfParam.end())
         return mapOfParam.at("texture");
     return "";
 }
 
-string ResourceManager::getFileSeparator() const
+string CResourceManager::getFileSeparator() const
 {
     return string("/");
 }

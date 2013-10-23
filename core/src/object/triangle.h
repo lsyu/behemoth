@@ -26,13 +26,13 @@
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
 
-namespace Core {
+namespace core {
 
 /**
  * @brief Треугольник.
  * @todo Наследование от Entity. Разорбраться с материалом.
  */
-class Triangle : public Core::Entity
+class Triangle : public core::AbstractEntity
 {
 public:
     Triangle();

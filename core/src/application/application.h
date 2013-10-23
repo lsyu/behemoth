@@ -60,7 +60,7 @@ struct ALLEGRO_EVENT_QUEUE;
 struct ALLEGRO_TIMER;
 union ALLEGRO_EVENT;
 
-namespace Core {
+namespace core {
 
 class AbstractScene;
 class __CApplicationImplDel;
@@ -211,7 +211,7 @@ public:
      * @brief Установить обработчика рисования.
      * @param painter обработчик рисования.
      */
-    void setScene(Core::AbstractScene *scene);
+    void setScene(core::AbstractScene *scene);
 
     /**
      * @brief Подготовить приложение для работы.

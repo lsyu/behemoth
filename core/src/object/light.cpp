@@ -20,7 +20,7 @@
 #include "light.h"
 #include "glm/ext.h"
 
-namespace Core {
+namespace core {
 
 void Light::initLight(const glm::vec3 &position,
                       const glm::vec3 &center,

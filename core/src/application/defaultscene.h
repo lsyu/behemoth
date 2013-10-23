@@ -24,7 +24,7 @@
 
 #include "glm/glm.h"
 
-namespace Core {
+namespace core {
 
 /**
  * @brief Сцена по-умолчанию.

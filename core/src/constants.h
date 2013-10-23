@@ -22,7 +22,7 @@
 
 #include "glm/ext.h"
 
-namespace Core {
+namespace core {
 const float PI = glm::pi<float>();
 const float PI_HALF = PI / 2.0f;
 const float PI_QUARTER = PI * 2.0f;

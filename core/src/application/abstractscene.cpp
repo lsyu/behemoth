@@ -19,7 +19,7 @@
 
 #include "abstractscene.h"
 
-namespace Core {
+namespace core {
 
 AbstractScene::AbstractScene()
 {

@@ -19,7 +19,7 @@
 
 #include "luamanager.h"
 
-#include "core/objects/entity.h"
+#include "core/objects/abstractentity.h"
 #include "core/objects/2d/rectangle.h"
 
 #include "core/manager/resourcemanager.h"
@@ -30,23 +30,23 @@
 #include <sstream>
 #include <algorithm>
 
-namespace Core {
+namespace core {
 
-LuaManager *LuaManager::instance = nullptr;
+CLuaManager *CLuaManager::instance = nullptr;
 
-class __LuaManagerImplDel {
+class __CLuaManagerImplDel {
 public:
-    explicit __LuaManagerImplDel(LuaManager *luaManager) : luaManager(luaManager) {}
-    ~__LuaManagerImplDel() {delete luaManager;}
+    explicit __CLuaManagerImplDel(CLuaManager *luaManager) : luaManager(luaManager) {}
+    ~__CLuaManagerImplDel() {delete luaManager;}
 private:
-    LuaManager *luaManager;
+    CLuaManager *luaManager;
 };
 
-LuaManager *LuaManager::getInstance()
+CLuaManager *CLuaManager::getInstance()
 {
     if (!instance) {
-        instance = new LuaManager();
-        static __LuaManagerImplDel delHelper(instance);
+        instance = new CLuaManager();
+        static __CLuaManagerImplDel delHelper(instance);
         // При инициализации хорошо бы прочитать, где что находится.
         // Важно, чтобы сначала прочитались ресурсы, а уже потом - объекты.
         instance->init(TaskConfig);
@@ -54,15 +54,15 @@ LuaManager *LuaManager::getInstance()
     return instance;
 }
 
-LuaManager::LuaManager() : lua(), objects(), config()
+CLuaManager::CLuaManager() : lua(), objects(), config()
 {
 }
 
-LuaManager::~LuaManager()
+CLuaManager::~CLuaManager()
 {
 }
 
-bool LuaManager::parseFile(const std::string &fileName, CurrentTask task)
+bool CLuaManager::parseFile(const std::string &fileName, CurrentTask task)
 {
     if (!lua)
         init(task);
@@ -74,17 +74,17 @@ bool LuaManager::parseFile(const std::string &fileName, CurrentTask task)
     return ret;
 }
 
-bool LuaManager::doFile(const std::string &file)
+bool CLuaManager::readGui(const std::string &file)
 {
     return parseFile(file, TaskGUI);
 }
 
-bool LuaManager::readConfFile(const std::string &file)
+bool CLuaManager::readConfFile(const std::string &file)
 {
     return parseFile(file, TaskConfig);
 }
 
-void LuaManager::registerUI()
+void CLuaManager::registerUI()
 {
     //! TODO: Загрузка всех скриптов объектов сцены
     std::string tmp = "scripts/";
@@ -98,7 +98,7 @@ void LuaManager::registerUI()
     registerRectangle();
 }
 
-void LuaManager::registerConf()
+void CLuaManager::registerConf()
 {
     //! TODO: Загрузка всех скриптов для системы конфигурации
     std::string tmp = "scripts/";
@@ -108,7 +108,7 @@ void LuaManager::registerConf()
     registerFolders();
 }
 
-void LuaManager::close(CurrentTask task)
+void CLuaManager::close(CurrentTask task)
 {
     if (lua) {
         lua_close(lua);
@@ -121,7 +121,7 @@ void LuaManager::close(CurrentTask task)
     }
 }
 
-void LuaManager::init(CurrentTask task)
+void CLuaManager::init(CurrentTask task)
 {
     lua = luaL_newstate();
     if (lua) {
@@ -146,37 +146,37 @@ void LuaManager::init(CurrentTask task)
     }
 }
 
-Core::Entity *LuaManager::getObject(const std::string &id)
+core::AbstractEntity *CLuaManager::getObject(const std::string &id)
 {
-    std::vector< std::shared_ptr<Core::Entity> >::iterator it
+    std::vector< std::shared_ptr<core::AbstractEntity> >::iterator it
             = std::find_if(objects.begin(), objects.end(),
-            [&id](const std::shared_ptr<Core::Entity> &obj)
+            [&id](const std::shared_ptr<core::AbstractEntity> &obj)
             {
                 return obj->getId() == id;
             });
-    return it != objects.end() ? static_cast<Core::Entity*>(&(*it->get())) : nullptr;
+    return it != objects.end() ? static_cast<core::AbstractEntity*>(&(*it->get())) : nullptr;
 }
 
-Core::Entity *LuaManager::getObject(int num)
+core::AbstractEntity *CLuaManager::getObject(int num)
 {
     if (num < 0 || num >= static_cast<int>(objects.size()))
         return nullptr;
     return objects[num].get();
 }
 
-const std::vector< std::shared_ptr<Core::Entity> >& LuaManager::getObjects() const
+const std::vector< std::shared_ptr<core::AbstractEntity> >& CLuaManager::getObjects() const
 {
     return objects;
 }
 
 template<class T>
-void LuaManager::addObject(Entity *t)
+void CLuaManager::addObject(AbstractEntity *t)
 {
-    objects.push_back(std::shared_ptr<Entity>(dynamic_cast<T*>(t)));
+    objects.push_back(std::shared_ptr<AbstractEntity>(dynamic_cast<T*>(t)));
 }
 
 //******************************!!!!!!!!!!!!!!!!!**********
-void LuaManager::registerVec2()
+void CLuaManager::registerVec2()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
@@ -248,7 +248,7 @@ void LuaManager::registerVec2()
 //******************************!!!!!!!!!!!!!!!!!**********
 
 //******************************!!!!!!!!!!!!!!!!!**********
-void LuaManager::registerVec3()
+void CLuaManager::registerVec3()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
@@ -339,7 +339,7 @@ void LuaManager::registerVec3()
 //******************************!!!!!!!!!!!!!!!!!**********
 
 //******************************!!!!!!!!!!!!!!!!!**********
-void LuaManager::registerRectangle()
+void CLuaManager::registerRectangle()
 {
     luaL_Reg sFooRegs[] =
     {
@@ -347,8 +347,8 @@ void LuaManager::registerRectangle()
             "new", [](lua_State *l) -> int
             {
                 const char * id = luaL_checkstring(l, 1);
-                Rectangle ** udata = static_cast<Rectangle **>(lua_newuserdata(l, sizeof(Rectangle *)));
-                *udata = new Rectangle(id);
+                CRectangle ** udata = static_cast<CRectangle **>(lua_newuserdata(l, sizeof(CRectangle *)));
+                *udata = new CRectangle(id);
                 luaL_getmetatable(l, "luaL_Rectangle");
                 lua_setmetatable(l, -2);
                 return 1;
@@ -358,7 +358,7 @@ void LuaManager::registerRectangle()
         {
             "setX", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float x = luaL_checknumber(l, 2);
                 foo->setX(x);
                 return 1;
@@ -368,7 +368,7 @@ void LuaManager::registerRectangle()
         {
             "setY", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float y = luaL_checknumber(l, 2);
                 foo->setY(y);
                 return 1;
@@ -378,7 +378,7 @@ void LuaManager::registerRectangle()
         {
             "setWidth", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float width = luaL_checknumber(l, 2);
                 foo->setWidth(width);
                 return 1;
@@ -388,7 +388,7 @@ void LuaManager::registerRectangle()
         {
             "setHeight", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float height = luaL_checknumber(l, 2);
                 foo->setHeight(height);
                 return 1;
@@ -398,7 +398,7 @@ void LuaManager::registerRectangle()
         {
             "setRadius", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float radius = luaL_checknumber(l, 2);
                 foo->setRadius(radius);
                 return 1;
@@ -408,7 +408,7 @@ void LuaManager::registerRectangle()
         {
             "setRadiusOfA", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rA = luaL_checknumber(l, 2);
                 foo->setRadiusOfA(rA);
                 return 1;
@@ -418,7 +418,7 @@ void LuaManager::registerRectangle()
         {
             "setRadiusOfB", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rB = luaL_checknumber(l, 2);
                 foo->setRadiusOfB(rB);
                 return 1;
@@ -428,7 +428,7 @@ void LuaManager::registerRectangle()
         {
             "setRadiusOfC", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rC = luaL_checknumber(l, 2);
                 foo->setRadiusOfC(rC);
                 return 1;
@@ -438,7 +438,7 @@ void LuaManager::registerRectangle()
         {
             "setRadiusOfD", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rD = luaL_checknumber(l, 2);
                 foo->setRadiusOfD(rD);
                 return 1;
@@ -448,7 +448,7 @@ void LuaManager::registerRectangle()
         {
             "setBorderWidth", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float border = luaL_checknumber(l, 2);
                 foo->setBorderWidth(border);
                 return 1;
@@ -458,7 +458,7 @@ void LuaManager::registerRectangle()
         {
             "setBorderColor", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
                 foo->setBorderColor(*color);
                 return 1;
@@ -468,7 +468,7 @@ void LuaManager::registerRectangle()
         {
             "setColor", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
                 foo->setColor(*color);
                 return 1;
@@ -478,7 +478,7 @@ void LuaManager::registerRectangle()
         {
             "setTexture", [](lua_State *l) -> int
             {
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 const char *textureName = luaL_checkstring(l, 2);
                 foo->setTexture(textureName);
                 return 1;
@@ -489,8 +489,8 @@ void LuaManager::registerRectangle()
             "addChild", [](lua_State *l) -> int
             {
                 // TODO: Подумать, как возвращать указатель на Entity
-                Rectangle * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
-                Rectangle * bar = *static_cast<Rectangle **>(luaL_checkudata(l, 2, "luaL_Rectangle"));
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CRectangle * bar = *static_cast<CRectangle **>(luaL_checkudata(l, 2, "luaL_Rectangle"));
                 foo->addChild(bar);
                 return 1;
             }
@@ -499,8 +499,8 @@ void LuaManager::registerRectangle()
         {
             "__gc", [](lua_State * l)
             {
-                Entity * foo = *static_cast<Rectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
-                LuaManager::getInstance()->addObject<Rectangle>(foo);
+                AbstractEntity * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                CLuaManager::getInstance()->addObject<CRectangle>(foo);
                 return 0;
             }
         },
@@ -515,7 +515,7 @@ void LuaManager::registerRectangle()
 }
 //******************************!!!!!!!!!!!!!!!!!**********
 
-void LuaManager::registerFolders()
+void CLuaManager::registerFolders()
 {
     luaL_Reg sFooRegs[] =
     {
@@ -523,10 +523,10 @@ void LuaManager::registerFolders()
             "new", [](lua_State *l) -> int
             {
                 luaL_checkstring(l, 1);
-                ResourceManager ** resMan
-                        = static_cast<ResourceManager **>(
-                                lua_newuserdata(l, sizeof(ResourceManager *)));
-                *resMan = ResourceManager::getInstance();
+                CResourceManager ** resMan
+                        = static_cast<CResourceManager **>(
+                                lua_newuserdata(l, sizeof(CResourceManager *)));
+                *resMan = CResourceManager::getInstance();
                 luaL_getmetatable(l, "luaL_Folders");
                 lua_setmetatable(l, -2);
                 return 1;
@@ -536,7 +536,7 @@ void LuaManager::registerFolders()
         {
             "setMeshDir", [](lua_State *l) -> int
             {
-                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
                 const char *str = luaL_checkstring(l, 2);
                 foo->mapOfParam["mesh"] = std::string(str);
                 return 1;
@@ -546,7 +546,7 @@ void LuaManager::registerFolders()
         {
             "setMaterialDir", [](lua_State *l) -> int
             {
-                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
                 const char *str = luaL_checkstring(l, 2);
                 foo->mapOfParam["material"] = std::string(str);
                 return 1;
@@ -556,7 +556,7 @@ void LuaManager::registerFolders()
         {
             "setTextureDir", [](lua_State *l) -> int
             {
-                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
                 const char *str = luaL_checkstring(l, 2);
                 foo->mapOfParam["texture"] = std::string(str);
                 return 1;
@@ -566,7 +566,7 @@ void LuaManager::registerFolders()
         {
             "setShaderDir", [](lua_State *l) -> int
             {
-                ResourceManager * foo = *static_cast<ResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
                 const char *str = luaL_checkstring(l, 2);
                 foo->mapOfParam["shader"] = std::string(str);
                 return 1;

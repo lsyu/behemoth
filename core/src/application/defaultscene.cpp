@@ -25,10 +25,10 @@
 #include "allegro5/allegro_opengl.h"
 
 #include "core/manager/luamanager.h"
-#include "core/objects/2d/triangle.h"
 #include "core/factory/shaderfactory.h"
+#include "core/objects/abstractentity.h"
 
-namespace Core {
+namespace core {
 
 DefaultScene::DefaultScene() : AbstractScene()
 {
@@ -41,7 +41,7 @@ DefaultScene::~DefaultScene()
 void DefaultScene::prepareGL()
 {
     // TODO: путь из ресурсов
-    LuaManager::getInstance()->doFile("scripts/test.lua");
+    CLuaManager::getInstance()->readGui("scripts/test.lua");
 
     //glShadeModel(GL_SMOOTH);    // ???
     glEnable(GL_LINE_SMOOTH);
@@ -69,10 +69,10 @@ void DefaultScene::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Shader *shader = ShaderFactory::getInstance()->getShader("test");
+    Shader *shader = CShaderFactory::getInstance()->getShader("test");
     if (shader) {
         shader->bind();
-        const std::vector<std::shared_ptr<Entity> > &objects = LuaManager::getInstance()->getObjects();
+        const std::vector<std::shared_ptr<AbstractEntity> > &objects = CLuaManager::getInstance()->getObjects();
         for (int i = objects.size()-1; i >= 0; --i)
             if (objects[i]->isRoot())
                 objects[i]->paint();

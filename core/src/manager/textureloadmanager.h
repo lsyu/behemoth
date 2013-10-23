@@ -24,9 +24,9 @@
 #include <memory>
 #include <map>
 
-namespace Core {
+namespace core {
 
-class __TextureLoaderManagerImplDel;
+class __CTextureLoaderManagerImplDel;
 
 /**
  * @brief Менеджер загрузки текстур.
@@ -36,17 +36,17 @@ class __TextureLoaderManagerImplDel;
  * Для загрузки текстур используется библиотека GLI.
  * @note Текстуры должны храниться в формате *.dds
  */
-class TextureLoadManager
+class CTextureLoadManager
 {
 public:
-    friend class __TextureLoaderManagerImplDel;
+    friend class __CTextureLoaderManagerImplDel;
 
     /**
      * @brief Получить экземпляр менеджера текстур.
      * Во время первого обращения загружаются все изображения.
      * @return экземпляр менеджера текстур.
      */
-    static TextureLoadManager* getInstance();
+    static CTextureLoadManager* getInstance();
 
     /**
      * @brief Получить текстуру по имени.
@@ -56,10 +56,10 @@ public:
     uint getTexture(const std::string &name);
 
 private:
-    TextureLoadManager();
-    ~TextureLoadManager();
-    TextureLoadManager(const TextureLoadManager&);
-    TextureLoadManager &operator=(const TextureLoadManager&);
+    CTextureLoadManager();
+    ~CTextureLoadManager();
+    CTextureLoadManager(const CTextureLoadManager&);
+    CTextureLoadManager &operator=(const CTextureLoadManager&);
 
     /**
      * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
@@ -73,7 +73,7 @@ private:
      */
     uint loadTexture(const std::string &name, const std::string &textureName);
     
-    static TextureLoadManager *instance;
+    static CTextureLoadManager *instance;
     std::map<std::string, uint> textures;
 }; // class TextureLoadManager
 

@@ -23,14 +23,14 @@
 #include "core/manager/textureloadmanager.h"
 #include "core/application.h"
 
-namespace Core {
+namespace core {
 
-Rectangle::Rectangle() : Entity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
+CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
     width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), texture(0), border()
 {
 }
 
-Rectangle::Rectangle(const std::string &id) : Entity(id), shader(nullptr), vao(), vertex(),
+CRectangle::CRectangle(const std::string &id) : Basic2dEntity(id), shader(nullptr), vao(), vertex(),
     color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
     texture(0),border()
 {
@@ -65,13 +65,66 @@ Rectangle::Rectangle(const std::string &id) : Entity(id), shader(nullptr), vao()
     aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
-Rectangle::~Rectangle()
+CRectangle::~CRectangle()
 {
 }
 
-void Rectangle::paint() const
+void CRectangle::configure()
 {
-    //shader->bind();
+    if (parent) {
+        float scWidth = (parent->getXMax() - parent->getXMin()) / 2.0f;
+        float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
+        float shiftX = (parent->getXMax() + parent->getXMin()) / 2.0f;
+        float shiftY = (parent->getYMax() + parent->getYMin()) / 2.0f;
+
+        x = x * scWidth + shiftX;
+        y = y * scHeight + shiftY;
+        width = width * scWidth;
+        height = height * scHeight;
+    }
+
+    float halfOfMinSide = 0.5f * std::min(width, height) - 0.001f; // correct in min
+    rA *= halfOfMinSide;
+    rB *= halfOfMinSide;
+    rC *= halfOfMinSide;
+    rD *= halfOfMinSide;
+
+    float minR = 0.0f;
+    minR = (rA > 0.0f && rB > 0.0f) ? std::min(rA, rB) : std::max(rA, rB);
+    minR = (rC > 0.0f && minR > 0.0f) ? std::min(minR, rC) : std::max(minR, rC);
+    minR = (rD > 0.0f && minR > 0.0f) ? std::min(minR, rD) : std::max(minR, rD);
+
+    border.width *= minR;
+
+    vPos2[0] = glm::vec2(x, y);
+    vPos2[1] = glm::vec2(x + width, y);
+    vPos2[2] = glm::vec2(x + width, y + height);
+    vPos2[3] = glm::vec2(x, y + height);
+
+    shader = CShaderFactory::getInstance()->getShader("test");
+
+    vao.genBuffer();
+    vao.bind();
+
+    vertex.genBuffer();
+    vertex.setData(&vPos2);
+    shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
+
+    color.genBuffer();
+    color.setData(&vColor);
+    shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
+
+    if (texture) {
+        uv.genBuffer();
+        uv.setData(&vUV);
+        shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
+    }
+
+    vao.disable();
+}
+
+void CRectangle::paint() const
+{
     shader->setUniform("aspect", aspect);
     shader->setUniform("x", x);
     shader->setUniform("y", y);
@@ -104,74 +157,11 @@ void Rectangle::paint() const
     if (texture)
         glDisable(GL_TEXTURE_2D);
 
-    //shader->disable();
-
     for (int i = vChilds.size()-1; i >= 0; --i)
         vChilds[i]->paint();
 }
 
-void Rectangle::configure()
-{
-    if (parent) {
-        float scWidth = (parent->getXMax() - parent->getXMin()) / 2.0f;
-        float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
-        float shiftX = (parent->getXMax() + parent->getXMin()) / 2.0f;
-        float shiftY = (parent->getYMax() + parent->getYMin()) / 2.0f;
-
-        x = x * scWidth + shiftX;
-        y = y * scHeight + shiftY;
-        width = width * scWidth;
-        height = height * scHeight;
-    }
-
-    float halfOfMinSide = 0.5f * std::min(width, height) - 0.001f; // correct in min
-    rA *= halfOfMinSide;
-    rB *= halfOfMinSide;
-    rC *= halfOfMinSide;
-    rD *= halfOfMinSide;
-
-    float minR = 0.0f;
-    minR = (rA > 0.0f && rB > 0.0f) ? std::min(rA, rB) : std::max(rA, rB);
-    minR = (rC > 0.0f && minR > 0.0f) ? std::min(minR, rC) : std::max(minR, rC);
-    minR = (rD > 0.0f && minR > 0.0f) ? std::min(minR, rD) : std::max(minR, rD);
-
-    border.width *= minR;
-
-    vPos2[0] = glm::vec2(x, y);
-    vPos2[1] = glm::vec2(x + width, y);
-    vPos2[2] = glm::vec2(x + width, y + height);
-    vPos2[3] = glm::vec2(x, y + height);
-
-    shader = ShaderFactory::getInstance()->getShader("test");
-
-    vao.genBuffer();
-    vao.bind();
-
-    vertex.genBuffer();
-    vertex.setData(&vPos2);
-    shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
-
-    color.genBuffer();
-    color.setData(&vColor);
-    shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
-
-    if (texture) {
-        uv.genBuffer();
-        uv.setData(&vUV);
-        shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
-    }
-
-//    if (texture) {
-//        shader->setUniform("textureUse", 1);
-//        shader->setUniform("texture", 0);
-//    } else {
-//        shader->setUniform("textureUse", 0);
-//    }
-
-    vao.disable();
-}
-
-void Rectangle::setColor(const glm::vec3 &color)
+void CRectangle::setColor(const glm::vec3 &color)
 {
     vColor[0] = color;
     vColor[1] = color;
@@ -179,42 +169,42 @@ void Rectangle::setColor(const glm::vec3 &color)
     vColor[3] = color;
 }
 
-float Rectangle::getXMin() const
+float CRectangle::getXMin() const
 {
     return x;
 }
 
-float Rectangle::getXMax() const
+float CRectangle::getXMax() const
 {
     return x + width;
 }
 
-float Rectangle::getYMin() const
+float CRectangle::getYMin() const
 {
     return y;
 }
 
-float Rectangle::getYMax() const
+float CRectangle::getYMax() const
 {
     return y + height;
 }
 
-void Rectangle::setX(float x)
+void CRectangle::setX(float x)
 {
     this->x = x;
 }
 
-void Rectangle::setY(float y)
+void CRectangle::setY(float y)
 {
     this->y = y;
 }
 
-void Rectangle::setWidth(float width)
+void CRectangle::setWidth(float width)
 {
     this->width = std::abs(width);
 }
 
-void Rectangle::setHeight(float height)
+void CRectangle::setHeight(float height)
 {
     this->height = std::abs(height);
 }
@@ -228,7 +218,7 @@ float validateRadius(float radius)
     return radius;
 }
 
-void Rectangle::setRadius(float radius)
+void CRectangle::setRadius(float radius)
 {
     radius = validateRadius(radius);
     // TODO: Подумать, как исправить этот костыль (в связи с недетерминированной послед-тью в lua)
@@ -242,40 +232,40 @@ void Rectangle::setRadius(float radius)
         rD = radius;
 }
 
-void Rectangle::setRadiusOfA(float rA)
+void CRectangle::setRadiusOfA(float rA)
 {
 
     this->rA = validateRadius(rA);
 }
 
-void Rectangle::setRadiusOfB(float rB)
+void CRectangle::setRadiusOfB(float rB)
 {
     this->rB = validateRadius(rB);
 }
 
-void Rectangle::setRadiusOfC(float rC)
+void CRectangle::setRadiusOfC(float rC)
 {
     this->rC = validateRadius(rC);
 }
 
-void Rectangle::setRadiusOfD(float rD)
+void CRectangle::setRadiusOfD(float rD)
 {
     this->rD = validateRadius(rD);
 }
 
-void Rectangle::setBorderWidth(float width)
+void CRectangle::setBorderWidth(float width)
 {
     this->border.width = validateRadius(width);
 }
 
-void Rectangle::setBorderColor(const glm::vec3 &color)
+void CRectangle::setBorderColor(const glm::vec3 &color)
 {
     this->border.color = color;
 }
 
-void Rectangle::setTexture(const std::string &name)
+void CRectangle::setTexture(const std::string &name)
 {
-    this->texture = TextureLoadManager::getInstance()->getTexture(name);
+    this->texture = CTextureLoadManager::getInstance()->getTexture(name);
 }
 
 } // namespace Core

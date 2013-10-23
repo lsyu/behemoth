@@ -26,21 +26,21 @@
 
 #include "core/ogl/shader.h"
 
-namespace Core {
+namespace core {
 
-class __ShaderFactoryImplDel;
+class __CShaderFactoryImplDel;
 
 /**
  * @brief Фабрика получения шейдеров
  */
-class ShaderFactory
+class CShaderFactory
 {
 public:
-    friend class __ShaderFactoryImplDel;
+    friend class __CShaderFactoryImplDel;
     /**
      * @brief Получить экземпляр фабрики шейдеров.
      */
-    static ShaderFactory * getInstance();
+    static CShaderFactory * getInstance();
     /**
      * @brief Получить шейдер по имени.
      * @param name имя шейдера
@@ -48,12 +48,12 @@ public:
      */
     Shader* getShader(const std::string &name);
 private:
-    ShaderFactory();
-    ~ShaderFactory();
-    ShaderFactory(const ShaderFactory&);
-    ShaderFactory &operator=(const ShaderFactory&);
+    CShaderFactory();
+    ~CShaderFactory();
+    CShaderFactory(const CShaderFactory&);
+    CShaderFactory &operator=(const CShaderFactory&);
 
-    static ShaderFactory *instance;
+    static CShaderFactory *instance;
     std::string prefix;
     std::map< std::string, std::shared_ptr<Shader> > shaders;
 }; // class ShaderFactory

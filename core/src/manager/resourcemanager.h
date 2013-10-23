@@ -24,10 +24,10 @@
 #include <memory>
 #include <map>
 
-namespace Core {
+namespace core {
 
-class __ResourceManagerImplDel;
-class LuaManager;
+class __CResourceManagerImplDel;
+class CLuaManager;
 
 /**
  * @brief Менеджер ресурсов.
@@ -55,18 +55,18 @@ class LuaManager;
  * @note Файл конфигурации называется core.conf и находится в той же директории,
  * что и исполняемый файл!
  */
-class ResourceManager
+class CResourceManager
 {
 public:
-    friend class __ResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
-    friend class LuaManager;
+    friend class __CResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
+    friend class CLuaManager;
 
     /**
      * @brief Получить экземпляр менеджера ресурсов.
      * @note Инициализация ресурсов происходит при первом обращении к экземпляру менеджера ресурсов.
      * @return экземпляр менеджера ресурсов.
      */
-    static ResourceManager* getInstance();
+    static CResourceManager* getInstance();
 
     /**
      * @return string относительный путь до папки с файлами геометрии.
@@ -94,13 +94,13 @@ public:
     std::string getFileSeparator() const;
 
 private:
-    ResourceManager();
-    ~ResourceManager();
-    ResourceManager(const ResourceManager&);
-    ResourceManager &operator=(const ResourceManager&);
+    CResourceManager();
+    ~CResourceManager();
+    CResourceManager(const CResourceManager&);
+    CResourceManager &operator=(const CResourceManager&);
 
     std::map<std::string, std::string> mapOfParam;
-    static ResourceManager *instance;
+    static CResourceManager *instance;
 }; // class ResourceManager
 
 } // namespace Core
