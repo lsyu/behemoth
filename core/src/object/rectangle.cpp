@@ -61,7 +61,7 @@ Rectangle::Rectangle(const std::string &id) : Entity(id), shader(nullptr), vao()
     };
 
     rA = rB = rC = rD = 0.0f;
-    glm::ivec2 size = Application::getInstance()->getSize();
+    glm::ivec2 size = CApplication::getInstance()->getSize();
     aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 

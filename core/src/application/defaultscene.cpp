@@ -30,7 +30,7 @@
 
 namespace Core {
 
-DefaultScene::DefaultScene() : Painter()
+DefaultScene::DefaultScene() : AbstractScene()
 {
 }
 

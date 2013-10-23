@@ -39,7 +39,7 @@
  * @n
  *
  * @section License Лицензия
- * Если честно, я хз! Я Везде пока что втыкаю GPL, которую нагло спер с сайта.
+ * Если честно, я хз! Я Везде пока что втыкаю GPL.
  * @n
  * @n
  * @n
@@ -62,23 +62,18 @@ union ALLEGRO_EVENT;
 
 namespace Core {
 
-class Painter;
-class __ApplicationImplDel;
+class AbstractScene;
+class __CApplicationImplDel;
 
 /**
- * @brief Перечисления класса @a Application
+ * @brief Глубина цвета.
  */
-struct EApplication {
-    /**
-     * @brief Глубина цвета.
-     */
-    enum ColorDepth {
-        ColorDepth8 = 8,     /**< 8 */
-        ColorDepth16 = 16,   /**< 16 */
-        ColorDepth32 = 32,   /**< 32 */
-        ColorDepth64 = 64    /**< 64 */
-    }; // enum ColorDepth
-}; // struct EApplication
+enum class ColorDepth: unsigned int {
+    _8 = 8,     /**< 8 */
+    _16 = 16,   /**< 16 */
+    _32 = 32,   /**< 32 */
+    _64 = 64    /**< 64 */
+}; // enum ColorDepth
 
 /**
  * @brief Главный класс Вашего приложения
@@ -88,16 +83,17 @@ struct EApplication {
  * и много чего еще полезного делает.
  *
  */
-class Application
+class CApplication
 {
 public:
-    friend class Painter;
-    friend class __ApplicationImplDel;
+    friend class AbstractScene;
+    friend class __CApplicationImplDel;
+
     /**
      * @brief Получить экземпляр приложения.
      * @return экземпляр приложения.
      */
-    static Application* getInstance();
+    static CApplication* getInstance();
 
     /**
      * @brief Установить заголовок окна.
@@ -113,6 +109,7 @@ public:
      * @param fullScreen true - полный экран, false - оконный режим.
      */
     void setFullScreen(bool fullScreen);
+
     /**
      * @brief Получить параметр экрана
      * @return true - полный экран, false - оконный режим.
@@ -123,6 +120,7 @@ public:
      * @brief Установить позицию окна.
      */
     void setPosition(const glm::ivec2 &position);
+
     /**
      * @brief Получить позицию окна.
      */
@@ -132,6 +130,7 @@ public:
      * @brief Установть размеры окна.
      */
     void setSize(const glm::ivec2 &size);
+
     /**
      * @brief Получить размеры окна.
      */
@@ -140,16 +139,18 @@ public:
     /**
      * @brief Установить глубину цвета.
      */
-    void setColorDepth(EApplication::ColorDepth depth);
+    void setColorDepth(ColorDepth depth);
+
     /**
      * @brief Получить глубину цвета.
      */
-    EApplication::ColorDepth getColorDepth() const;
+    ColorDepth getColorDepth() const;
 
     /**
      * @brief Установить шаг таймера.
      */
     void setTimerStep(double sec);
+
     /**
      * @brief Получить шаг таймера.
      */
@@ -164,6 +165,7 @@ public:
      * @brief Получить строку расширений OpenGL как строку.
      */
     std::string getOpenGLExtensions() const;
+
     /**
      * @brief Получить строку расширений OpenGL как вектор.
      */
@@ -193,7 +195,7 @@ public:
      * app->setWindowTitle("Test");
      * app->setFullScreen(false);
      * app->setSize(glm::ivec2(800, 600));
-     * app->setColorDepth(EApplication::ColorDepth32);
+     * app->setColorDepth(ColorDepth::ColorDepth32);
      * if (app->init()) {
      *     std::cout << app->getOpenGLInfo();
      *     std::cout << app->getOpenGLExtensions();
@@ -204,17 +206,20 @@ public:
      * @sa init
      */
     void exec();
+
     /**
      * @brief Установить обработчика рисования.
      * @param painter обработчик рисования.
      */
-    void setScene(Core::Painter *scene);
+    void setScene(Core::AbstractScene *scene);
+
     /**
      * @brief Подготовить приложение для работы.
      *
      * Здесь загружаются необходимые ресурсы (материалы, шейдеры, изоражения и т.д.)
      */
     void prepareGL();
+
     /**
      * @brief Обновление состояния.
      *
@@ -229,29 +234,32 @@ public:
      * @return true - продолжать работу, false - выход из главного цикла программы.
      */
     bool updateGL(ALLEGRO_EVENT *e);
+
     /**
      * @brief Перерисовать очередной кадр.
      */
     void paintGL();
+
     /**
-     * @brief Очистить за собой память.
+     * @brief Очистить за собой память, занятую под нужды allegro.
      *
      * Конечно, это дело клево былло бы засунуть в деструктор,
      * однако при разрушении из деструктора прога падает по сегфолту.
+     *
      * @note Не забудьте очистить за собой память!
      */
     void clear();
 
+    /**
+     * @brief Получить промежуток времени, потраченный на последний кадр(в секундах).
+     */
     float getSecondOfLastFrame() const;
 
 private:
-    /**
-     * @brief Конструктор по-умолчанию.
-     */
-    Application();
-    ~Application();
-    Application(const Application&);
-    Application &operator=(const Application&);
+    CApplication();
+    ~CApplication();
+    CApplication(const CApplication&);
+    CApplication &operator=(const CApplication&);
 
     /**
      * @brief Подготовить дисплей.
@@ -278,32 +286,28 @@ private:
      */
     void prepareEventQueue();
 
-    static Application *instance;
+    static CApplication *instance;
 
-    std::string title; /**< Заголовок окна. */
-    bool fullScreen; /**< Полный ли экран. */
+    std::string title;          /**< Заголовок окна. */
+    bool fullScreen;            /**< Полный ли экран. */
+    glm::ivec2 position;        /**< положение верхнего левого угла окна. */
+    glm::ivec2 size;            /**< Размеры окна(Высота, ширина). */
+    ColorDepth depth;           /**< Глубина цвета. */
 
-    glm::ivec2 position; /**< положение верхнего левого угла окна. */
-    glm::ivec2 size; /**< Размеры окна. */
-
-    EApplication::ColorDepth depth; /**< Глубина цвета. */
-
-    double timer_step_sec; /**< Размер шага для события таймера. */
-
-    ALLEGRO_DISPLAY *display; /**< Дисплей. */
+    ALLEGRO_DISPLAY *display;   /**< Дисплей. */
     ALLEGRO_EVENT_QUEUE *queue; /**< Очередь событий. */
-    ALLEGRO_TIMER *timer; /**< Таймер. */
+    ALLEGRO_TIMER *timer;       /**< Таймер. */
 
-    Painter *painter;
+    AbstractScene *painter;           /**< Сцена для рисования. */
 
-    bool isTimer; /**< Инициализирован ли таймер. */
-    bool isKeyboard; /**< Инициализирована ли клавиатура. */
-    bool isMouse; /**< Инициализирована ли мышь. */
-    bool isTouch; /**< Инициализирован ли тачпад. */
-    bool isDisplay; /**< Инициализирован ли дисплей. */
-    bool isInit; /**< Все ли готово к визуализации. */
+    bool isTimerInitialized;    /**< Инициализирован ли таймер. */
+    bool isKeyboardInitialized; /**< Инициализирована ли клавиатура. */
+    bool isMouseInitialized;    /**< Инициализирована ли мышь. */
+    bool isTouchInitialized;    /**< Инициализирован ли тачпад. */
+    bool isDisplayInitialized;  /**< Инициализирован ли дисплей. */
+    bool isInitialized;         /**< Все ли готово к визуализации. */
 
-    float secOfLastFrame; /**< Время визуализации последнего кадра. */
+    float secOfLastFrame;       /**< Время визуализации последнего кадра. */
 }; // class Application
 
 } // namespace Core

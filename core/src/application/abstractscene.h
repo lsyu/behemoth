@@ -17,21 +17,21 @@
  *
  */
 
-#ifndef PAINTER_H
-#define PAINTER_H
+#ifndef ABSTRACTSCENE_H
+#define ABSTRACTSCENE_H
 
 union ALLEGRO_EVENT;
 
 namespace Core {
 
 /**
- * @brief Обработчик рисования.
+ * @brief Интерфейс сцены.
  */
-class Painter
+class AbstractScene
 {
 public:
-    Painter();
-    virtual ~Painter();
+    AbstractScene();
+    virtual ~AbstractScene();
 
     /**
      * @brief Подготовить обработчик рисования для работы.
@@ -57,8 +57,8 @@ public:
      * @brief Перерисовать очередной кадр.
      */
     virtual void paintGL() = 0;
-}; // class Painter
+}; // class AbstractScene
 
 } // namespace Core
 
-#endif // PAINTER_H
+#endif // ABSTRACTSCENE_H

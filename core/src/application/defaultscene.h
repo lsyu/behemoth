@@ -20,9 +20,7 @@
 #ifndef DEFAULTSCENE_H
 #define DEFAULTSCENE_H
 
-#include "painter.h"
-#include "core/ogl/shader.h"
-#include "core/ogl/vertexbufferobject.h"
+#include "abstractscene.h"
 
 #include "glm/glm.h"
 
@@ -31,7 +29,7 @@ namespace Core {
 /**
  * @brief Сцена по-умолчанию.
  */
-class DefaultScene : public Painter
+class DefaultScene : public AbstractScene
 {
 public:
     DefaultScene();
@@ -40,7 +38,6 @@ public:
     void prepareGL();
     bool updateGL(ALLEGRO_EVENT *e);
     void paintGL();
-private:
 }; // class DefautScene
 
 } // namespace Core

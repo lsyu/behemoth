@@ -18,8 +18,10 @@
  */
 
 #include "application.h"
-#include "painter.h"
+#include "abstractscene.h"
 
+#include "allegro5/allegro.h"
+#include "allegro5/allegro_opengl.h"
 #include "core/ogl/shader.h"
 #include "core/ogl/vertexbufferobject.h"
 
@@ -27,49 +29,45 @@
 
 #include "core/manager/resourcemanager.h"
 
-#include "allegro5/allegro.h"
-#include "allegro5/allegro_opengl.h"
-
 #include <iostream>
 #include <chrono>
 
 namespace Core {
 
-Application *Application::instance = nullptr;
+CApplication *CApplication::instance = nullptr;
 
-class __ApplicationImplDel {
+class __CApplicationImplDel {
 public:
-    explicit __ApplicationImplDel(Application *app) : app(app) {}
-    ~__ApplicationImplDel() {delete app;}
+    explicit __CApplicationImplDel(CApplication *app) : app(app) {}
+    ~__CApplicationImplDel() {delete app;}
 private:
-    Application *app;
+    CApplication *app;
 };
 
-Application* Application::getInstance()
+CApplication* CApplication::getInstance()
 {
     if (!instance) {
-        instance = new Application;
-        static __ApplicationImplDel delHelper(instance);
+        instance = new CApplication;
+        static __CApplicationImplDel delHelper(instance);
     }
     return instance;
 }
 
-Application::Application()
+CApplication::CApplication()
     : title("Unknown"), fullScreen(false), position(0,0), size(640,480),
-      depth(EApplication::ColorDepth32), timer_step_sec(1. / 60.),
-      display(nullptr), queue(nullptr), timer(nullptr),
-      isTimer(false), isKeyboard(false), isMouse(false),
-      isTouch(false), isDisplay(false), isInit(false), secOfLastFrame(0)
+      depth(ColorDepth::_32), display(nullptr), queue(nullptr), timer(nullptr), painter(),
+      isTimerInitialized(false), isKeyboardInitialized(false), isMouseInitialized(false),
+      isTouchInitialized(false), isDisplayInitialized(false), isInitialized(false), secOfLastFrame(0)
 {
     // Инициализация ресурсов.
     ResourceManager::getInstance();
 }
 
-Application::~Application()
+CApplication::~CApplication()
 {
 }
 
-void Application::clear()
+void CApplication::clear()
 {
     if (timer)
         al_destroy_timer(timer);
@@ -81,67 +79,57 @@ void Application::clear()
         al_destroy_event_queue(queue);
 }
 
-void Application::setWindowTitle(const std::string &title)
+void CApplication::setWindowTitle(const std::string &title)
 {
     this->title = title;
 }
 
-std::string Application::getWindowTitle() const
+std::string CApplication::getWindowTitle() const
 {
     return title;
 }
 
-void Application::setFullScreen(bool fullScreen)
+void CApplication::setFullScreen(bool fullScreen)
 {
     this->fullScreen = fullScreen;
 }
 
-bool Application::isFullScreen() const
+bool CApplication::isFullScreen() const
 {
     return fullScreen;
 }
 
-void Application::setPosition(const glm::ivec2 &position)
+void CApplication::setPosition(const glm::ivec2 &position)
 {
     this->position = position;
 }
 
-glm::ivec2 Application::getPosition() const
+glm::ivec2 CApplication::getPosition() const
 {
     return position;
 }
 
-void Application::setSize(const glm::ivec2 &size)
+void CApplication::setSize(const glm::ivec2 &size)
 {
     this->size = size;
 }
 
-glm::ivec2 Application::getSize() const
+glm::ivec2 CApplication::getSize() const
 {
     return size;
 }
 
-void Application::setColorDepth(EApplication::ColorDepth depth)
+void CApplication::setColorDepth(ColorDepth depth)
 {
     this->depth = depth;
 }
 
-EApplication::ColorDepth Application::getColorDepth() const
+ColorDepth CApplication::getColorDepth() const
 {
     return depth;
 }
 
-void Application::setTimerStep(double sec)
-{
-    this->timer_step_sec = sec;
-}
-
-double Application::getTimerStep() const
-{
-    return timer_step_sec;
-}
-
-std::string Application::getOpenGLInfo() const
+std::string CApplication::getOpenGLInfo() const
 {
     std::string ret;
     if (al_get_opengl_variant() == 0)
@@ -157,22 +145,20 @@ std::string Application::getOpenGLInfo() const
     return ret;
 }
 
-std::string Application::getOpenGLExtensions() const
+std::string CApplication::getOpenGLExtensions() const
 {
     return std::string(reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS)));
 }
 
-std::vector<std::string> Application::getOpenGLExtensionsAsVec() const
+std::vector<std::string> CApplication::getOpenGLExtensionsAsVec() const
 {
     return Algorithm::Str::split(getOpenGLExtensions(), ' ');
 }
 
-bool Application::prepareDisplay()
+bool CApplication::prepareDisplay()
 {
     al_set_new_display_flags(ALLEGRO_OPENGL_3_0 | ALLEGRO_OPENGL_FORWARD_COMPATIBLE);
     al_set_new_display_option(ALLEGRO_DEPTH_SIZE, static_cast<int>(depth), ALLEGRO_SUGGEST);
-    //al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-    //al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST); // 2, 4, 8, 16
 
     if (fullScreen) {
         ALLEGRO_DISPLAY_MODE disp_data;
@@ -192,31 +178,31 @@ bool Application::prepareDisplay()
     return false;
 }
 
-bool Application::prepareTimer()
+bool CApplication::prepareTimer()
 {
-    // by default FPS = 60
-    timer = al_create_timer(timer_step_sec);
+    // TODO: Подумать, нужен ли вообще таймер
+    timer = al_create_timer( 1.0 / 60.0 );
     if (timer)
         return true;
     return false;
 }
 
-bool Application::prepareKeyboard()
+bool CApplication::prepareKeyboard()
 {
     return al_install_keyboard();
 }
 
-bool Application::prepareMouse()
+bool CApplication::prepareMouse()
 {
     return al_install_mouse();
 }
 
-bool Application::prepareTouch()
+bool CApplication::prepareTouch()
 {
     return al_install_touch_input();
 }
 
-void Application::prepareEventQueue()
+void CApplication::prepareEventQueue()
 {
     queue = al_create_event_queue();
 
@@ -236,46 +222,42 @@ void Application::prepareEventQueue()
         al_register_event_source(queue, al_get_timer_event_source(timer));
 }
 
-bool Application::init()
+bool CApplication::init()
 {
     if (!al_init()) {
-        isInit = false;
+        isInitialized = false;
         return false;
     }
 
-//    al_init_image_addon();
-//    al_init_font_addon();
-//    al_init_ttf_addon();
+    bool ret = isTimerInitialized = prepareTimer();
 
-    bool ret = isTimer = prepareTimer();
-
-    isKeyboard = prepareKeyboard();
-    isMouse = prepareMouse();
-    isTouch = prepareTouch();
+    isKeyboardInitialized = prepareKeyboard();
+    isMouseInitialized = prepareMouse();
+    isTouchInitialized = prepareTouch();
 
     //  если таймер завелся и есть хотя бы одно утройство ввода.
-    ret = ret && (isKeyboard || isMouse || isTouch);
+    ret = ret && (isKeyboardInitialized || isMouseInitialized || isTouchInitialized);
     if (!ret) {
-        isInit = false;
+        isInitialized = false;
         return false;
     }
 
-    isDisplay = prepareDisplay();
-    if (!isDisplay) {
-        isInit = false;
+    isDisplayInitialized = prepareDisplay();
+    if (!isDisplayInitialized) {
+        isInitialized = false;
         return false;
     }
 
     prepareEventQueue();
 
-    isInit = true;
+    isInitialized = true;
     return true;
 }
 
-void Application::exec()
+void CApplication::exec()
 {
     using namespace std::chrono;
-    if (isInit && painter) {
+    if (isInitialized && painter) {
         prepareGL();
         ALLEGRO_EVENT event;
         bool haveNextEvent = false;
@@ -306,22 +288,22 @@ void Application::exec()
     }
 }
 
-void Application::setScene(Painter *painter)
+void CApplication::setScene(AbstractScene *painter)
 {
     this->painter = painter;
 }
 
-void Application::prepareGL()
+void CApplication::prepareGL()
 {
     painter->prepareGL();
 }
 
-bool Application::updateGL(ALLEGRO_EVENT *e)
+bool CApplication::updateGL(ALLEGRO_EVENT *e)
 {
     return painter->updateGL(e);
 }
 
-void Application::paintGL()
+void CApplication::paintGL()
 {
     painter->paintGL();
 }

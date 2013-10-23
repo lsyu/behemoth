@@ -17,15 +17,15 @@
  *
  */
 
-#include "painter.h"
+#include "abstractscene.h"
 
 namespace Core {
 
-Painter::Painter()
+AbstractScene::AbstractScene()
 {
 }
 
-Painter::~Painter()
+AbstractScene::~AbstractScene()
 {
 }
 

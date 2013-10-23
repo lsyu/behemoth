@@ -6,11 +6,11 @@ int main()
 {
     using namespace Core;
 
-    Application *app = Application::getInstance();
+    CApplication *app = CApplication::getInstance();
     app->setWindowTitle("Test");
     app->setFullScreen(false);
     app->setSize(glm::ivec2(800, 600));
-    app->setColorDepth(EApplication::ColorDepth32);
+    app->setColorDepth(ColorDepth::_32);
 
     DefaultScene scene;
     app->setScene(&scene);
