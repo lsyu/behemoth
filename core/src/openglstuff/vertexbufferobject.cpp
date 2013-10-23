@@ -22,47 +22,47 @@
 #include "allegro5/allegro5.h"
 #include "allegro5/allegro_opengl.h"
 
-VertexBufferObject::VertexBufferObject() : vbo(0)
+CVertexBufferObject::CVertexBufferObject() : vbo(0)
 {
 }
 
-VertexBufferObject::~VertexBufferObject()
+CVertexBufferObject::~CVertexBufferObject()
 {
     if (vbo >= 0)
         glDeleteBuffers(1, &vbo);
 }
 
-void VertexBufferObject::genBuffer()
+void CVertexBufferObject::genBuffer()
 {
     //glGenVertexArrays(1, &vao);
     //glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
 }
 
-void VertexBufferObject::bind() const
+void CVertexBufferObject::bind() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 }
 
-void VertexBufferObject::disable() const
+void CVertexBufferObject::disable() const
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBufferObject::setData(const std::vector<glm::vec2> *buffer) const
+void CVertexBufferObject::setData(const std::vector<glm::vec2> *buffer) const
 {
     bind();
     //! TODO: Подумать насчет STATIC_DRAW!
     glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec2), &(*buffer)[0], GL_STATIC_DRAW);
 }
 
-void VertexBufferObject::setData(const std::vector<glm::vec3> *buffer) const
+void CVertexBufferObject::setData(const std::vector<glm::vec3> *buffer) const
 {
     bind();
     glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec3), &(*buffer)[0], GL_STATIC_DRAW);
 }
 
-void VertexBufferObject::setData(const std::vector<glm::vec4> *buffer) const
+void CVertexBufferObject::setData(const std::vector<glm::vec4> *buffer) const
 {
     bind();
     glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec4), &(*buffer)[0], GL_STATIC_DRAW);

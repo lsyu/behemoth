@@ -51,17 +51,17 @@ CShaderFactory::~CShaderFactory()
 {
 }
 
-Shader *CShaderFactory::getShader(const std::string &name)
+CShader *CShaderFactory::getShader(const std::string &name)
 {
-    std::map< std::string, std::shared_ptr<Shader> >::const_iterator it
+    std::map< std::string, std::shared_ptr<CShader> >::const_iterator it
             = shaders.find(name);
     if (it != shaders.end())
         return it->second.get();
 
 
-    std::shared_ptr<Shader> shader
-            = std::shared_ptr<Shader>(new Shader(prefix + name + ".vert", prefix + name + ".frag"));
-    shaders.insert(std::pair< std::string, std::shared_ptr<Shader> >(name, shader));
+    std::shared_ptr<CShader> shader
+            = std::shared_ptr<CShader>(new CShader(prefix + name + ".vert", prefix + name + ".frag"));
+    shaders.insert(std::pair< std::string, std::shared_ptr<CShader> >(name, shader));
     return shader->isInit() ? shaders[name].get() : nullptr;
 }
 

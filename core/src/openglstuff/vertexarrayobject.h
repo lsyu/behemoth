@@ -25,7 +25,7 @@
  *
  * Подробно о VAO смотри на opengl.org
  */
-class VertexArrayObject
+class CVertexArrayObject
 {
 public:
     /**
@@ -34,8 +34,8 @@ public:
      * Перед началом работы с VAO, его нужно сгенерировать!
      * @sa genBuffer
      */
-    VertexArrayObject();
-    virtual ~VertexArrayObject();
+    CVertexArrayObject();
+    virtual ~CVertexArrayObject();
     /**
      * @brief Генерирование VAO.
      */

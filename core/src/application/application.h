@@ -68,7 +68,7 @@ class __CApplicationImplDel;
 /**
  * @brief Глубина цвета.
  */
-enum class ColorDepth: unsigned int {
+enum class EColorDepth: unsigned int {
     _8 = 8,     /**< 8 */
     _16 = 16,   /**< 16 */
     _32 = 32,   /**< 32 */
@@ -139,12 +139,12 @@ public:
     /**
      * @brief Установить глубину цвета.
      */
-    void setColorDepth(ColorDepth depth);
+    void setColorDepth(EColorDepth depth);
 
     /**
      * @brief Получить глубину цвета.
      */
-    ColorDepth getColorDepth() const;
+    EColorDepth getColorDepth() const;
 
     /**
      * @brief Установить шаг таймера.
@@ -292,7 +292,7 @@ private:
     bool fullScreen;            /**< Полный ли экран. */
     glm::ivec2 position;        /**< положение верхнего левого угла окна. */
     glm::ivec2 size;            /**< Размеры окна(Высота, ширина). */
-    ColorDepth depth;           /**< Глубина цвета. */
+    EColorDepth depth;           /**< Глубина цвета. */
 
     ALLEGRO_DISPLAY *display;   /**< Дисплей. */
     ALLEGRO_EVENT_QUEUE *queue; /**< Очередь событий. */

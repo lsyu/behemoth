@@ -22,26 +22,26 @@
 #include "allegro5/allegro5.h"
 #include "allegro5/allegro_opengl.h"
 
-VertexArrayObject::VertexArrayObject() : vao(0)
+CVertexArrayObject::CVertexArrayObject() : vao(0)
 {
 }
 
-VertexArrayObject::~VertexArrayObject()
+CVertexArrayObject::~CVertexArrayObject()
 {
     glDeleteVertexArrays(1, &vao);
 }
 
-void VertexArrayObject::genBuffer()
+void CVertexArrayObject::genBuffer()
 {
     glGenVertexArrays(1, &vao);
 }
 
-void VertexArrayObject::bind() const
+void CVertexArrayObject::bind() const
 {
     glBindVertexArray(vao);
 }
 
-void VertexArrayObject::disable() const
+void CVertexArrayObject::disable() const
 {
     glBindVertexArray(0);
 }

@@ -10,7 +10,7 @@ int main()
     app->setWindowTitle("Test");
     app->setFullScreen(false);
     app->setSize(glm::ivec2(800, 600));
-    app->setColorDepth(ColorDepth::_32);
+    app->setColorDepth(EColorDepth::_32);
 
     DefaultScene scene;
     app->setScene(&scene);

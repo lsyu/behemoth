@@ -40,7 +40,6 @@ DefaultScene::~DefaultScene()
 
 void DefaultScene::prepareGL()
 {
-    // TODO: путь из ресурсов
     CLuaManager::getInstance()->readGui("scripts/test.lua");
 
     //glShadeModel(GL_SMOOTH);    // ???
@@ -69,7 +68,7 @@ void DefaultScene::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Shader *shader = CShaderFactory::getInstance()->getShader("test");
+    CShader *shader = CShaderFactory::getInstance()->getShader("test");
     if (shader) {
         shader->bind();
         const std::vector<std::shared_ptr<AbstractEntity> > &objects = CLuaManager::getInstance()->getObjects();

@@ -28,7 +28,7 @@
  *
  * Подробно о VBO смотри на opengl.org
  */
-class VertexBufferObject
+class CVertexBufferObject
 {
 public:
     /**
@@ -37,8 +37,8 @@ public:
      * Перед началом работы с VBO, его нужно сгенерировать!
      * @sa genBuffer
      */
-    VertexBufferObject();
-    virtual ~VertexBufferObject();
+    CVertexBufferObject();
+    virtual ~CVertexBufferObject();
     /**
      * @brief Генерирование VBO.
      */

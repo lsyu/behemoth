@@ -25,7 +25,7 @@
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
 
-class Shader;
+class CShader;
 
 namespace core {
 
@@ -111,11 +111,11 @@ protected:
 
 private:
     // Получаю с фабрики, не надо чистить память
-    Shader *shader;
-    VertexArrayObject vao;
-    VertexBufferObject vertex;
-    VertexBufferObject color;
-    VertexBufferObject uv;
+    CShader *shader;
+    CVertexArrayObject vao;
+    CVertexBufferObject vertex;
+    CVertexBufferObject color;
+    CVertexBufferObject uv;
 
     float aspect;
     float x;

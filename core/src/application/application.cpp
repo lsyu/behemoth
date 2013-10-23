@@ -55,7 +55,7 @@ CApplication* CApplication::getInstance()
 
 CApplication::CApplication()
     : title("Unknown"), fullScreen(false), position(0,0), size(640,480),
-      depth(ColorDepth::_32), display(nullptr), queue(nullptr), timer(nullptr), painter(),
+      depth(EColorDepth::_32), display(nullptr), queue(nullptr), timer(nullptr), painter(),
       isTimerInitialized(false), isKeyboardInitialized(false), isMouseInitialized(false),
       isTouchInitialized(false), isDisplayInitialized(false), isInitialized(false), secOfLastFrame(0)
 {
@@ -119,12 +119,12 @@ glm::ivec2 CApplication::getSize() const
     return size;
 }
 
-void CApplication::setColorDepth(ColorDepth depth)
+void CApplication::setColorDepth(EColorDepth depth)
 {
     this->depth = depth;
 }
 
-ColorDepth CApplication::getColorDepth() const
+EColorDepth CApplication::getColorDepth() const
 {
     return depth;
 }

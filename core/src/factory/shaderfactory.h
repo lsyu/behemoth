@@ -46,7 +46,7 @@ public:
      * @param name имя шейдера
      * @note В случае, если шейдер невозможно получить, вернется nullptr.
      */
-    Shader* getShader(const std::string &name);
+    CShader* getShader(const std::string &name);
 private:
     CShaderFactory();
     ~CShaderFactory();
@@ -55,7 +55,7 @@ private:
 
     static CShaderFactory *instance;
     std::string prefix;
-    std::map< std::string, std::shared_ptr<Shader> > shaders;
+    std::map< std::string, std::shared_ptr<CShader> > shaders;
 }; // class ShaderFactory
 
 } // namespace Core

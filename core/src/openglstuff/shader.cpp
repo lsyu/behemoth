@@ -28,19 +28,19 @@
 
 #include <iostream>
 
-Shader::Shader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
+CShader::CShader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
     shaderProgram(0), init(false)
 {
 }
 
-Shader::Shader(const std::string &vertShaderName, const std::string &fragmentShaderName)
+CShader::CShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
     : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0), shaderProgram(0),
       init(false)
 {
     prepareShader(vertShaderName, fragmentShaderName);
 }
 
-bool Shader::prepareShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
+bool CShader::prepareShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
 {
     shaderProgram = glCreateProgram();
 
@@ -49,12 +49,12 @@ bool Shader::prepareShader(const std::string &vertShaderName, const std::string 
 
     std::string vs = Algorithm::Str::getFile(vertShaderName);
     int size = vs.size();
-    if (!makeShader(ShaderType::VertexShader, vs.c_str(), &size))
+    if (!makeShader(EShaderType::VertexShader, vs.c_str(), &size))
         return false;
 
     std::string fs = Algorithm::Str::getFile(fragmentShaderName);
     size = fs.size();
-    if (!makeShader(ShaderType::FragmentShader, fs.c_str(), &size))
+    if (!makeShader(EShaderType::FragmentShader, fs.c_str(), &size))
         return false;
 
     glLinkProgram(shaderProgram);
@@ -72,7 +72,7 @@ bool Shader::prepareShader(const std::string &vertShaderName, const std::string 
     return true;
 }
 
-Shader::~Shader()
+CShader::~CShader()
 {
     cacheAttribute.clear();
     cacheUniform.clear();
@@ -84,7 +84,7 @@ Shader::~Shader()
         glDeleteShader(fragmentShader);
 }
 
-uint Shader::makeAttributeLocation(const std::string &nameOfParam)
+uint CShader::makeAttributeLocation(const std::string &nameOfParam)
 {
     int location;
     if (cacheAttribute.find(nameOfParam) != cacheAttribute.end()) {
@@ -99,7 +99,7 @@ uint Shader::makeAttributeLocation(const std::string &nameOfParam)
     return static_cast<uint>(location);
 }
 
-void Shader::setAttribute(const std::string &nameOfParam, int numOfComponents, int stride,
+void CShader::setAttribute(const std::string &nameOfParam, int numOfComponents, int stride,
         const void *ptr, uint type, bool normalized)
 {
     uint location = makeAttributeLocation(nameOfParam);
@@ -109,35 +109,35 @@ void Shader::setAttribute(const std::string &nameOfParam, int numOfComponents, i
             stride, ptr);
 }
 
-void Shader::setAttribute(const std::string &nameOfParam, float value)
+void CShader::setAttribute(const std::string &nameOfParam, float value)
 {
     uint location = makeAttributeLocation(nameOfParam);
 
     glVertexAttrib1f(location, value);
 }
 
-void Shader::setAttribute(const std::string &nameOfParam, const glm::vec2 &vec)
+void CShader::setAttribute(const std::string &nameOfParam, const glm::vec2 &vec)
 {
     uint location = makeAttributeLocation(nameOfParam);
 
     glVertexAttrib2fv(location, &vec[0]);
 }
 
-void Shader::setAttribute(const std::string &nameOfParam, const glm::vec3 &vec)
+void CShader::setAttribute(const std::string &nameOfParam, const glm::vec3 &vec)
 {
     uint location = makeAttributeLocation(nameOfParam);
 
     glVertexAttrib3fv(location, &vec[0]);
 }
 
-void Shader::setAttribute(const std::string &nameOfParam, const glm::vec4 &vec)
+void CShader::setAttribute(const std::string &nameOfParam, const glm::vec4 &vec)
 {
     uint location = makeAttributeLocation(nameOfParam);
 
     glVertexAttrib4fv(location, &vec[0]);
 }
 
-int Shader::makeUniformLocation(const std::string &nameOfParam)
+int CShader::makeUniformLocation(const std::string &nameOfParam)
 {
     int location;
     if (cacheUniform.find(nameOfParam) != cacheUniform.end()) {
@@ -152,58 +152,58 @@ int Shader::makeUniformLocation(const std::string &nameOfParam)
     return location;
 }
 
-void Shader::setUniform(const std::string &nameOfParam, int value)
+void CShader::setUniform(const std::string &nameOfParam, int value)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform1i(location, value);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, float value)
+void CShader::setUniform(const std::string &nameOfParam, float value)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform1f(location, value);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::vec2 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::vec2 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform1fv(location, 2, &vec[0]);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::vec3 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::vec3 &vec)
 {
     // TODO: Так работает :)
     int location = makeUniformLocation(nameOfParam);
     glUniform3f(location, vec.x, vec.y, vec.z);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::vec4 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::vec4 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform1fv(location, 4, &vec[0]);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::mat2 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::mat2 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform2fv(location, 2, &vec[0][0]);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::mat3 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::mat3 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniform3fv(location, 3, &vec[0][0]);
 }
 
-void Shader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)
+void CShader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniformMatrix4fv(location, 1, GL_TRUE, glm::value_ptr(vec));
 }
 
-bool Shader::makeShader(ShaderType type, const char *source, int *sizes)
+bool CShader::makeShader(EShaderType type, const char *source, int *sizes)
 {
-    if (type == ShaderType::VertexShader) {
+    if (type == EShaderType::VertexShader) {
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
         if (!vertexShader)
@@ -215,8 +215,8 @@ bool Shader::makeShader(ShaderType type, const char *source, int *sizes)
         if (!checkCompileShaderStatus(vertexShader))
             return false;
 
-        appendShader(ShaderType::VertexShader);
-    } else if (type == ShaderType::FragmentShader) {
+        appendShader(EShaderType::VertexShader);
+    } else if (type == EShaderType::FragmentShader) {
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
         if (!fragmentShader)
@@ -228,20 +228,20 @@ bool Shader::makeShader(ShaderType type, const char *source, int *sizes)
         if (!checkCompileShaderStatus(fragmentShader))
             return false;
 
-        appendShader(ShaderType::FragmentShader);
+        appendShader(EShaderType::FragmentShader);
     }
     return true;
 }
 
-void Shader::appendShader(ShaderType type)
+void CShader::appendShader(EShaderType type)
 {
-    if (type == ShaderType::VertexShader)
+    if (type == EShaderType::VertexShader)
         glAttachShader(shaderProgram, vertexShader);
-    else if (type == ShaderType::FragmentShader)
+    else if (type == EShaderType::FragmentShader)
         glAttachShader(shaderProgram, fragmentShader);
 }
 
-void Shader::handleError(uint shader)
+void CShader::handleError(uint shader)
 {
     //! TODO: Залогировать!
     //! TODO: Вывод в лог ошибки, что за нах
@@ -264,7 +264,7 @@ void Shader::handleError(uint shader)
         std::cout << infoLog[i];
 }
 
-bool Shader::checkCompileShaderStatus(uint shader)
+bool CShader::checkCompileShaderStatus(uint shader)
 {
     int status;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
@@ -275,7 +275,7 @@ bool Shader::checkCompileShaderStatus(uint shader)
     return true;
 }
 
-bool Shader::checkLinkStatus()
+bool CShader::checkLinkStatus()
 {
     int status;
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
@@ -287,7 +287,7 @@ bool Shader::checkLinkStatus()
     return true;
 }
 
-bool Shader::checkValidateStatus()
+bool CShader::checkValidateStatus()
 {
     int status;
     glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &status);
@@ -299,17 +299,17 @@ bool Shader::checkValidateStatus()
     return true;
 }
 
-bool Shader::isInit() const
+bool CShader::isInit() const
 {
     return init;
 }
 
-void Shader::bind() const
+void CShader::bind() const
 {
     glUseProgram(shaderProgram);
 }
 
-void Shader::disable() const
+void CShader::disable() const
 {
     glUseProgram(0);
 }

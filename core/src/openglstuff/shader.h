@@ -30,7 +30,7 @@
 /**
  * @brief Перечисления тип шейдера.
  */
-enum class ShaderType : bool {
+enum class EShaderType : bool {
     VertexShader,    /**< Вершинный шейдер */
     FragmentShader    /**< Фрагментный шейдер */
 }; // enum ShaderType
@@ -38,7 +38,7 @@ enum class ShaderType : bool {
 /**
  * @brief Содержит все необходимое для работы с шейдерными программами GLSL 1.2
  */
-class Shader
+class CShader
 {
 public:
     /**
@@ -47,7 +47,7 @@ public:
      * Перед началом работы с шейдером необходимо его подготовить к работе!
      * @sa prepareShader
      */
-    Shader();
+    CShader();
     /**
      * @brief Конструктор, компилирующий вершинный и фрагментный шейдер и присоединяющий их к
      * шейдерной программе.
@@ -57,7 +57,7 @@ public:
      * должен быть указан в файле конфигурации core.conf
      * @sa prepareShader, Core::ResourceManager
      */
-    Shader(const std::string &vertShaderName, const std::string &fragmentShaderName);
+    CShader(const std::string &vertShaderName, const std::string &fragmentShaderName);
 
     /**
      * @brief Подготовка шейдера. (Компилирование, линковка, проверка на корректность)
@@ -77,7 +77,7 @@ public:
      * должен быть указан в файле конфигурации core.conf
      * @sa Core::ResourceManager
      */
-    virtual ~Shader();
+    virtual ~CShader();
 
     /**
      * @brief Проверить состояние шейдера.
@@ -224,13 +224,13 @@ private:
      * @param sizes длинны строк шейдера.
      * @return true - если все операции успешны, false в противном случае.
      */
-    bool makeShader(ShaderType type, const char *source, int *size);
+    bool makeShader(EShaderType type, const char *source, int *size);
 
     /**
      * @brief Добавить шейдер к шейдерной программе.
      * @param type тип шейдера (вершинный или фрагментный).
      */
-    void appendShader(ShaderType type);
+    void appendShader(EShaderType type);
 
     /**
      * @brief Проверить состояние компиляции шейдера.
