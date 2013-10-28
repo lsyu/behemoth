@@ -20,6 +20,9 @@
 #ifndef FONT_H
 #define FONT_H
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 class CFont
 {
 public:
@@ -28,6 +31,9 @@ public:
      */
     CFont();
     ~CFont();
+
+private:
+    static FT_Library library;
 };
 
 #endif // FONT_H

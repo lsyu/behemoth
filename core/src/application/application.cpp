@@ -28,6 +28,7 @@
 #include "core/algorithm/algostring.h"
 
 #include "core/manager/resourcemanager.h"
+#include "factory/fontfactory.h"
 
 #include <iostream>
 #include <chrono>
@@ -61,6 +62,11 @@ CApplication::CApplication()
 {
     // Инициализация ресурсов.
     CResourceManager::getInstance();
+
+    // TODO: Сделать загрузку изображения в шейдер, дописать луа-менеджер для загрузки и отображения
+    // текста!
+    std::vector<glm::vec4> test = core::CFontFactory::getInstance()->getTextBuffer("Hello, world!",
+            glm::vec3(1), 16, getSize());
 }
 
 CApplication::~CApplication()

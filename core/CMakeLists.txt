@@ -14,12 +14,14 @@ if(${CMAKE_SYSTEM} MATCHES "Linux")
         message("DETECTED ${OperatingSystem}")
         set(ALLEGRO_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86/allegro5)
         set(LUA_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86/lua52)
+        set(FREETYPE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86/freetype)
     endif()
     if(${CMAKE_SYSTEM} MATCHES "x86_64")
         set(OperatingSystem "Linux x86_64")
         message("DETECTED ${OperatingSystem}")
         set(ALLEGRO_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x64/allegro5)
         set(LUA_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x64/lua52)
+        set(FREETYPE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x64/freetype)
     endif()
 
     set(ALLEGRO_LIBRARIES
@@ -40,6 +42,10 @@ if(${CMAKE_SYSTEM} MATCHES "Linux")
 
     set(LUA_LIBS
         ${LUA_LIB_DIR}/liblua.a
+    )
+
+    set(FREETYPE_LIBS
+        ${FREETYPE_LIB_DIR}/libfreetype.a
     )
 endif()
 

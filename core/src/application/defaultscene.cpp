@@ -42,6 +42,7 @@ void DefaultScene::prepareGL()
 {
     CLuaManager::getInstance()->readGui("scripts/test.lua");
 
+
     //glShadeModel(GL_SMOOTH);    // ???
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);

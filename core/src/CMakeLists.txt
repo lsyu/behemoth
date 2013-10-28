@@ -2,8 +2,9 @@
 
 cmake_minimum_required(VERSION 2.8.8)
 
-include_directories(../../include)
-include_directories(.)
+include_directories(../../include/ft2) #for freetype
+include_directories(../../include) #for other includes
+include_directories(.) # for glm and gli
 
 add_subdirectory(algorithm)
 add_subdirectory(application)
@@ -29,6 +30,7 @@ target_link_libraries(hello_world
     ${LOG_LIBS}
     ${ALLEGRO_LIBS}
     ${LUA_LIBS}
+    ${FREETYPE_LIBS}
 )
 
 add_custom_target(TEST_TARGET ALL DEPENDS)

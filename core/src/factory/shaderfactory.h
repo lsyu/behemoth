@@ -40,7 +40,7 @@ public:
     /**
      * @brief Получить экземпляр фабрики шейдеров.
      */
-    static CShaderFactory * getInstance();
+    static CShaderFactory *getInstance();
     /**
      * @brief Получить шейдер по имени.
      * @param name имя шейдера
