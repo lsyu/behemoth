@@ -534,48 +534,19 @@ void CLuaManager::registerFolders()
         },
 
         {
-            "setMeshDir", [](lua_State *l) -> int
+            "addResource", [](lua_State *l) -> int
             {
                 CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *str = luaL_checkstring(l, 2);
-                foo->mapOfParam["mesh"] = std::string(str);
-                return 1;
-            }
-        },
-
-        {
-            "setMaterialDir", [](lua_State *l) -> int
-            {
-                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *str = luaL_checkstring(l, 2);
-                foo->mapOfParam["material"] = std::string(str);
-                return 1;
-            }
-        },
-
-        {
-            "setTextureDir", [](lua_State *l) -> int
-            {
-                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *str = luaL_checkstring(l, 2);
-                foo->mapOfParam["texture"] = std::string(str);
-                return 1;
-            }
-        },
-
-        {
-            "setShaderDir", [](lua_State *l) -> int
-            {
-                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *str = luaL_checkstring(l, 2);
-                foo->mapOfParam["shader"] = std::string(str);
+                const char *resName = luaL_checkstring(l, 2);
+                const char *folder = luaL_checkstring(l, 3);
+                foo->mapOfParam[resName] = std::string(folder);
                 return 1;
             }
         },
 
         "__gc", [](lua_State * l)
         {
-            // Т.к синглтон, и он нам еще понадобится, ничего не удаляем!
+            // Т.к CResourceManager синглтон, и он нам еще понадобится, ничего не удаляем!
             return 0;
         },
 

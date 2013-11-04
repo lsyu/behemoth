@@ -1,12 +1,12 @@
 #include "core/application.h"
 #include "core/defaultscene.h"
-#include "core/manager/luamanager.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     using namespace core;
 
     CApplication *app = CApplication::getInstance();
+    app->initialize(argc, argv);
     app->setWindowTitle("Test");
     app->setFullScreen(false);
     app->setSize(glm::ivec2(800, 600));

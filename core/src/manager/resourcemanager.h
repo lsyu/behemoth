@@ -28,6 +28,7 @@ namespace core {
 
 class __CResourceManagerImplDel;
 class CLuaManager;
+class CApplication;
 
 /**
  * @brief Менеджер ресурсов.
@@ -60,6 +61,7 @@ class CResourceManager
 public:
     friend class __CResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
     friend class CLuaManager;
+    friend class CApplication;
 
     /**
      * @brief Получить экземпляр менеджера ресурсов.
@@ -69,24 +71,45 @@ public:
     static CResourceManager* getInstance();
 
     /**
-     * @return string относительный путь до папки с файлами геометрии.
+     * @return string Путь до приложения.
+     */
+    std::string getPatchToApplication() const;
+
+    /**
+     * @return string Путь до главного файла конфигурации.
+     */
+    std::string getCoreConf() const;
+
+    /**
+     * @return Путь до папки с ресурсами по имени ресурса.
+     * @note В случае, если ресурс не найден, возвращается путь до приложения.
+     */
+    std::string getResource(const std::string &name) const;
+
+    /**
+     * @return string Путь до папки с файлами геометрии.
      */
     std::string getMeshFolder() const;
 
     /**
-     * @return string относительный путь до папки с файлами материалов.
+     * @return string Путь до папки с файлами материалов.
      */
     std::string getMaterialFolder() const;
 
     /**
-     * @return string относительный путь до папки с файлами шейдерных программ.
+     * @return string Путь до папки с файлами шейдерных программ.
      */
     std::string getShaderFolder() const;
 
     /**
-     * @return string относительный путь до папки с файлами текстур.
+     * @return string Путь до папки с файлами текстур.
      */
     std::string getTextureFolder() const;
+
+    /**
+     * @brief Путь до папки со шрифтами.
+     */
+    std::string getFontFolder() const;
 
     /**
      * @return string разделитель.
@@ -99,6 +122,12 @@ private:
     CResourceManager(const CResourceManager&);
     CResourceManager &operator=(const CResourceManager&);
 
+    /**
+     * @brief Инициализация ресурсов.
+     */
+    void initialize(int &argc, char *argv[]);
+
+    std::string patchToApplication;
     std::map<std::string, std::string> mapOfParam;
     static CResourceManager *instance;
 }; // class ResourceManager

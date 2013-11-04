@@ -96,6 +96,11 @@ public:
     static CApplication* getInstance();
 
     /**
+     * @brief Инициализация ресурсов приложения.
+     */
+    void initialize(int &argc, char *argv[]);
+
+    /**
      * @brief Установить заголовок окна.
      */
     void setWindowTitle(const std::string &title);

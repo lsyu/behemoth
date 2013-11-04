@@ -18,13 +18,11 @@
  */
 
 #include "fontfactory.h"
+#include "core/manager/resourcemanager.h"
 
 #include "glm/gtc/type_ptr.hpp"
 
-#include <iostream>
-
 using std::string;
-using std::cout;
 
 
 namespace core {
@@ -53,14 +51,14 @@ CFontFactory::CFontFactory()
     FT_Error error = FT_Init_FreeType(&library);
     if (error) {
         // TODO: Подумать над обработкой!
-        cout << "ololo\n";
     }
-    // TODO: Получать из ресурсов!
-    // TODO: Подумать, как получить нативный путь
-    error = FT_New_Face(library, "/home/lsyu/workspace/gui-build/DejaVuSans.ttf", 0, &face);
+    error = FT_New_Face(library,
+            (CResourceManager::getInstance()->getFontFolder()
+             + CResourceManager::getInstance()->getFileSeparator()
+             + std::string("DejaVuSans.ttf")).c_str(),
+            0, &face);
     if (error) {
         // TODO: Подумать над обработкой!
-        cout << "ololo\n";
     }
 }
 
@@ -71,27 +69,34 @@ CFontFactory::~CFontFactory()
 
 }
 
-std::list<glm::vec4> CFontFactory::getSymbol(char c)
+CFontFactory::Symbol CFontFactory::getSymbol(char c, int height)
 {
-    std::map<char, std::list<glm::vec4> >::iterator symbol
+    std::map<char, Symbol>::iterator symbol
             = symbols.find(c);
     if (symbol != symbols.end())
         return symbol->second;
 
     // TODO: Обработка ошибок!
     FT_Load_Char(face, c, FT_LOAD_RENDER);
-
     FT_GlyphSlot g = face->glyph;
-    std::list<glm::vec4> ret(g->bitmap.rows*g->bitmap.width);
+    Symbol ret;
+    ret.width = g->advance.x >> 6;
+    ret.height = height;
+    // забиваем по высоте
+    for (int dx = 0; dx < ret.width; ++dx)
+        for (int i = 0, h = height - g->bitmap.rows; i < h; ++i)
+            ret.symbol.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
-    for (int y = 0, n = g->bitmap.rows; y < n; y++)
-    {
-      for (int w = 0, n = g->bitmap.width; w < n; w++)
-      {
-        unsigned char c = g->bitmap.buffer[y * g->bitmap.width + w];
-        ret.push_back( glm::vec4(c, c, c, c) );
-      }
+    for (int y = 0, n = g->bitmap.rows; y < n; ++y) {
+        for (int x = 0, n = g->bitmap.pitch; x < n; ++x) {
+            unsigned char c = g->bitmap.buffer[y * g->bitmap.pitch + x];
+            ret.symbol.push_back( glm::vec4(c, c, c, c) );
+        }
+        // добиваем по x
+        for (int x = 0, n = ret.width - g->bitmap.pitch; x < n; ++x)
+            ret.symbol.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     }
+
     symbols[c] = ret;
     return ret;
 }
@@ -110,16 +115,30 @@ std::vector<glm::vec4> CFontFactory::getTextBuffer(const std::string &text, cons
                                 fontHeight ); /* pixel_height */
 
     std::list<glm::vec4> ret;
-    int n = 0; // номер символа в тексте.
+    int wTotal = 0;
     for (char c: text) {
-        std::list<glm::vec4> symbol = getSymbol(c);
-        for (int i = 0, n = face->glyph->bitmap.rows; i < n; ++i) {
-            std::list<glm::vec4>::iterator it = symbol.begin();
-            it = std::next(it, n * face->glyph->bitmap.width);
-            ret.insert(std::next(ret.begin(), n * face->glyph->bitmap.width), it, std::next(it, n * face->glyph->bitmap.width));
+        Symbol symbol = getSymbol(c, fontHeight);
+
+        int w = symbol.width;
+        wTotal += w;
+
+        for (int y = 0, m = symbol.height; y < m; ++y) {
+            std::list<glm::vec4>::iterator pos = std::next(ret.begin(), y*wTotal + wTotal - w);
+            std::list<glm::vec4>::iterator it = std::next(symbol.symbol.begin(), y*w);
+            std::list<glm::vec4>::iterator it1 = std::next(it, w);
+            ret.insert(pos, it, it1);
         }
-        n++;
     }
+
+    //! TODO: Под размеры области!
+//    int sizeTotal = windowSize.x * windowSize.y;
+//    int sizeText = ret.size();
+//    int halfDif = (sizeTotal - sizeText) / 2;
+//    for (int i = 0; i < halfDif; ++i) {
+//        ret.push_back(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+//        ret.push_front(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+//    }
+
     return std::vector<glm::vec4>( std::make_move_iterator(std::begin(ret)),
                 std::make_move_iterator(std::end(ret)) );
 }

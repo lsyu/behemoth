@@ -44,45 +44,66 @@ CResourceManager* CResourceManager::getInstance()
     if (!instance) {
         instance = new CResourceManager;
         static __CResourceManagerImplDel deleteHelper(instance);
-        CLuaManager::getInstance()->readConfFile("core.conf");
-        //instance->readConfigurationFile("core.conf");
     }
     return instance;
+}
+
+void CResourceManager::initialize(int &argc, char *argv[])
+{
+    patchToApplication = std::string(argv[0]);
+    size_t len = patchToApplication.find_last_of(getFileSeparator());
+    patchToApplication = patchToApplication.substr(0, len);
+    CLuaManager::getInstance()->readConfFile(getCoreConf());
 }
 
 CResourceManager::CResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
 CResourceManager::~CResourceManager() {}
 
+string CResourceManager::getPatchToApplication() const
+{
+    return patchToApplication + getFileSeparator();
+}
+
+string CResourceManager::getResource(const string &name) const
+{
+    if (mapOfParam.find(name) != mapOfParam.end())
+        return getPatchToApplication() + mapOfParam.at(name);
+    return getPatchToApplication();
+}
+
+string CResourceManager::getCoreConf() const
+{
+    return getPatchToApplication() + std::string("core.conf");
+}
+
 string CResourceManager::getMeshFolder() const
 {
-    if (mapOfParam.find("mesh") != mapOfParam.end())
-        return mapOfParam.at("mesh");
-    return "";
+    return getResource("mesh");
 }
 
 string CResourceManager::getMaterialFolder() const
 {
-    if (mapOfParam.find("material") != mapOfParam.end())
-        return mapOfParam.at("material");
-    return "";
+    return getResource("material");
 }
 
 string CResourceManager::getShaderFolder() const
 {
-    if (mapOfParam.find("shader") != mapOfParam.end())
-        return mapOfParam.at("shader");
-    return "";
+    return getResource("shader");
 }
 
 string CResourceManager::getTextureFolder() const
 {
-    if (mapOfParam.find("texture") != mapOfParam.end())
-        return mapOfParam.at("texture");
-    return "";
+    return getResource("texture");
+}
+
+string CResourceManager::getFontFolder() const
+{
+    return getResource("font");
 }
 
 string CResourceManager::getFileSeparator() const
 {
+    // TODO: кроссплатформенно!
     return string("/");
 }
 

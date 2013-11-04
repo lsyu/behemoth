@@ -62,16 +62,23 @@ private:
     CFontFactory(const CFontFactory&);
     CFontFactory &operator=(const CFontFactory&);
 
+    struct Symbol {
+        unsigned short int width;
+        unsigned short int height;
+        std::list<glm::vec4> symbol;
+    }; // struct Symbol
+
     /**
      * @brief Получить символ c.
      * @param c символ.
+     * @param height высота шрифта.
      */
-    std::list<glm::vec4> getSymbol(char c);
+    Symbol getSymbol(char c, int height);
 
     static CFontFactory *instance;
     FT_Library library;
     FT_Face face;
-    std::map<char, std::list<glm::vec4> > symbols;
+    std::map<char, Symbol > symbols;
 }; // class CFontFactory
 
 } // namespace core
