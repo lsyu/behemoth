@@ -26,8 +26,6 @@
 
 #include "glm/glm.h"
 
-#include <iostream>
-#include <sstream>
 #include <algorithm>
 
 namespace core {
@@ -68,8 +66,9 @@ bool CLuaManager::parseFile(const std::string &fileName, CurrentTask task)
         init(task);
     bool ret = !luaL_dofile(lua, fileName.c_str());
     // TODO: Залогировать
-    if(!ret)
-        std::cout << "Lua error: " << luaL_checkstring(lua, -1) << std::endl;
+    if(!ret) {
+        // TODO: Залогировать!
+    }
     close(task);
     return ret;
 }
@@ -175,13 +174,13 @@ void CLuaManager::addObject(AbstractEntity *t)
     objects.push_back(std::shared_ptr<AbstractEntity>(dynamic_cast<T*>(t)));
 }
 
-//******************************!!!!!!!!!!!!!!!!!**********
+
 void CLuaManager::registerVec2()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
     {
-        { "new", [](lua_State* l) -> int
+        { "new", [](lua_State* l)
           {
               float x = luaL_checknumber(l, 1);
               float y = luaL_checknumber(l, 2);
@@ -193,7 +192,7 @@ void CLuaManager::registerVec2()
           }
         },
 
-        { "getX", [](lua_State* l) -> int
+        { "getX", [](lua_State* l)
           {
               glm::vec2 * foo = *static_cast<glm::vec2 **>(luaL_checkudata(l, 1, "luaL_Vec2"));
               float res = foo->x;
@@ -202,7 +201,7 @@ void CLuaManager::registerVec2()
           }
         },
 
-        { "getY", [](lua_State* l) -> int
+        { "getY", [](lua_State* l)
           {
               glm::vec2 * foo = *static_cast<glm::vec2 **>(luaL_checkudata(l, 1, "luaL_Vec2"));
               float res = foo->y;
@@ -211,7 +210,7 @@ void CLuaManager::registerVec2()
           }
         },
 
-        { "setX", [](lua_State* l) -> int
+        { "setX", [](lua_State* l)
           {
               glm::vec2 * foo = *static_cast<glm::vec2 **>(luaL_checkudata(l, 1, "luaL_Vec2"));
               float x = luaL_checknumber(l, 2);
@@ -220,7 +219,7 @@ void CLuaManager::registerVec2()
           }
         },
 
-        { "setY", [](lua_State* l) -> int
+        { "setY", [](lua_State* l)
           {
               glm::vec2 * foo = *static_cast<glm::vec2 **>(luaL_checkudata(l, 1, "luaL_Vec2"));
               float y = luaL_checknumber(l, 2);
@@ -245,15 +244,13 @@ void CLuaManager::registerVec2()
     lua_setfield(lua, -1, "__index");
     lua_setglobal(lua, "Vec2");
 }
-//******************************!!!!!!!!!!!!!!!!!**********
 
-//******************************!!!!!!!!!!!!!!!!!**********
 void CLuaManager::registerVec3()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
     {
-        { "new", [](lua_State* l) -> int
+        { "new", [](lua_State* l)
           {
               float x = luaL_checknumber(l, 1);
               float y = luaL_checknumber(l, 2);
@@ -266,7 +263,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "getX", [](lua_State* l) -> int
+        { "getX", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float res = foo->x;
@@ -275,7 +272,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "getY", [](lua_State* l) -> int
+        { "getY", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float res = foo->y;
@@ -284,7 +281,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "getZ", [](lua_State* l) -> int
+        { "getZ", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float res = foo->z;
@@ -293,7 +290,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "setX", [](lua_State* l) -> int
+        { "setX", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float x = luaL_checknumber(l, 2);
@@ -302,7 +299,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "setY", [](lua_State* l) -> int
+        { "setY", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float y = luaL_checknumber(l, 2);
@@ -311,7 +308,7 @@ void CLuaManager::registerVec3()
           }
         },
 
-        { "setZ", [](lua_State* l) -> int
+        { "setZ", [](lua_State* l)
           {
               glm::vec3 * foo = *static_cast<glm::vec3 **>(luaL_checkudata(l, 1, "luaL_Vec3"));
               float z = luaL_checknumber(l, 2);
@@ -336,15 +333,13 @@ void CLuaManager::registerVec3()
     lua_setfield(lua, -1, "__index");
     lua_setglobal(lua, "Vec3");
 }
-//******************************!!!!!!!!!!!!!!!!!**********
 
-//******************************!!!!!!!!!!!!!!!!!**********
 void CLuaManager::registerRectangle()
 {
     luaL_Reg sFooRegs[] =
     {
         {
-            "new", [](lua_State *l) -> int
+            "new", [](lua_State *l)
             {
                 const char * id = luaL_checkstring(l, 1);
                 CRectangle ** udata = static_cast<CRectangle **>(lua_newuserdata(l, sizeof(CRectangle *)));
@@ -356,7 +351,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setX", [](lua_State *l) -> int
+            "setX", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float x = luaL_checknumber(l, 2);
@@ -366,7 +361,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setY", [](lua_State *l) -> int
+            "setY", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float y = luaL_checknumber(l, 2);
@@ -376,7 +371,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setWidth", [](lua_State *l) -> int
+            "setWidth", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float width = luaL_checknumber(l, 2);
@@ -386,7 +381,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setHeight", [](lua_State *l) -> int
+            "setHeight", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float height = luaL_checknumber(l, 2);
@@ -396,7 +391,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setRadius", [](lua_State *l) -> int
+            "setRadius", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float radius = luaL_checknumber(l, 2);
@@ -406,7 +401,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setRadiusOfA", [](lua_State *l) -> int
+            "setRadiusOfA", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rA = luaL_checknumber(l, 2);
@@ -416,7 +411,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setRadiusOfB", [](lua_State *l) -> int
+            "setRadiusOfB", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rB = luaL_checknumber(l, 2);
@@ -426,7 +421,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setRadiusOfC", [](lua_State *l) -> int
+            "setRadiusOfC", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rC = luaL_checknumber(l, 2);
@@ -436,7 +431,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setRadiusOfD", [](lua_State *l) -> int
+            "setRadiusOfD", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float rD = luaL_checknumber(l, 2);
@@ -446,7 +441,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setBorderWidth", [](lua_State *l) -> int
+            "setBorderWidth", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 float border = luaL_checknumber(l, 2);
@@ -456,7 +451,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setBorderColor", [](lua_State *l) -> int
+            "setBorderColor", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
@@ -466,7 +461,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setColor", [](lua_State *l) -> int
+            "setColor", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
@@ -476,7 +471,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "setTexture", [](lua_State *l) -> int
+            "setTexture", [](lua_State *l)
             {
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
                 const char *textureName = luaL_checkstring(l, 2);
@@ -486,7 +481,7 @@ void CLuaManager::registerRectangle()
         },
 
         {
-            "addChild", [](lua_State *l) -> int
+            "addChild", [](lua_State *l)
             {
                 // TODO: Подумать, как возвращать указатель на Entity
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
@@ -513,16 +508,46 @@ void CLuaManager::registerRectangle()
     lua_setfield(lua, -1, "__index");
     lua_setglobal(lua, "Rectangle");
 }
-//******************************!!!!!!!!!!!!!!!!!**********
+
+void CLuaManager::registerText()
+{
+    luaL_Reg sFooRegs[] =
+    {
+        {
+            "new", [](lua_State *l)
+            {
+                return 1;
+            }
+        },
+
+        {
+            "functionName", [](lua_State *l)
+            {
+                return 1;
+            }
+        },
+
+        "__gc", [](lua_State * l)
+        {
+            return 0;
+        },
+
+        { NULL, NULL }
+    }; //luaL_Reg sFooRegs
+    luaL_newmetatable(lua, "luaL_Text");
+    luaL_setfuncs (lua, sFooRegs, 0);
+    lua_pushvalue(lua, -1);
+    lua_setfield(lua, -1, "__index");
+    lua_setglobal(lua, "Text");
+}
 
 void CLuaManager::registerFolders()
 {
     luaL_Reg sFooRegs[] =
     {
         {
-            "new", [](lua_State *l) -> int
+            "new", [](lua_State *l)
             {
-                luaL_checkstring(l, 1);
                 CResourceManager ** resMan
                         = static_cast<CResourceManager **>(
                                 lua_newuserdata(l, sizeof(CResourceManager *)));
@@ -534,7 +559,7 @@ void CLuaManager::registerFolders()
         },
 
         {
-            "addResource", [](lua_State *l) -> int
+            "addResource", [](lua_State *l)
             {
                 CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
                 const char *resName = luaL_checkstring(l, 2);
