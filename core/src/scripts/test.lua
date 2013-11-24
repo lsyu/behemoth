@@ -6,7 +6,6 @@ ui:rectangle "root"
   y = -0.6,
   width = 1.8,
   height = 1.2,
---  color = vec3(0.0, 0.0, 1.0),
   texture = "test",
 
   radius = 0.1,
@@ -19,19 +18,13 @@ ui:rectangle "root"
     width = 0.2
   },
 
-  ui:rectangle "parent1"
+  ui:text
   {
-    color = vec3(1.0, 0.0, 0.0),
-    x = - 0.9,
-    y =  0.4,
-    width = 0.4,
-    height = 0.4,
-
-    radius = 1.0,
-    border = {
-      color = vec3(0.5, 0.5, 0.5),
-      width = 0.2
-    },
-  }, -- rectangle "parent1"
+--    alignVerical = ui:center,
+--    alignHorizontal = ui:center,
+    text = "Hello, world!",
+    height = 0.8,
+    font = "FreeSans"
+  }
 } -- rectangle "root"
 

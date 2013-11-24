@@ -28,11 +28,11 @@
 #include "core/algorithm/algostring.h"
 
 #include "core/manager/resourcemanager.h"
-#include "factory/fontfactory.h"
+//#include "factory/fontfactory.h"
 
 #include <iostream>
-#include <fstream>
-#include <iomanip>
+//#include <fstream>
+//#include <iomanip>
 #include <chrono>
 
 namespace core {
@@ -68,19 +68,6 @@ void CApplication::initialize(int &argc, char *argv[])
 {
     // Инициализация ресурсов.
     CResourceManager::getInstance()->initialize(argc, argv);
-
-    // TODO: Сделать загрузку изображения в шейдер, дописать луа-менеджер для загрузки и отображения
-    // текста!
-    std::vector<glm::vec4> test = core::CFontFactory::getInstance()->getTextBuffer("Hello, world!",
-            glm::vec3(1), 14, getSize());
-
-    std::ofstream file("out");
-    for (int y = 0, m = 14; y < m; ++y) {
-        for (int x = 0, n = test.size() / 14; x < n; ++x)
-            file << std::setw(4) << test[y*n+x].x;
-        file << "\n";
-    }
-    file.close();
 }
 
 CApplication::~CApplication()

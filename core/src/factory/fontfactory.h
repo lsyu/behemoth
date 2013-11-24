@@ -20,6 +20,9 @@
 #ifndef FONTFACTORY_H
 #define FONTFACTORY_H
 
+#include "core/objects/font.h"
+#include "core/objects/textbuffer.h"
+
 #include <ft2build.h>
 #include <freetype/freetype.h>
 
@@ -27,8 +30,6 @@
 #include <vector>
 #include <list>
 #include <string>
-
-#include <glm/glm.h>
 
 namespace core {
 
@@ -49,12 +50,11 @@ public:
     /**
      * @brief Получить буфер для формирования изображения, содержащего текст text высотой fontHeight.
      * @param text текст для вывода.
-     * @param color цвет текста.
-     * @param ontHeight высота текста.
-     * @param windowSize размеры экрана.
+     * @param font требуемый шрифт.
+     * @param parentWidth длина родителя(в пикселях).
+     * @param parentHeight высота родителя(в пикселях).
      */
-    std::vector<glm::vec4> getTextBuffer(const std::string &text, const glm::vec3 &color,
-            int fontHeight, const glm::ivec2 &windowSize);
+    CTextBuffer getTextBuffer(const std::string &text, const CFont &font, int parentWidth, int parentHeight);
 
 private:
     CFontFactory();
@@ -65,20 +65,23 @@ private:
     struct Symbol {
         unsigned short int width;
         unsigned short int height;
-        std::list<glm::vec4> symbol;
+        std::list<unsigned char> symbol;
     }; // struct Symbol
 
     /**
      * @brief Получить символ c.
      * @param c символ.
-     * @param height высота шрифта.
+     * @param font шрифт.
      */
-    Symbol getSymbol(char c, int height);
+    Symbol getSymbol(char c, const CFont &font);
 
     static CFontFactory *instance;
+
+    std::map<char, Symbol > symbols;
+    std::string currentFont;
+
     FT_Library library;
     FT_Face face;
-    std::map<char, Symbol > symbols;
 }; // class CFontFactory
 
 } // namespace core

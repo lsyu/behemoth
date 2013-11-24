@@ -68,7 +68,7 @@ class __CApplicationImplDel;
 /**
  * @brief Глубина цвета.
  */
-enum class EColorDepth: unsigned int {
+enum class EColorDepth: unsigned short int {
     _8 = 8,     /**< 8 */
     _16 = 16,   /**< 16 */
     _32 = 32,   /**< 32 */

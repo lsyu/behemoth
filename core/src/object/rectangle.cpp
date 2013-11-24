@@ -20,7 +20,7 @@
 #include "rectangle.h"
 #include "core/ogl/ogl.h"
 #include "core/factory/shaderfactory.h"
-#include "core/manager/textureloadmanager.h"
+#include "core/factory/texturefactory.h"
 #include "core/application.h"
 
 namespace core {
@@ -28,6 +28,35 @@ namespace core {
 CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
     width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), texture(0), border()
 {
+    vPos2.reserve(4);
+    vColor.reserve(4);
+    vUV.reserve(4);
+
+    vPos2 = {
+        glm::vec2(-1.0f, -1.0f),
+        glm::vec2(-1.0f, 1.0f),
+        glm::vec2(1.0f, 1.0f),
+        glm::vec2(1.0f, -1.0f)
+    };
+
+    vColor = {
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f)
+    };
+
+    // Перевернутое
+    vUV = {
+        glm::vec2(0.0f, 1.0f - 0.0f),
+        glm::vec2(1.0f, 1.0f - 0.0f),
+        glm::vec2(1.0f, 1.0f - 1.0f),
+        glm::vec2(0.0f, 1.0f - 1.0f)
+    };
+
+    rA = rB = rC = rD = 0.0f;
+    glm::ivec2 size = CApplication::getInstance()->getSize();
+    aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
 CRectangle::CRectangle(const std::string &id) : Basic2dEntity(id), shader(nullptr), vao(), vertex(),
@@ -265,7 +294,7 @@ void CRectangle::setBorderColor(const glm::vec3 &color)
 
 void CRectangle::setTexture(const std::string &name)
 {
-    this->texture = CTextureLoadManager::getInstance()->getTexture(name);
+    this->texture = CTextureFactory::getInstance()->getTexture(name);
 }
 
 } // namespace Core

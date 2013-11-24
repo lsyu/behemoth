@@ -109,9 +109,8 @@ public:
 protected:
     virtual void configure();
 
-private:
-    // Получаю с фабрики, не надо чистить память
-    CShader *shader;
+
+    CShader *shader; // Получаю с фабрики, не надо чистить память
     CVertexArrayObject vao;
     CVertexBufferObject vertex;
     CVertexBufferObject color;

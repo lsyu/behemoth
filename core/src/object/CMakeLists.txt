@@ -5,6 +5,9 @@ set(CORE_SRCS
 
     ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglefont.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/font.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/textbuffer.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
@@ -17,6 +20,9 @@ set(CORE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/abstractentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglefont.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/font.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/textbuffer.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/light.h
     ${CMAKE_CURRENT_SOURCE_DIR}/camera.h

@@ -17,16 +17,21 @@
  *
  */
 
-#ifndef TEXTURELOADMANAGER_H
-#define TEXTURELOADMANAGER_H
+#ifndef TEXTUREFACTORY_H
+#define TEXTUREFACTORY_H
 
 #include <string>
 #include <memory>
 #include <map>
+#include <vector>
+
+#include "core/objects/textbuffer.h"
+
+#include "glm/glm.h"
 
 namespace core {
 
-class __CTextureLoaderManagerImplDel;
+class __CTextureFactoryImplDel;
 
 /**
  * @brief Менеджер загрузки текстур.
@@ -36,17 +41,17 @@ class __CTextureLoaderManagerImplDel;
  * Для загрузки текстур используется библиотека GLI.
  * @note Текстуры должны храниться в формате *.dds
  */
-class CTextureLoadManager
+class CTextureFactory
 {
 public:
-    friend class __CTextureLoaderManagerImplDel;
+    friend class __CTextureFactoryImplDel;
 
     /**
      * @brief Получить экземпляр менеджера текстур.
      * Во время первого обращения загружаются все изображения.
      * @return экземпляр менеджера текстур.
      */
-    static CTextureLoadManager* getInstance();
+    static CTextureFactory* getInstance();
 
     /**
      * @brief Получить текстуру по имени.
@@ -54,12 +59,18 @@ public:
      * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
      */
     uint getTexture(const std::string &name);
+    /**
+     * @brief Получить текстуру по данным.
+     * @param buffer буфер для генерирования текстуры текста.
+     * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
+     */
+    uint getTexture(const CTextBuffer &buffer) const;
 
 private:
-    CTextureLoadManager();
-    ~CTextureLoadManager();
-    CTextureLoadManager(const CTextureLoadManager&);
-    CTextureLoadManager &operator=(const CTextureLoadManager&);
+    CTextureFactory();
+    ~CTextureFactory();
+    CTextureFactory(const CTextureFactory&);
+    CTextureFactory &operator=(const CTextureFactory&);
 
     /**
      * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
@@ -73,10 +84,10 @@ private:
      */
     uint loadTexture(const std::string &name, const std::string &textureName);
     
-    static CTextureLoadManager *instance;
+    static CTextureFactory *instance;
     std::map<std::string, uint> textures;
-}; // class TextureLoadManager
+}; // class TextureFactory
 
 } // namespace Core
 
-#endif // TEXTURELOADMANAGER_H
+#endif // TEXTUREFACTORY_H
