@@ -61,11 +61,11 @@ public:
     void setName(const std::string &name);
     std::string getName() const;
 
-    void setHeight(int height);
-    int getHeight() const;
+    void setHeight(float height);
+    float getHeight() const;
 
-    void setQuantity(int quantity);
-    int getQuantity() const;
+    static void setQuantity(int _quantity);
+    static int getQuantity();
 
     void setVericalAlign(EVerticalAlign vAlign);
     EVerticalAlign getVerticalAlign() const;
@@ -78,8 +78,12 @@ public:
 
 private:
     std::string name;           /**< Название шрифта. */
-    int height;                 /**< Высота шрифта. */
-    int quantity;               /**< Качество шрифта. */
+    float height;               /**< Высота шрифта. @n
+                                  * Отображаемая высота (оттносительная)
+                                  */
+    static int quantity;        /**< Качество шрифта. @n
+                                  * Настоящая высота шрифта при загрузке(в пикселях).
+                                  */
     EVerticalAlign vAlign;      /**< Выравнивание по вертикали */
     EHorizontalAlign hAlign;    /**< Выравнивание по горизонтали */
     glm::vec3 color;            /**< Цыет шрифта */

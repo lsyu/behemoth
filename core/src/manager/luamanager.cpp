@@ -21,7 +21,7 @@
 
 #include "core/objects/abstractentity.h"
 #include "core/objects/2d/rectangle.h"
-#include "core/objects/2d/rectanglefont.h"
+#include "core/objects/2d/rectangletext.h"
 
 #include "core/manager/resourcemanager.h"
 
@@ -92,8 +92,7 @@ void CLuaManager::registerUI()
     std::string tmp = "scripts/";
     luaL_dofile(lua, std::string(tmp + "vec.lua").c_str());
     luaL_dofile(lua, std::string(tmp + "ui.lua").c_str());
-//    luaL_dofile(lua, std::string(tmp + "triangle.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "rectanglefont.lua").c_str());
+    luaL_dofile(lua, std::string(tmp + "rectangletext.lua").c_str());
     luaL_dofile(lua, std::string(tmp + "rectangle.lua").c_str());
 
 
@@ -101,7 +100,6 @@ void CLuaManager::registerUI()
     registerVec3();
     registerText();
     registerRectangle();
-
 }
 
 void CLuaManager::registerConf()
@@ -488,6 +486,16 @@ void CLuaManager::registerRectangle()
         },
 
         {
+            "setAlpha", [](lua_State *l)
+            {
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                float alpha = luaL_checknumber(l, 2);
+                foo->setAlpha(alpha);
+                return 1;
+            }
+        },
+
+        {
             "addChild", [](lua_State *l)
             {
 
@@ -523,8 +531,8 @@ void CLuaManager::registerText()
         {
             "new", [](lua_State *l)
             {
-                CRectangleFont ** udata = static_cast<CRectangleFont **>(lua_newuserdata(l, sizeof(CRectangleFont *)));
-                *udata = new CRectangleFont();
+                CRectangleText ** udata = static_cast<CRectangleText **>(lua_newuserdata(l, sizeof(CRectangleText *)));
+                *udata = new CRectangleText();
                 luaL_getmetatable(l, "luaL_Text");
                 lua_setmetatable(l, -2);
                 return 1;
@@ -534,7 +542,7 @@ void CLuaManager::registerText()
         {
             "setText", [](lua_State *l)
             {
-                CRectangleFont * foo = *static_cast<CRectangleFont **>(luaL_checkudata(l, 1, "luaL_Text"));
+                CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
                 const char *text = luaL_checkstring(l, 2);
                 foo->setText(text);
                 return 1;
@@ -544,7 +552,7 @@ void CLuaManager::registerText()
         {
             "setName", [](lua_State *l)
             {
-                CRectangleFont * foo = *static_cast<CRectangleFont **>(luaL_checkudata(l, 1, "luaL_Text"));
+                CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
                 const char *fontName = luaL_checkstring(l, 2);
                 foo->setFont(fontName);
                 return 1;
@@ -554,16 +562,50 @@ void CLuaManager::registerText()
         {
             "setHeight", [](lua_State *l)
             {
-                CRectangleFont * foo = *static_cast<CRectangleFont **>(luaL_checkudata(l, 1, "luaL_Text"));
+                CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
                 float height = luaL_checknumber(l, 2);
                 foo->setFont(height);
                 return 1;
             }
         },
 
+        {
+            "setAlignVertical", [](lua_State *l)
+            {
+                CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
+                std::string align = luaL_checkstring(l, 2);
+                if (align == "center")
+                    foo->setFontAlign(EVerticalAlign::Center);
+                else if (align == "top")
+                    foo->setFontAlign(EVerticalAlign::Top);
+                else if (align == "bottom")
+                    foo->setFontAlign(EVerticalAlign::Bottom);
+                //else
+                // TODO: Обработка ситуации неправильного ввода
+                return 1;
+            }
+        },
+
+        {
+            "setAlignHorizontal", [](lua_State *l)
+            {
+                CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
+                std::string align = luaL_checkstring(l, 2);
+                if (align == "center")
+                    foo->setFontAlign(EHorizontalAlign::Center);
+                else if (align == "left")
+                    foo->setFontAlign(EHorizontalAlign::Left);
+                else if (align == "right")
+                    foo->setFontAlign(EHorizontalAlign::Right);
+                //else
+                // TODO: Обработка ситуации неправильного ввода
+                return 1;
+            }
+        },
+
         "__gc", [](lua_State * l)
         {
-            AbstractEntity * foo = *static_cast<CRectangleFont **>(luaL_checkudata(l, 1, "luaL_Text"));
+            AbstractEntity * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
             CLuaManager::getInstance()->addObject<CRectangle>(foo);
             return 0;
         },

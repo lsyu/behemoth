@@ -47,7 +47,7 @@ public:
 
     virtual void addChild(AbstractEntity *child);
     virtual AbstractEntity *getChild(const std::string &id);
-    virtual const std::vector<AbstractEntity *> &getChilds() const;
+    virtual std::vector<AbstractEntity *> &getChilds();
 
 protected:
 

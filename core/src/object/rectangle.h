@@ -106,6 +106,8 @@ public:
      */
     void setTexture(const std::string &name);
 
+    void setAlpha(float alpha);
+
 protected:
     virtual void configure();
 
@@ -125,6 +127,7 @@ protected:
     float rB;
     float rC;
     float rD;
+    float alpha;
     uint texture;
     Border border;
 }; //class Rectangle

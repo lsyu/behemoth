@@ -75,7 +75,7 @@ AbstractEntity *Basic2dEntity::getChild(const std::string &id)
     return nullptr;
 }
 
-const std::vector<AbstractEntity *> &Basic2dEntity::getChilds() const
+std::vector<AbstractEntity *> &Basic2dEntity::getChilds()
 {
     return vChilds;
 }

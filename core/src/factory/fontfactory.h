@@ -48,13 +48,20 @@ public:
     static CFontFactory *getInstance();
 
     /**
-     * @brief Получить буфер для формирования изображения, содержащего текст text высотой fontHeight.
+     * @brief Получить буфер для формирования изображения, содержащего текст text.
      * @param text текст для вывода.
      * @param font требуемый шрифт.
      * @param parentWidth длина родителя(в пикселях).
      * @param parentHeight высота родителя(в пикселях).
      */
     CTextBuffer getTextBuffer(const std::string &text, const CFont &font, int parentWidth, int parentHeight);
+
+    /**
+     * @brief Получить буфер для формирования изображения, содержащего символ symbol.
+     * @param symbol текст для вывода.
+     * @param font требуемый шрифт.
+     */
+    CTextBuffer getTextBuffer(char symbol, const CFont &font);
 
 private:
     CFontFactory();

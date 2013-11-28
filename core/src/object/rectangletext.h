@@ -17,23 +17,29 @@
  *
  */
 
-#ifndef RECTANGLEFONT_H
-#define RECTANGLEFONT_H
+#ifndef RECTANGLETEXT_H
+#define RECTANGLETEXT_H
 
 #include "rectangle.h"
 #include "font.h"
-#include "textbuffer.h"
+#include <vector>
 
 namespace core {
+
+class CRectangleSymbol;
 
 /**
  * @brief The CRectangleFont class
  */
-class CRectangleFont : public CRectangle
+class CRectangleText : public CRectangle
 {
 public:
-    CRectangleFont();
-    virtual ~CRectangleFont();
+    friend class CRectangleSymbol;
+
+    CRectangleText();
+    virtual ~CRectangleText();
+
+    virtual void paint() const;
 
     /**
      * @brief Установить цвет шрифта для отображения.
@@ -55,12 +61,17 @@ protected:
     virtual void configure();
 
 private:
-    CFont font;
+    /**
+     * @brief Добавить символ.
+     */
+    void addSymbol(char symbol);
+
+    CFont *font;
+    std::vector< std::vector<CRectangleSymbol*> > lines;
     float fontHeight;
     std::string text;
-    CTextBuffer buffer;
 }; // class CRectangleFont
 
 } // namespace core
 
-#endif // RECTANGLEFONT_H
+#endif // RECTANGLETEXT_H

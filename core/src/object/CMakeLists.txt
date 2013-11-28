@@ -5,7 +5,8 @@ set(CORE_SRCS
 
     ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglefont.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectangletext.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglesymbol.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/font.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/textbuffer.cpp
 
@@ -20,7 +21,8 @@ set(CORE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/abstractentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/basic2dentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglefont.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectangletext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rectanglesymbol.h
     ${CMAKE_CURRENT_SOURCE_DIR}/font.h
     ${CMAKE_CURRENT_SOURCE_DIR}/textbuffer.h
 

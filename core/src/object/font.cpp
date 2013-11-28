@@ -21,8 +21,9 @@
 
 namespace core {
 
+int CFont::quantity = 50;
 
-CFont::CFont(const std::string &name, int height) : name(name), height(height), quantity(25),
+CFont::CFont(const std::string &name, int height) : name(name), height(height),
     color(1, 0, 0), vAlign(EVerticalAlign::Center), hAlign(EHorizontalAlign::Center)
 {
 }
@@ -41,22 +42,22 @@ std::string CFont::getName() const
     return name;
 }
 
-void CFont::setQuantity(int quantity)
+void CFont::setQuantity(int _quantity)
 {
-    this->quantity = quantity;
+    quantity = _quantity;
 }
 
-int CFont::getQuantity() const
+int CFont::getQuantity()
 {
     return quantity;
 }
 
-void CFont::setHeight(int height)
+void CFont::setHeight(float height)
 {
     this->height = height;
 }
 
-int CFont::getHeight() const
+float CFont::getHeight() const
 {
     return height;
 }

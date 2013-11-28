@@ -9,6 +9,7 @@ uniform float rB;
 uniform float rC;
 uniform float rD;
 uniform float borderWidth;
+uniform float alpha;
 uniform vec3 borderColor;
 
 uniform int textureUse; // 0 - color, 1 - texture
@@ -111,12 +112,11 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
 
 void main(void)
 {
-    vec4 outColor = vec4(uv, 0.0f, 1.0f);
+    vec4 outColor;
     if (textureUse == 1)
         outColor = texture2D(texture, uv);
     else
-        outColor = fragmentColor;
-//    outColor = vec4(uv, 0.0f, 1.0f);
+        outColor = vec4(fragmentColor.rgb, alpha);
     int param = genRoundedRectangle(pos, borderWidth, rA, rB, rC, rD);
     if (param == 0)
         outColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);

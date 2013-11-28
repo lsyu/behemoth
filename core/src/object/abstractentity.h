@@ -103,7 +103,8 @@ public:
     /**
      * @brief getChilds Получить вектор детей сущности.
      */
-    virtual const std::vector<AbstractEntity*>& getChilds() const = 0;
+    virtual std::vector<AbstractEntity*>& getChilds() = 0;
+
 
 protected:
 

@@ -18,7 +18,10 @@
  */
 
 #include "texturefactory.h"
+#include "core/application.h"
 #include "core/manager/resourcemanager.h"
+#include "core/factory/fontfactory.h"
+#include "core/objects/font.h"
 #include "core/ogl/ogl.h"
 #include "gli/glitexture2d.h"
 
@@ -83,6 +86,24 @@ uint CTextureFactory::getTexture(const string &name)
     return texture->second;
 }
 
+CSymbolTexture CTextureFactory::getSymbol(char symbol, const CFont &font, float parentWidth, float parentHeight)
+{
+    std::map<char, CSymbolTexture>::const_iterator s = symbols.find(symbol);
+    CSymbolTexture retSymbol;
+    if (s == symbols.end()) {
+        CTextBuffer buffer = CFontFactory::getInstance()->getTextBuffer(symbol, font);
+        uint retTexture = getTexture(buffer);
+        glm::ivec2 size = CApplication::getInstance()->getSize();
+        retSymbol.texture = retTexture;
+        retSymbol.width = (float)buffer.width/* / (0.5f * parentWidth * (float)size.x)*/;
+        retSymbol.height = (float)buffer.height/* / (0.5f * parentHeight * (float)size.y)*/;
+        symbols[symbol] = retSymbol;
+    } else {
+        retSymbol = s->second;
+    }
+    return retSymbol;
+}
+
 uint CTextureFactory::getTexture(const CTextBuffer &buffer) const
 {
     // генерим текстуру
@@ -96,9 +117,12 @@ uint CTextureFactory::getTexture(const CTextBuffer &buffer) const
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glTexImage2D(GL_TEXTURE_2D,
                  0,
-                 GL_RGBA8,
+                 GL_RGBA,
                  buffer.width, buffer.height,
                  0,
                  GL_BGRA,

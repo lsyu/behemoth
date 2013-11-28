@@ -19,6 +19,7 @@
 
 #include "fontfactory.h"
 #include "core/manager/resourcemanager.h"
+#include "core/application.h"
 
 #include "glm/gtc/type_ptr.hpp"
 
@@ -71,15 +72,31 @@ CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
     FT_GlyphSlot g = face->glyph;
     Symbol ret;
     ret.width = g->advance.x >> 6;
-    ret.height = font.getHeight();
+    ret.height = CFont::getQuantity();
     // забиваем по высоте
-    int aa = g->bitmap_top;
-    int cc = g->face->descender;
-    for (int dx = 0; dx < ret.width; ++dx)
-        for (int i = 0, h = ret.height - 6 - g->bitmap_top; i < h; ++i)
+    for (int dx = 0, h = ret.height - g->bitmap_top; dx < ret.width; ++dx)
+        for (int i = 0; i < h; ++i)
             ret.symbol.insert(ret.symbol.end(), {0, 0, 0, 0});
 
-    for (int y = 0, n = g->bitmap.rows; y < n; ++y) {
+    // Рисуем основную часть буквы
+    for (int y = 0, n = g->bitmap_top; y < n; ++y) {
+        for (int x = 0, n = g->bitmap.pitch; x < n; ++x) {
+            unsigned char c = g->bitmap.buffer[y * g->bitmap.pitch + x];
+            ret.symbol.insert(ret.symbol.end(), {font.getColor().r,
+                                                 font.getColor().g,
+                                                 font.getColor().b,
+                                                 c});
+        }
+        // добиваем по x пустыми символами
+        for (int x = 0, n = ret.width - g->bitmap.pitch; x < n; ++x)
+            ret.symbol.insert(ret.symbol.end(), {0.0f, 0.0f, 0.0f, 0.0f});
+    }
+
+    // Отступ - пока что пол размера шрифта
+    // TODO: Сделать параметр настраеваемым!
+
+    // рисуем то, что снизу
+    for (int y = g->bitmap_top, n = g->bitmap.rows; y < n; ++y) {
         for (int x = 0, n = g->bitmap.pitch; x < n; ++x) {
             unsigned char c = g->bitmap.buffer[y * g->bitmap.pitch + x];
             ret.symbol.insert(ret.symbol.end(), {font.getColor().r,
@@ -91,10 +108,13 @@ CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
         for (int x = 0, n = ret.width - g->bitmap.pitch; x < n; ++x)
             ret.symbol.insert(ret.symbol.end(), {0.0f, 0.0f, 0.0f, 0.0f});
     }
-
-    for (int dx = 0; dx < ret.width; ++dx)
-        for (int i = 0, h = ret.height - 6 - g->bitmap_top; i < h; ++i)
+    // Добиваем отступ
+    for (int dx = 0, h = ret.height / 2.0f - (g->bitmap.rows - g->bitmap_top); dx < ret.width; ++dx)
+        for (int i = 0; i < h; ++i)
             ret.symbol.insert(ret.symbol.end(), {0, 0, 0, 0});
+
+
+    ret.height += ret.height * 0.5;
 
     symbols[c] = ret;
     return ret;
@@ -150,6 +170,45 @@ CTextBuffer CFontFactory::getTextBuffer(const std::string &text, const CFont &fo
             std::make_move_iterator(std::end(retBuf)));
     ret.width = retWidth;
     ret.height = retHeight;
+    ret.isLoad = true;
+
+    return ret;
+}
+
+CTextBuffer CFontFactory::getTextBuffer(char symbol, const CFont &font)
+{
+    bool inithere = false;
+    if (currentFont != font.getName()) {
+        FT_New_Face(library, (CResourceManager::getInstance()->getFontFolder()
+                + CResourceManager::getInstance()->getFileSeparator()
+                + font.getName() + std::string(".ttf")).c_str(),
+                0, &face);
+        inithere = true;
+    }
+    glm::ivec2 size = CApplication::getInstance()->getSize();
+    FT_Set_Char_Size( face, /* handle to face object */
+            0, /* char_width in 1/64th of points */
+            16*64, /* char_height in 1/64th of points */
+            size.x, /* horizontal device resolution */
+            size.y); /* vertical device resolution */
+
+    FT_Set_Pixel_Sizes( face, /* handle to face object */
+            0, /* pixel_width */
+            CFont::getQuantity()); /* pixel_height */
+
+    Symbol s = getSymbol(symbol, font);
+
+    if (currentFont != font.getName() && !inithere) {
+        FT_Done_Face(face);
+        currentFont = font.getName();
+    }
+
+    CTextBuffer ret;
+    ret.buffer.reserve(s.symbol.size());
+    ret.buffer = std::vector<unsigned char>(std::make_move_iterator(std::begin(s.symbol)),
+            std::make_move_iterator(std::end(s.symbol)));
+    ret.width = s.width;
+    ret.height = s.height;
     ret.isLoad = true;
 
     return ret;

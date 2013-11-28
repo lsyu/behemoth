@@ -31,7 +31,15 @@
 
 namespace core {
 
+class CFont;
+
 class __CTextureFactoryImplDel;
+
+struct CSymbolTexture {
+    float width;     /**< относительная длина текстуры */
+    float height;    /**< относительная высота текстуры */
+    uint texture;   /**< идентификатор текстуры */
+};
 
 /**
  * @brief Менеджер загрузки текстур.
@@ -66,6 +74,8 @@ public:
      */
     uint getTexture(const CTextBuffer &buffer) const;
 
+    CSymbolTexture getSymbol(char symbol, const CFont &font, float parentWidth, float parentHeight);
+
 private:
     CTextureFactory();
     ~CTextureFactory();
@@ -75,7 +85,7 @@ private:
     /**
      * @brief Загрузка текстуры с именем @a name из изображения @a textureName.
      *
-     * Необходимо указывать только файл изображения. Предполагается, что он находится в директории
+     * Необходимо указывать только файл изображения(без пути). Предполагается, что он находится в директории
      * тектур (описывается в файле конфигурации).
      *
      * @param name имя текстуры.
@@ -83,9 +93,16 @@ private:
      * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
     uint loadTexture(const std::string &name, const std::string &textureName);
+
+    /**
+     * @brief Загрузка текстуры символа @a symbol.
+     * @return id текстуры в случае удачной загрузки, 0 в противном случае.
+     */
+    uint loadSymbol(char symbol);
     
     static CTextureFactory *instance;
     std::map<std::string, uint> textures;
+    std::map<char, CSymbolTexture> symbols;
 }; // class TextureFactory
 
 } // namespace Core

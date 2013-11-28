@@ -24,6 +24,8 @@ function ui:rectangle(id)
         r:setRadiusOfC(v)
       elseif k == "radiusOfD" then
         r:setRadiusOfD(v)
+      elseif k == "alpha" then
+        r:setAlpha(v)
       elseif k == "border" then
         r:setBorderWidth(v.width)
         r:setBorderColor(v.color)

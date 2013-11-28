@@ -26,7 +26,7 @@
 namespace core {
 
 CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
-    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), texture(0), border()
+    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), border()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -61,7 +61,7 @@ CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), co
 
 CRectangle::CRectangle(const std::string &id) : Basic2dEntity(id), shader(nullptr), vao(), vertex(),
     color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
-    texture(0),border()
+    alpha(1.0f), texture(0),border()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -112,7 +112,7 @@ void CRectangle::configure()
         height = height * scHeight;
     }
 
-    float halfOfMinSide = 0.5f * std::min(width, height) - 0.001f; // correct in min
+    float halfOfMinSide = 0.5f * std::min(width, height)/* - 0.001f*/; // correct in min
     rA *= halfOfMinSide;
     rB *= halfOfMinSide;
     rC *= halfOfMinSide;
@@ -123,7 +123,7 @@ void CRectangle::configure()
     minR = (rC > 0.0f && minR > 0.0f) ? std::min(minR, rC) : std::max(minR, rC);
     minR = (rD > 0.0f && minR > 0.0f) ? std::min(minR, rD) : std::max(minR, rD);
 
-    border.width *= minR;
+    border.width *= std::min(width, height) * 0.5f;
 
     vPos2[0] = glm::vec2(x, y);
     vPos2[1] = glm::vec2(x + width, y);
@@ -163,6 +163,7 @@ void CRectangle::paint() const
     shader->setUniform("rB", rB);
     shader->setUniform("rC", rC);
     shader->setUniform("rD", rD);
+    shader->setUniform("alpha", alpha);
     shader->setUniform("borderWidth", border.width);
     shader->setUniform("borderColor", border.color);
 
@@ -238,18 +239,19 @@ void CRectangle::setHeight(float height)
     this->height = std::abs(height);
 }
 
-float validateRadius(float radius)
+// от 0 до 1
+float validateValue(float val)
 {
-    if (radius < 0.0)
-        radius *= -1.0f;
-    if (radius > 1.0f)
-        radius -= static_cast<float>(static_cast<int>(radius));
-    return radius;
+    if (val < 0.0)
+        val *= -1.0f;
+    if (val > 1.0f)
+        val -= static_cast<float>(static_cast<int>(val));
+    return val;
 }
 
 void CRectangle::setRadius(float radius)
 {
-    radius = validateRadius(radius);
+    radius = validateValue(radius);
     // TODO: Подумать, как исправить этот костыль (в связи с недетерминированной послед-тью в lua)
     if (rA == 0.0f)
         rA = radius;
@@ -264,27 +266,27 @@ void CRectangle::setRadius(float radius)
 void CRectangle::setRadiusOfA(float rA)
 {
 
-    this->rA = validateRadius(rA);
+    this->rA = validateValue(rA);
 }
 
 void CRectangle::setRadiusOfB(float rB)
 {
-    this->rB = validateRadius(rB);
+    this->rB = validateValue(rB);
 }
 
 void CRectangle::setRadiusOfC(float rC)
 {
-    this->rC = validateRadius(rC);
+    this->rC = validateValue(rC);
 }
 
 void CRectangle::setRadiusOfD(float rD)
 {
-    this->rD = validateRadius(rD);
+    this->rD = validateValue(rD);
 }
 
 void CRectangle::setBorderWidth(float width)
 {
-    this->border.width = validateRadius(width);
+    this->border.width = validateValue(width);
 }
 
 void CRectangle::setBorderColor(const glm::vec3 &color)
@@ -295,6 +297,11 @@ void CRectangle::setBorderColor(const glm::vec3 &color)
 void CRectangle::setTexture(const std::string &name)
 {
     this->texture = CTextureFactory::getInstance()->getTexture(name);
+}
+
+void CRectangle::setAlpha(float alpha)
+{
+    this->alpha = validateValue(alpha);
 }
 
 } // namespace Core
