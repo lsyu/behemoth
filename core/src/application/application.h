@@ -28,12 +28,11 @@
  * @n
  *
  * @section Description Описание
- * Данный проект базируется на нескольких очень классных проектах (думаю, со временем он еще
- * поабрастет зависимостями):
+ * Данный проект базируется на нескольких очень классных проектах:
  * - glm - матрицы
  * - gli - изображения
- * - Allegro 5 - инициализация контекста OpenGL, создание окна, перефирийные устройства.
- * - Lua 5.2.2 - скрипты
+ * - freeglut - инициализация контекста OpenGL, создание окна, перефирийные устройства.
+ * - lua - скрипты
  * @n
  * @n
  * @n
@@ -55,13 +54,9 @@
 
 #include "glm/glm.h"
 
-struct ALLEGRO_DISPLAY;
-struct ALLEGRO_EVENT_QUEUE;
-struct ALLEGRO_TIMER;
-union ALLEGRO_EVENT;
-
 namespace core {
 
+class CEvent;
 class AbstractScene;
 class __CApplicationImplDel;
 
@@ -142,6 +137,11 @@ public:
     glm::ivec2 getSize() const;
 
     /**
+     * @brief Получить размеры дисплея.
+     */
+    glm::ivec2 getDisplaySize() const;
+
+    /**
      * @brief Установить глубину цвета.
      */
     void setColorDepth(EColorDepth depth);
@@ -162,32 +162,6 @@ public:
     double getTimerStep() const;
 
     /**
-     * @brief Получить информцию об OpenGL
-     */
-    std::string getOpenGLInfo() const;
-
-    /**
-     * @brief Получить строку расширений OpenGL как строку.
-     */
-    std::string getOpenGLExtensions() const;
-
-    /**
-     * @brief Получить строку расширений OpenGL как вектор.
-     */
-    std::vector<std::string> getOpenGLExtensionsAsVec() const;
-
-    /**
-     * @brief Инициализация всех систем в соответствии с тем, что мы установили.
-     *
-     * В случае удачной инициализации появляется окно с заданными настройками.
-     * @note Всю информацию об OpenGL можно получить только проинициализировав
-     * его!
-     *
-     * @return true в случае, если возможно запустить главный цикл.
-     */
-    bool init();
-
-    /**
      * @brief Запустить главный цикл приложения.
      *
      * Перед запуском главного цикла необходимо проинициализировать все необходимые приложению
@@ -195,22 +169,34 @@ public:
      * @n
      * Пример запуска главного приложения:
      * @code
-     * using namespace Core;
-     * Application *app = Application::getInstance();
-     * app->setWindowTitle("Test");
-     * app->setFullScreen(false);
-     * app->setSize(glm::ivec2(800, 600));
-     * app->setColorDepth(ColorDepth::ColorDepth32);
-     * if (app->init()) {
-     *     std::cout << app->getOpenGLInfo();
-     *     std::cout << app->getOpenGLExtensions();
+     * #include "core/application.h"
+     * #include "core/defaultscene.h"
+     * int main(int argc, char *argv[])
+     * {
+     *     using namespace core;
+     *     CApplication *app = CApplication::getInstance();
+     *     app->initialize(argc, argv);
+     *     app->setWindowTitle("Test");
+     *     app->setFullScreen(false);
+     *     app->setSize(glm::ivec2(800, 600));
+     *     app->setColorDepth(EColorDepth::_32);
+     *
+     *     DefaultScene scene;
+     *     app->setScene(&scene);
+     *
      *     app->exec();
+     *
+     *     return 0;
      * }
-     * app->clear();
      * @endcode
-     * @sa init
+     * @sa initialize
      */
     void exec();
+
+    /**
+     * @brief Закрыть приложение.
+     */
+    void close();
 
     /**
      * @brief Установить обработчика рисования.
@@ -221,39 +207,21 @@ public:
     /**
      * @brief Подготовить приложение для работы.
      *
-     * Здесь загружаются необходимые ресурсы (материалы, шейдеры, изоражения и т.д.)
+     * Здесь загружаются необходимые ресурсы (материалы, шейдеры, изображения и т.д.)
      */
     void prepareGL();
 
     /**
      * @brief Обновление состояния.
-     *
-     * Здесь выполняются действия, связанные с обработкой действий. Это может быть:
-     * - перерисовка кадра(e == nullptr)
-     * - таймер
-     * - клавиатура
-     * - мышь
-     * - тачпад
-     *
      * @param e действие
      * @return true - продолжать работу, false - выход из главного цикла программы.
      */
-    bool updateGL(ALLEGRO_EVENT *e);
+    void updateGL(CEvent *e);
 
     /**
      * @brief Перерисовать очередной кадр.
      */
     void paintGL();
-
-    /**
-     * @brief Очистить за собой память, занятую под нужды allegro.
-     *
-     * Конечно, это дело клево былло бы засунуть в деструктор,
-     * однако при разрушении из деструктора прога падает по сегфолту.
-     *
-     * @note Не забудьте очистить за собой память!
-     */
-    void clear();
 
     /**
      * @brief Получить промежуток времени, потраченный на последний кадр(в секундах).
@@ -267,29 +235,14 @@ private:
     CApplication &operator=(const CApplication&);
 
     /**
-     * @brief Подготовить дисплей.
+     * @brief Обработчик нажатия клавиши.
      */
-    bool prepareDisplay();
+    static void key(unsigned char key, int x, int y);
     /**
-     * @brief Подготовить таймер.
+     * @brief Обработчик отрисовки.
      */
-    bool prepareTimer();
-    /**
-     * @brief Подготовить клавиатуру.
-     */
-    bool prepareKeyboard();
-    /**
-     * @brief Подготовить мышь.
-     */
-    bool prepareMouse();
-    /**
-     * @brief Подготовить touchscreen.
-     */
-    bool prepareTouch();
-    /**
-     * @brief Подготовить очередь событий.
-     */
-    void prepareEventQueue();
+    static void display();
+    static void idle();
 
     static CApplication *instance;
 
@@ -297,21 +250,10 @@ private:
     bool fullScreen;            /**< Полный ли экран. */
     glm::ivec2 position;        /**< положение верхнего левого угла окна. */
     glm::ivec2 size;            /**< Размеры окна(Высота, ширина). */
-    EColorDepth depth;           /**< Глубина цвета. */
-
-    ALLEGRO_DISPLAY *display;   /**< Дисплей. */
-    ALLEGRO_EVENT_QUEUE *queue; /**< Очередь событий. */
-    ALLEGRO_TIMER *timer;       /**< Таймер. */
-
-    AbstractScene *painter;           /**< Сцена для рисования. */
-
-    bool isTimerInitialized;    /**< Инициализирован ли таймер. */
-    bool isKeyboardInitialized; /**< Инициализирована ли клавиатура. */
-    bool isMouseInitialized;    /**< Инициализирована ли мышь. */
-    bool isTouchInitialized;    /**< Инициализирован ли тачпад. */
-    bool isDisplayInitialized;  /**< Инициализирован ли дисплей. */
-    bool isInitialized;         /**< Все ли готово к визуализации. */
-
+    glm::ivec2 displaySize;     /**< Размеры экрана. */
+    EColorDepth depth;          /**< Глубина цвета. */
+    AbstractScene *painter;     /**< Сцена для рисования. */
+    int windowId;               /**< Идентификатор окна. */
     float secOfLastFrame;       /**< Время визуализации последнего кадра. */
 }; // class Application
 

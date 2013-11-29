@@ -35,9 +35,9 @@ public:
     DefaultScene();
     ~DefaultScene();
 
-    void prepareGL();
-    bool updateGL(ALLEGRO_EVENT *e);
-    void paintGL();
+    virtual void prepareGL();
+    virtual bool updateGL(CEvent *e);
+    virtual void paintGL();
 }; // class DefautScene
 
 } // namespace Core

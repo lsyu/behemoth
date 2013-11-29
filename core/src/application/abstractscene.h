@@ -20,9 +20,9 @@
 #ifndef ABSTRACTSCENE_H
 #define ABSTRACTSCENE_H
 
-union ALLEGRO_EVENT;
-
 namespace core {
+
+class CEvent;
 
 /**
  * @brief Интерфейс сцены.
@@ -52,7 +52,8 @@ public:
      * @param e действие
      * @return true - продолжать работу, false - выход из главного цикла программы.
      */
-    virtual bool updateGL(ALLEGRO_EVENT *e) = 0;
+    virtual bool updateGL(CEvent *e) = 0;
+
     /**
      * @brief Перерисовать очередной кадр.
      */

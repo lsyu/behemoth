@@ -19,20 +19,15 @@
 
 #include "application.h"
 #include "abstractscene.h"
+#include "event.h"
 
-#include "allegro5/allegro.h"
-#include "allegro5/allegro_opengl.h"
+#include "gl/freeglut.h"
+
 #include "core/ogl/shader.h"
 #include "core/ogl/vertexbufferobject.h"
-
-#include "core/algorithm/algostring.h"
-
 #include "core/manager/resourcemanager.h"
-//#include "factory/fontfactory.h"
 
 #include <iostream>
-//#include <fstream>
-//#include <iomanip>
 #include <chrono>
 
 namespace core {
@@ -57,10 +52,8 @@ CApplication* CApplication::getInstance()
 }
 
 CApplication::CApplication()
-    : title("Unknown"), fullScreen(false), position(0,0), size(640,480),
-      depth(EColorDepth::_32), display(nullptr), queue(nullptr), timer(nullptr), painter(),
-      isTimerInitialized(false), isKeyboardInitialized(false), isMouseInitialized(false),
-      isTouchInitialized(false), isDisplayInitialized(false), isInitialized(false), secOfLastFrame(0)
+    : title("Unknown"), fullScreen(false), position(0,0), size(640,480), displaySize(0, 0),
+      depth(EColorDepth::_32), painter(), windowId(0), secOfLastFrame(0)
 {
 }
 
@@ -68,22 +61,16 @@ void CApplication::initialize(int &argc, char *argv[])
 {
     // Инициализация ресурсов.
     CResourceManager::getInstance()->initialize(argc, argv);
+
+    // Инициализация glut
+    glutInit(&argc, argv);
+    displaySize = glm::ivec2(glutGet(GLUT_SCREEN_WIDTH), glutGet(GLUT_SCREEN_HEIGHT));
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL);
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 }
 
 CApplication::~CApplication()
 {
-}
-
-void CApplication::clear()
-{
-    if (timer)
-        al_destroy_timer(timer);
-
-    if (display)
-        al_destroy_display(display);
-
-    if (queue)
-        al_destroy_event_queue(queue);
 }
 
 void CApplication::setWindowTitle(const std::string &title)
@@ -126,6 +113,11 @@ glm::ivec2 CApplication::getSize() const
     return size;
 }
 
+glm::ivec2 CApplication::getDisplaySize() const
+{
+    return displaySize;
+}
+
 void CApplication::setColorDepth(EColorDepth depth)
 {
     this->depth = depth;
@@ -136,163 +128,57 @@ EColorDepth CApplication::getColorDepth() const
     return depth;
 }
 
-std::string CApplication::getOpenGLInfo() const
+void CApplication::key(unsigned char key, int x, int y )
 {
-    std::string ret;
-    if (al_get_opengl_variant() == 0)
-        ret = "DESKTOP OPENGL: ";
-    else
-        ret = "OPENGL ES: ";
-
-    std::string version = Algorithm::Str::intToHexString(al_get_opengl_version());
-    version[1] = '.';
-    version.resize(4);
-    ret += version;
-
-    return ret;
-}
-
-std::string CApplication::getOpenGLExtensions() const
-{
-    return std::string(reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS)));
-}
-
-std::vector<std::string> CApplication::getOpenGLExtensionsAsVec() const
-{
-    return Algorithm::Str::split(getOpenGLExtensions(), ' ');
-}
-
-bool CApplication::prepareDisplay()
-{
-    al_set_new_display_flags(ALLEGRO_OPENGL_3_0 | ALLEGRO_OPENGL_FORWARD_COMPATIBLE);
-    al_set_new_display_option(ALLEGRO_DEPTH_SIZE, static_cast<int>(depth), ALLEGRO_SUGGEST);
-
-    if (fullScreen) {
-        ALLEGRO_DISPLAY_MODE disp_data;
-        al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-        al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
-        display = al_create_display(disp_data.width, disp_data.height);
-        return true;
-    } else {
-        al_set_new_display_flags(ALLEGRO_WINDOWED);
-        display = al_create_display(size.x, size.y);
-        if (display) {
-            al_set_window_position(display, position.x, position.y);
-            al_set_window_title(display, title.c_str());
-            return true;
-        }
-    }
-    return false;
-}
-
-bool CApplication::prepareTimer()
-{
-    // TODO: Подумать, нужен ли вообще таймер
-    timer = al_create_timer( 1.0 / 60.0 );
-    if (timer)
-        return true;
-    return false;
-}
-
-bool CApplication::prepareKeyboard()
-{
-    return al_install_keyboard();
-}
-
-bool CApplication::prepareMouse()
-{
-    return al_install_mouse();
-}
-
-bool CApplication::prepareTouch()
-{
-    return al_install_touch_input();
-}
-
-void CApplication::prepareEventQueue()
-{
-    queue = al_create_event_queue();
-
-    if (prepareKeyboard())
-        al_register_event_source(queue, al_get_keyboard_event_source());
-
-    if (prepareMouse())
-        al_register_event_source(queue, al_get_mouse_event_source());
-
-    if (prepareTouch())
-        al_register_event_source(queue, al_get_touch_input_event_source());
-
-    if (prepareDisplay())
-        al_register_event_source(queue, al_get_display_event_source(display));
-
-    if (prepareTimer())
-        al_register_event_source(queue, al_get_timer_event_source(timer));
-}
-
-bool CApplication::init()
-{
-    if (!al_init()) {
-        isInitialized = false;
-        return false;
+    if (key == 27 || key == 'q' || key == 'Q')
+        glutLeaveMainLoop();
+    else {
+        CEvent e;
+        instance->updateGL(&e);
     }
 
-    bool ret = isTimerInitialized = prepareTimer();
+}
 
-    isKeyboardInitialized = prepareKeyboard();
-    isMouseInitialized = prepareMouse();
-    isTouchInitialized = prepareTouch();
+void CApplication::display()
+{
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-    //  если таймер завелся и есть хотя бы одно утройство ввода.
-    ret = ret && (isKeyboardInitialized || isMouseInitialized || isTouchInitialized);
-    if (!ret) {
-        isInitialized = false;
-        return false;
-    }
+    instance->paintGL();
+    glutSwapBuffers();
 
-    isDisplayInitialized = prepareDisplay();
-    if (!isDisplayInitialized) {
-        isInitialized = false;
-        return false;
-    }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<float> time_span = duration_cast< duration<double> >(t2 - t1);
+    instance->secOfLastFrame = time_span.count();
+    std::cout << 1.0f / instance->secOfLastFrame << "\n";
+}
 
-    prepareEventQueue();
-
-    isInitialized = true;
-    return true;
+void CApplication::idle()
+{
+    CEvent e;
+    instance->updateGL(&e);
+    glutPostRedisplay();
 }
 
 void CApplication::exec()
 {
-    using namespace std::chrono;
-    if (isInitialized && painter) {
+    if (painter && displaySize.x) {
+        glutInitContextVersion(2, 1);
+        glutInitWindowPosition(position.x, position.y);
+        glutInitWindowSize(size.x, size.y);
+        windowId = glutCreateWindow(title.c_str());
+        glutKeyboardFunc(&CApplication::key);
+        glutDisplayFunc(&CApplication::display);
+        glutIdleFunc(&CApplication::idle);
         prepareGL();
-        ALLEGRO_EVENT event;
-        bool haveNextEvent = false;
-        bool repeat = true;
-        while(true) {
-            high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-            haveNextEvent = al_get_next_event(queue, &event);
-            if (haveNextEvent)
-                repeat = updateGL(&event);
-            else
-                repeat = updateGL(nullptr);
-
-            if (repeat)
-                paintGL();
-            else
-                break;
-
-            al_wait_for_vsync();
-            al_flip_display();
-
-            high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
-            duration<float> time_span = duration_cast< duration<double> >(t2 - t1);
-            secOfLastFrame = time_span.count();
-            std::cout << secOfLastFrame << "\n";
-        }
+        glutMainLoop();
     }
+}
+
+void CApplication::close()
+{
+    glutLeaveMainLoop();
 }
 
 void CApplication::setScene(AbstractScene *painter)
@@ -305,9 +191,10 @@ void CApplication::prepareGL()
     painter->prepareGL();
 }
 
-bool CApplication::updateGL(ALLEGRO_EVENT *e)
+void CApplication::updateGL(CEvent *e)
 {
-    return painter->updateGL(e);
+    if (!painter->updateGL(e))
+        glutLeaveMainLoop();
 }
 
 void CApplication::paintGL()

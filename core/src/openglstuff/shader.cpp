@@ -21,8 +21,7 @@
 
 #include "core/algorithm/algostring.h"
 
-#include "allegro5/allegro5.h"
-#include "allegro5/allegro_opengl.h"
+#include "core/ogl/ogl.h"
 
 #include "glm/gtc/type_ptr.hpp"
 

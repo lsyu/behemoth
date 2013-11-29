@@ -19,8 +19,8 @@
 
 #include "vertexbufferobject.h"
 
-#include "allegro5/allegro5.h"
-#include "allegro5/allegro_opengl.h"
+#include "gl/gl.h"
+#include "gl/glext.h"
 
 CVertexBufferObject::CVertexBufferObject() : vbo(0)
 {

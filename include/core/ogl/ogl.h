@@ -1,4 +1,5 @@
-#include "../../allegro5/allegro5.h"
-#include "../../allegro5/allegro_opengl.h"
+#include <GL/gl.h>
+#include "../../gl/freeglut.h"
+#include <GL/glext.h>
 #include "shader.h"
 #include "vertexbufferobject.h"

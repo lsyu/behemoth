@@ -17,31 +17,21 @@
  *
  */
 
-#include "vertexarrayobject.h"
+#ifndef EVENT_H
+#define EVENT_H
 
-#include "gl/gl.h"
-#include "gl/glext.h"
+namespace core {
 
-CVertexArrayObject::CVertexArrayObject() : vao(0)
+/**
+ * @brief Событие
+ */
+class CEvent
 {
-}
+public:
+    CEvent();
+    virtual ~CEvent();
+}; // class CEvent
 
-CVertexArrayObject::~CVertexArrayObject()
-{
-    glDeleteVertexArrays(1, &vao);
-}
+} // namespace core
 
-void CVertexArrayObject::genBuffer()
-{
-    glGenVertexArrays(1, &vao);
-}
-
-void CVertexArrayObject::bind() const
-{
-    glBindVertexArray(vao);
-}
-
-void CVertexArrayObject::disable() const
-{
-    glBindVertexArray(0);
-}
+#endif // EVENT_H

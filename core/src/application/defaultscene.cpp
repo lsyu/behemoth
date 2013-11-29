@@ -18,11 +18,11 @@
  */
 
 #include "defaultscene.h"
+#include "event.h"
 
 #include <vector>
 
-#include "allegro5/allegro5.h"
-#include "allegro5/allegro_opengl.h"
+#include "core/ogl/ogl.h"
 
 #include "core/manager/luamanager.h"
 #include "core/factory/shaderfactory.h"
@@ -42,26 +42,18 @@ void DefaultScene::prepareGL()
 {
     CLuaManager::getInstance()->readGui("scripts/test.lua");
 
-
-    //glShadeModel(GL_SMOOTH);    // ???
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 }
 
-bool DefaultScene::updateGL(ALLEGRO_EVENT *e)
+bool DefaultScene::updateGL(CEvent *event)
 {
-    if (!e)
-        return true;
-    if (e->type == ALLEGRO_EVENT_KEY_DOWN)
-        if (e->keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-            return false;
     return true;
 }
 
 void DefaultScene::paintGL()
 {
     // TODO: После рисования 3d сцены чистить не нужно!
-    //glEnable(GL_MULTISAMPLE);
     glDisable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -81,7 +73,6 @@ void DefaultScene::paintGL()
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    //glDisable(GL_MULTISAMPLE);
 }
 
 } // namespace Core

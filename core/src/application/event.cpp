@@ -17,31 +17,16 @@
  *
  */
 
-#include "vertexarrayobject.h"
+#include "event.h"
 
-#include "gl/gl.h"
-#include "gl/glext.h"
+namespace core {
 
-CVertexArrayObject::CVertexArrayObject() : vao(0)
+CEvent::CEvent()
 {
 }
 
-CVertexArrayObject::~CVertexArrayObject()
+CEvent::~CEvent()
 {
-    glDeleteVertexArrays(1, &vao);
 }
 
-void CVertexArrayObject::genBuffer()
-{
-    glGenVertexArrays(1, &vao);
-}
-
-void CVertexArrayObject::bind() const
-{
-    glBindVertexArray(vao);
-}
-
-void CVertexArrayObject::disable() const
-{
-    glBindVertexArray(0);
-}
+} // namespace core

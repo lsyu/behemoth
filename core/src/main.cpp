@@ -12,12 +12,11 @@ int main(int argc, char *argv[])
     app->setSize(glm::ivec2(800, 600));
     app->setColorDepth(EColorDepth::_32);
 
+
     DefaultScene scene;
     app->setScene(&scene);
 
-    if (app->init())
-        app->exec();
-    app->clear();
+    app->exec();
 
     return 0;
 }
