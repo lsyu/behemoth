@@ -56,7 +56,7 @@
 
 namespace core {
 
-class CEvent;
+class AbstractEvent;
 class AbstractScene;
 class __CApplicationImplDel;
 
@@ -92,8 +92,51 @@ public:
 
     /**
      * @brief Инициализация ресурсов приложения.
+     * @sa exec
      */
     void initialize(int &argc, char *argv[]);
+    /**
+     * @brief Запустить главный цикл приложения.
+     *
+     * Перед запуском главного цикла необходимо проинициализировать все необходимые приложению
+     * ресурсы, вызвав @a init
+     * @n
+     * Пример запуска главного приложения:
+     * @code
+     * #include "core/application.h"
+     * #include "core/defaultscene.h"
+     * int main(int argc, char *argv[])
+     * {
+     *     using namespace core;
+     *     CApplication *app = CApplication::getInstance();
+     *     app->initialize(argc, argv);
+     *     app->setWindowTitle("Test");
+     *     app->setFullScreen(false);
+     *     app->setSize(glm::ivec2(800, 600));
+     *     app->setColorDepth(EColorDepth::_32);
+     *
+     *     DefaultScene scene;
+     *     app->setScene(&scene);
+     *
+     *     app->exec();
+     *
+     *     return 0;
+     * }
+     * @endcode
+     * @sa initialize
+     */
+    void exec();
+
+    /**
+     * @brief Закрыть приложение.
+     */
+    void close();
+
+    /**
+     * @brief Установить обработчика рисования.
+     * @param painter обработчик рисования.
+     */
+    void setScene(core::AbstractScene *scene);
 
     /**
      * @brief Установить заголовок окна.
@@ -152,81 +195,18 @@ public:
     EColorDepth getColorDepth() const;
 
     /**
-     * @brief Установить шаг таймера.
-     */
-    void setTimerStep(double sec);
-
-    /**
-     * @brief Получить шаг таймера.
-     */
-    double getTimerStep() const;
-
-    /**
-     * @brief Запустить главный цикл приложения.
-     *
-     * Перед запуском главного цикла необходимо проинициализировать все необходимые приложению
-     * ресурсы, вызвав @a init
-     * @n
-     * Пример запуска главного приложения:
-     * @code
-     * #include "core/application.h"
-     * #include "core/defaultscene.h"
-     * int main(int argc, char *argv[])
-     * {
-     *     using namespace core;
-     *     CApplication *app = CApplication::getInstance();
-     *     app->initialize(argc, argv);
-     *     app->setWindowTitle("Test");
-     *     app->setFullScreen(false);
-     *     app->setSize(glm::ivec2(800, 600));
-     *     app->setColorDepth(EColorDepth::_32);
-     *
-     *     DefaultScene scene;
-     *     app->setScene(&scene);
-     *
-     *     app->exec();
-     *
-     *     return 0;
-     * }
-     * @endcode
-     * @sa initialize
-     */
-    void exec();
-
-    /**
-     * @brief Закрыть приложение.
-     */
-    void close();
-
-    /**
-     * @brief Установить обработчика рисования.
-     * @param painter обработчик рисования.
-     */
-    void setScene(core::AbstractScene *scene);
-
-    /**
-     * @brief Подготовить приложение для работы.
-     *
-     * Здесь загружаются необходимые ресурсы (материалы, шейдеры, изображения и т.д.)
-     */
-    void prepareGL();
-
-    /**
-     * @brief Обновление состояния.
-     * @param e действие
-     * @return true - продолжать работу, false - выход из главного цикла программы.
-     */
-    void updateGL(CEvent *e);
-
-    /**
-     * @brief Перерисовать очередной кадр.
-     */
-    void paintGL();
-
-    /**
      * @brief Получить промежуток времени, потраченный на последний кадр(в секундах).
      */
     float getSecondOfLastFrame() const;
+
+    /**
+     * @brief Конвертирование координат из абсолютных в относительные в пр-ве изображения.
+     */
+    static glm::vec2 getRelativeCoordinate(const glm::ivec2 &absoluteCoordinate);
+    /**
+     * @brief Конвертирование координат из абсолютных в относительные в пр-ве изображения.
+     */
+    static glm::vec2 getRelativeCoordinate(int x, int y);
 
 private:
     CApplication();
@@ -238,11 +218,31 @@ private:
      * @brief Обработчик нажатия клавиши.
      */
     static void key(unsigned char key, int x, int y);
+
+    static void mouse(int button, int state, int x, int y);
     /**
      * @brief Обработчик отрисовки.
      */
     static void display();
+    /**
+     * @brief Обработчик без события
+     */
     static void idle();
+    /**
+     * @brief Подготовить сцену к рисованию.
+     */
+    void prepareGL();
+    /**
+     * @brief Обновление состояния.
+     * @param e действие
+     * @return true - продолжать работу, false - выход из главного цикла программы.
+     */
+    void updateGL(AbstractEvent *e);
+
+    /**
+     * @brief Перерисовать очередной кадр.
+     */
+    void paintGL();
 
     static CApplication *instance;
 

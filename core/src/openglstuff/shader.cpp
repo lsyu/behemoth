@@ -19,12 +19,12 @@
 
 #include "shader.h"
 
-#include "core/algorithm/algostring.h"
-
 #include "core/ogl/ogl.h"
 
 #include "glm/gtc/type_ptr.hpp"
 
+#include <memory>
+#include <fstream>
 #include <iostream>
 
 CShader::CShader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
@@ -39,6 +39,13 @@ CShader::CShader(const std::string &vertShaderName, const std::string &fragmentS
     prepareShader(vertShaderName, fragmentShaderName);
 }
 
+std::string getFile(const std::string &fileName)
+{
+    std::string ret((std::istreambuf_iterator<char>(*(std::auto_ptr<std::ifstream>(
+            new std::ifstream(fileName))).get())), std::istreambuf_iterator<char>());
+    return ret;
+}
+
 bool CShader::prepareShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
 {
     shaderProgram = glCreateProgram();
@@ -46,12 +53,12 @@ bool CShader::prepareShader(const std::string &vertShaderName, const std::string
     if (!shaderProgram)
         return false;
 
-    std::string vs = Algorithm::Str::getFile(vertShaderName);
+    std::string vs = getFile(vertShaderName);
     int size = vs.size();
     if (!makeShader(EShaderType::VertexShader, vs.c_str(), &size))
         return false;
 
-    std::string fs = Algorithm::Str::getFile(fragmentShaderName);
+    std::string fs = getFile(fragmentShaderName);
     size = fs.size();
     if (!makeShader(EShaderType::FragmentShader, fs.c_str(), &size))
         return false;

@@ -18,7 +18,8 @@
  */
 
 #include "basic2dentity.h"
-#include "algorithm"
+
+#include <algorithm>
 
 namespace core {
 

@@ -22,7 +22,7 @@
 
 namespace core {
 
-class CEvent;
+class AbstractEvent;
 
 /**
  * @brief Интерфейс сцены.
@@ -52,7 +52,7 @@ public:
      * @param e действие
      * @return true - продолжать работу, false - выход из главного цикла программы.
      */
-    virtual bool updateGL(CEvent *e) = 0;
+    virtual bool updateGL(AbstractEvent *e) = 0;
 
     /**
      * @brief Перерисовать очередной кадр.

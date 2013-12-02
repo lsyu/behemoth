@@ -18,7 +18,7 @@
  */
 
 #include "defaultscene.h"
-#include "event.h"
+#include "abstractevent.h"
 
 #include <vector>
 
@@ -46,7 +46,7 @@ void DefaultScene::prepareGL()
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 }
 
-bool DefaultScene::updateGL(CEvent *event)
+bool DefaultScene::updateGL(AbstractEvent *event)
 {
     return true;
 }

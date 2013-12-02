@@ -17,21 +17,35 @@
  *
  */
 
-#ifndef EVENT_H
-#define EVENT_H
+#include "eventmouseclick.h"
+#include "application.h"
 
 namespace core {
 
-/**
- * @brief Событие
- */
-class CEvent
+CEventMouseClick::CEventMouseClick(int x, int y) : AbstractEvent(), x(), y()
 {
-public:
-    CEvent();
-    virtual ~CEvent();
-}; // class CEvent
+    glm::vec2 coord = CApplication::getInstance()->getRelativeCoordinate(x, y);
+    this->x = coord.x;
+    this->y = -coord.y;
+}
+
+CEventMouseClick::~CEventMouseClick()
+{
+}
+
+glm::vec2 CEventMouseClick::getCoordinates() const
+{
+    return glm::vec2(x, y);
+}
+
+float CEventMouseClick::getX() const
+{
+    return x;
+}
+
+float CEventMouseClick::getY() const
+{
+    return y;
+}
 
 } // namespace core
-
-#endif // EVENT_H

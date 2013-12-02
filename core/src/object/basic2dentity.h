@@ -24,6 +24,8 @@
 
 namespace core {
 
+class CEventMouseClick;
+
 struct Border {
     Border() : width(0), color(0.0f, 0.0f, 0.0f) {}
     Border(const Border &other) : width(other.width), color(other.color) {}
@@ -48,6 +50,11 @@ public:
     virtual void addChild(AbstractEntity *child);
     virtual AbstractEntity *getChild(const std::string &id);
     virtual std::vector<AbstractEntity *> &getChilds();
+
+    /**
+     * @brief Обработка клика
+     */
+    virtual void onClicked(const CEventMouseClick &event) = 0;
 
 protected:
 

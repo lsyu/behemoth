@@ -47,6 +47,8 @@ public:
     virtual float getYMin() const;
     virtual float getYMax() const;
 
+    virtual void onClicked(const CEventMouseClick &event);
+
     /**
      * @brief Установить координату X левого нижнего угла прямоугольника.
      * @note Плоскость монитора ограничивается интервалом [-1, 1].

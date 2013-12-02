@@ -19,7 +19,6 @@
 
 #include "resourcemanager.h"
 
-#include "core/algorithm/algostring.h"
 #include "core/manager/luamanager.h"
 
 #include <fstream>

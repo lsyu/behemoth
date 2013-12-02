@@ -17,16 +17,34 @@
  *
  */
 
-#include "event.h"
+#ifndef EVENTMOUSECLICK_H
+#define EVENTMOUSECLICK_H
+
+#include "abstractevent.h"
+
+#include "glm/glm.h"
 
 namespace core {
 
-CEvent::CEvent()
+/**
+ * @brief Событие клика мыши
+ */
+class CEventMouseClick : public AbstractEvent
 {
-}
+public:
+    explicit CEventMouseClick(int x = 0, int y = 0);
+    virtual ~CEventMouseClick();
 
-CEvent::~CEvent()
-{
-}
+    glm::vec2 getCoordinates() const;
+    float getX() const;
+    float getY() const;
+
+
+private:
+    float x;    /**< Абсцисса точки клика. В относительныйх величинах [-1..1] */
+    float y;    /**< Оордината точки клика. В относительныйх величинах [-1..1] */
+}; // class CEventMouseClick
 
 } // namespace core
+
+#endif // EVENTMOUSECLICK_H

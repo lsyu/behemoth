@@ -17,29 +17,16 @@
  *
  */
 
-#ifndef DEFAULTSCENE_H
-#define DEFAULTSCENE_H
-
-#include "abstractscene.h"
-
-#include "glm/glm.h"
+#include "abstractevent.h"
 
 namespace core {
 
-/**
- * @brief Сцена по-умолчанию.
- */
-class DefaultScene : public AbstractScene
+AbstractEvent::AbstractEvent()
 {
-public:
-    DefaultScene();
-    ~DefaultScene();
+}
 
-    virtual void prepareGL();
-    virtual bool updateGL(AbstractEvent *e);
-    virtual void paintGL();
-}; // class DefautScene
+AbstractEvent::~AbstractEvent()
+{
+}
 
-} // namespace Core
-
-#endif // DEFAULTSCENE_H
+} // namespace core

@@ -6,7 +6,6 @@ include_directories(../../include/ft2) #for freetype
 include_directories(../../include) #for other includes
 include_directories(.) # for glm and gli
 
-add_subdirectory(algorithm)
 add_subdirectory(application)
 add_subdirectory(factory)
 add_subdirectory(glm)

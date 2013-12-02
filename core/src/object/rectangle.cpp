@@ -22,6 +22,7 @@
 #include "core/factory/shaderfactory.h"
 #include "core/factory/texturefactory.h"
 #include "core/application.h"
+#include "core/events/eventmouseclick.h"
 
 namespace core {
 
@@ -217,6 +218,11 @@ float CRectangle::getYMin() const
 float CRectangle::getYMax() const
 {
     return y + height;
+}
+
+void CRectangle::onClicked(const CEventMouseClick &event)
+{
+    // TODO: Сдалать реализацию!
 }
 
 void CRectangle::setX(float x)

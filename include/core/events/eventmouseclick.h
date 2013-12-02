@@ -17,29 +17,7 @@
  *
  */
 
-#ifndef DEFAULTSCENE_H
-#define DEFAULTSCENE_H
+#ifndef EVENTMOUSECLICK_H
+#define EVENTMOUSECLICK_H
 
-#include "abstractscene.h"
-
-#include "glm/glm.h"
-
-namespace core {
-
-/**
- * @brief Сцена по-умолчанию.
- */
-class DefaultScene : public AbstractScene
-{
-public:
-    DefaultScene();
-    ~DefaultScene();
-
-    virtual void prepareGL();
-    virtual bool updateGL(AbstractEvent *e);
-    virtual void paintGL();
-}; // class DefautScene
-
-} // namespace Core
-
-#endif // DEFAULTSCENE_H
+#endif // EVENTMOUSECLICK_H

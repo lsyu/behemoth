@@ -19,7 +19,8 @@
 
 #include "application.h"
 #include "abstractscene.h"
-#include "event.h"
+#include "abstractevent.h"
+#include "eventmouseclick.h"
 
 #include "gl/freeglut.h"
 
@@ -128,15 +129,40 @@ EColorDepth CApplication::getColorDepth() const
     return depth;
 }
 
+float CApplication::getSecondOfLastFrame() const
+{
+    return secOfLastFrame;
+}
+
+glm::vec2 CApplication::getRelativeCoordinate(const glm::ivec2 &absoluteCoordinate)
+{
+    float x = absoluteCoordinate.x / instance->size.x - 0.5f;
+    float y = absoluteCoordinate.y / instance->size.y - 0.5f;
+    return glm::vec2(x, y);
+}
+
+glm::vec2 CApplication::getRelativeCoordinate(int _x, int _y)
+{
+    float x = (float)_x / (float)instance->size.x - 0.5f;
+    float y = (float)_y / (float)instance->size.y - 0.5f;
+    return glm::vec2(x, y);
+}
+
+
 void CApplication::key(unsigned char key, int x, int y )
 {
     if (key == 27 || key == 'q' || key == 'Q')
         glutLeaveMainLoop();
     else {
-        CEvent e;
+        AbstractEvent e;
         instance->updateGL(&e);
     }
+}
 
+void CApplication::mouse(int button, int state, int x, int y)
+{
+    CEventMouseClick e(x, y);
+    instance->updateGL(&e);
 }
 
 void CApplication::display()
@@ -155,8 +181,7 @@ void CApplication::display()
 
 void CApplication::idle()
 {
-    CEvent e;
-    instance->updateGL(&e);
+    instance->updateGL(nullptr);
     glutPostRedisplay();
 }
 
@@ -168,6 +193,7 @@ void CApplication::exec()
         glutInitWindowSize(size.x, size.y);
         windowId = glutCreateWindow(title.c_str());
         glutKeyboardFunc(&CApplication::key);
+        glutMouseFunc(&CApplication::mouse);
         glutDisplayFunc(&CApplication::display);
         glutIdleFunc(&CApplication::idle);
         prepareGL();
@@ -191,7 +217,7 @@ void CApplication::prepareGL()
     painter->prepareGL();
 }
 
-void CApplication::updateGL(CEvent *e)
+void CApplication::updateGL(AbstractEvent *e)
 {
     if (!painter->updateGL(e))
         glutLeaveMainLoop();
