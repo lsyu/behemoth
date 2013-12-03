@@ -115,8 +115,26 @@ void CLuaManager::registerConf()
 void CLuaManager::close(CurrentTask task)
 {
     if (lua) {
-        lua_close(lua);
-        lua = nullptr;
+//        if (task == TaskGUI) {
+//            lua_getglobal(lua, "ui");
+//            if (lua_istable(lua, -1))
+//            {
+//                lua_getfield(lua, -1, "hideItem");
+//                lua_getfield(lua, -1, "setAlpha");
+//                lua_getfield(lua, -3, "hideItem");
+//                lua_pushnumber(lua, 0.1);
+//                //lua_replace(lua, -2);
+//                if (lua_pcall(lua, 2, 0, 0)) {
+//                    const char* err = lua_tostring(lua, -1);
+//                    int a = 1+1;
+//                }else
+//                lua_pop(lua, 2);
+//            }
+//        }
+        if (task == TaskConfig) {
+            lua_close(lua);
+            lua = nullptr;
+        }
         if (task == TaskGUI) {
             // Подготовим к работе наши сущности UI
             for(auto obj: objects)
@@ -507,10 +525,104 @@ void CLuaManager::registerRectangle()
         },
 
         {
+            "sync", [](lua_State *l)
+            {
+
+                CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+                lua_newtable(l);//Создаем новую таблицу в Lua
+                lua_pushstring(l,"__newindex");
+                lua_pushlightuserdata(l, foo);
+                lua_pushcclosure
+                (
+                    l,
+                    [](lua_State *l){
+                        std::string property = luaL_checkstring(l,2);
+                        CRectangle *foo = *static_cast<CRectangle **>(lua_touserdata(l, 1));
+                        if (property == "x")
+                            foo->setX(lua_tonumber(l, -1));
+                        else if (property == "y")
+                            foo->setY(lua_tonumber(l, -1));
+                        else if (property == "width")
+                            foo->setWidth(lua_tonumber(l, -1));
+                        else if (property == "height")
+                            foo->setHeight(lua_tonumber(l, -1));
+                        else if (property == "color") {
+                            glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
+                            foo->setColor(*color);
+                        } else if (property == "texture")
+                            foo->setTexture(lua_tostring(l , -1));
+                        else if (property == "radius")
+                            foo->setRadius(lua_tonumber(l, -1));
+                        else if (property == "radiusOfA")
+                            foo->setRadiusOfA(lua_tonumber(l, -1));
+                        else if (property == "radiusOfB")
+                            foo->setRadiusOfB(lua_tonumber(l, -1));
+                        else if (property == "radiusOfC")
+                            foo->setRadiusOfC(lua_tonumber(l, -1));
+                        else if (property == "radiusOfD")
+                            foo->setRadiusOfD(lua_tonumber(l, -1));
+                        else if (property == "alpha")
+                            foo->setAlpha(lua_tonumber(l, -1));
+                        else
+                            return 0;
+                        return 1;
+                    },
+                    1
+                );
+                lua_rawset(l, -3);
+                lua_setmetatable(l,-2);
+                lua_getmetatable(l, -1);
+                lua_pushstring(l, "__index");
+                lua_pushlightuserdata(l,foo);
+                lua_pushcclosure
+                (
+                    l,
+                    [](lua_State *l){
+                        std::string property = luaL_checkstring(l, 2);
+                        CRectangle *foo = *static_cast<CRectangle **>(lua_touserdata(l, 1));
+                        if (property == "x")
+                            lua_pushnumber(l, foo->getXMin());
+                        else if (property == "y")
+                            lua_pushnumber(l, foo->getYMin());
+                        else if (property == "width")
+                            lua_pushnumber(l, foo->getWidth());
+                        else if (property == "height")
+                            lua_pushnumber(l, foo->getHeight());
+                        else if (property == "color") {
+                            // TODO: Получение  цвета
+                        } //else if (property == "texture")
+                            // TODO: Получение текстуры
+                        //else if (property == "radius")
+                            // TODO: Получение радиусов
+                        //else if (property == "radiusOfA")
+                            // TODO: Получение радиусов
+                        //else if (property == "radiusOfB")
+                            // TODO: Получение радиусов
+                        //else if (property == "radiusOfC")
+                            // TODO: Получение радиусов
+                        //else if (property == "radiusOfD")
+                            // TODO: Получение радиусов
+                        //else if (property == "alpha")
+                            // TODO: Получение радиусов
+                        else
+                            return 0;
+                        return 1;
+                    },
+                    1
+                );
+                lua_rawset(l, -3);
+                lua_setmetatable(l, -2);//Устанавливаем метатаблицу для нашей новой таблицы
+                lua_setglobal(l, "luaL_Rectangle");
+                CLuaManager::getInstance()->addObject<CRectangle>(foo);
+                return 1;
+            }
+        },
+
+        {
             "__gc", [](lua_State * l)
             {
-                AbstractEntity * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
-                CLuaManager::getInstance()->addObject<CRectangle>(foo);
+                //AbstractEntity * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
+
                 return 0;
             }
         },

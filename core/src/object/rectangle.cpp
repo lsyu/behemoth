@@ -240,9 +240,19 @@ void CRectangle::setWidth(float width)
     this->width = std::abs(width);
 }
 
+float CRectangle::getWidth() const
+{
+    return width;
+}
+
 void CRectangle::setHeight(float height)
 {
     this->height = std::abs(height);
+}
+
+float CRectangle::getHeight() const
+{
+    return height;
 }
 
 // от 0 до 1

@@ -22,6 +22,8 @@
 
 #include "glm/ext.h"
 
+// TODO: Подумать, нужен ли он вообще
+
 namespace core {
 const float PI = glm::pi<float>();
 const float PI_HALF = PI / 2.0f;

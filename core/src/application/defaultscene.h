@@ -35,9 +35,10 @@ public:
     DefaultScene();
     ~DefaultScene();
 
-    virtual void prepareGL();
-    virtual bool updateGL(AbstractEvent *e);
-    virtual void paintGL();
+    virtual void prepareGL() override;
+    virtual bool updateGL() override;
+    virtual bool updateGL(CEventMouseClick *e) override;
+    virtual void paintGL() override;
 }; // class DefautScene
 
 } // namespace Core

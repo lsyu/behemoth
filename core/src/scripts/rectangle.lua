@@ -34,6 +34,8 @@ function ui:rectangle(id)
         r:addChild(v)
       end
     end
+    ui[id] = r
+    r:sync()
     return r
   end
 end

@@ -29,4 +29,14 @@ AbstractScene::~AbstractScene()
 {
 }
 
+bool AbstractScene::updateGL()
+{
+    return true;
+}
+
+bool AbstractScene::updateGL(CEventMouseClick*)
+{
+    return true;
+}
+
 } // namespace Core

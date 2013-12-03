@@ -218,7 +218,9 @@ private:
      * @brief Обработчик нажатия клавиши.
      */
     static void key(unsigned char key, int x, int y);
-
+    /**
+     * @brief Обработчик клика мыши.
+     */
     static void mouse(int button, int state, int x, int y);
     /**
      * @brief Обработчик отрисовки.
@@ -228,21 +230,6 @@ private:
      * @brief Обработчик без события
      */
     static void idle();
-    /**
-     * @brief Подготовить сцену к рисованию.
-     */
-    void prepareGL();
-    /**
-     * @brief Обновление состояния.
-     * @param e действие
-     * @return true - продолжать работу, false - выход из главного цикла программы.
-     */
-    void updateGL(AbstractEvent *e);
-
-    /**
-     * @brief Перерисовать очередной кадр.
-     */
-    void paintGL();
 
     static CApplication *instance;
 

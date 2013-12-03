@@ -18,7 +18,7 @@
  */
 
 #include "defaultscene.h"
-#include "abstractevent.h"
+#include "eventmouseclick.h"
 
 #include <vector>
 
@@ -46,9 +46,14 @@ void DefaultScene::prepareGL()
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 }
 
-bool DefaultScene::updateGL(AbstractEvent *event)
+bool DefaultScene::updateGL()
 {
     return true;
+}
+
+bool DefaultScene::updateGL(CEventMouseClick *e)
+{
+    return false;
 }
 
 void DefaultScene::paintGL()

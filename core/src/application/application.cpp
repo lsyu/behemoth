@@ -153,16 +153,13 @@ void CApplication::key(unsigned char key, int x, int y )
 {
     if (key == 27 || key == 'q' || key == 'Q')
         glutLeaveMainLoop();
-    else {
-        AbstractEvent e;
-        instance->updateGL(&e);
-    }
 }
 
 void CApplication::mouse(int button, int state, int x, int y)
 {
     CEventMouseClick e(x, y);
-    instance->updateGL(&e);
+    if (!instance->painter->updateGL(&e))
+        glutLeaveMainLoop();
 }
 
 void CApplication::display()
@@ -170,7 +167,7 @@ void CApplication::display()
     using namespace std::chrono;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-    instance->paintGL();
+    instance->painter->paintGL();
     glutSwapBuffers();
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -181,7 +178,7 @@ void CApplication::display()
 
 void CApplication::idle()
 {
-    instance->updateGL(nullptr);
+    instance->painter->updateGL();
     glutPostRedisplay();
 }
 
@@ -196,7 +193,7 @@ void CApplication::exec()
         glutMouseFunc(&CApplication::mouse);
         glutDisplayFunc(&CApplication::display);
         glutIdleFunc(&CApplication::idle);
-        prepareGL();
+        instance->painter->prepareGL();
 
         glutMainLoop();
     }
@@ -210,22 +207,6 @@ void CApplication::close()
 void CApplication::setScene(AbstractScene *painter)
 {
     this->painter = painter;
-}
-
-void CApplication::prepareGL()
-{
-    painter->prepareGL();
-}
-
-void CApplication::updateGL(AbstractEvent *e)
-{
-    if (!painter->updateGL(e))
-        glutLeaveMainLoop();
-}
-
-void CApplication::paintGL()
-{
-    painter->paintGL();
 }
 
 } // namespace Core
