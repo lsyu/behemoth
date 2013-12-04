@@ -14,10 +14,11 @@ function ui:text(data)
     elseif k == "text" then
       r:setText(v)
     elseif k == "alignVerical" then
-      r:setAlignVertical(v)
+      r:setAlignVertical(v) -- READ ONLY!!!
     elseif k == "alignHorizontal" then
-      r:setAlignHorizontal(v)
+      r:setAlignHorizontal(v) -- READ ONLY!!!
     end
   end
+  r:sync()
   return r
 end

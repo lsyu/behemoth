@@ -40,6 +40,7 @@ class AbstractEntity
 public:
 
     friend class CLuaManager;
+    friend class CRectangle;
 
     AbstractEntity() {}
     explicit AbstractEntity(const std::string &id) {}

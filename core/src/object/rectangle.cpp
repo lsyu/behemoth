@@ -151,6 +151,9 @@ void CRectangle::configure()
     }
 
     vao.disable();
+
+    for (auto child: vChilds)
+        child->configure();
 }
 
 void CRectangle::paint() const
@@ -198,6 +201,11 @@ void CRectangle::setColor(const glm::vec3 &color)
     vColor[1] = color;
     vColor[2] = color;
     vColor[3] = color;
+}
+
+glm::vec3 CRectangle::getColor() const
+{
+    return vColor[0];
 }
 
 float CRectangle::getXMin() const
@@ -279,10 +287,19 @@ void CRectangle::setRadius(float radius)
         rD = radius;
 }
 
+float CRectangle::getRadius() const
+{
+    return (rA + rB + rC + rD) / 4.0f;
+}
+
 void CRectangle::setRadiusOfA(float rA)
 {
-
     this->rA = validateValue(rA);
+}
+
+float CRectangle::getRadiusOfA() const
+{
+    return rA;
 }
 
 void CRectangle::setRadiusOfB(float rB)
@@ -290,9 +307,19 @@ void CRectangle::setRadiusOfB(float rB)
     this->rB = validateValue(rB);
 }
 
+float CRectangle::getRadiusOfB() const
+{
+    return rB;
+}
+
 void CRectangle::setRadiusOfC(float rC)
 {
     this->rC = validateValue(rC);
+}
+
+float CRectangle::getRadiusOfC() const
+{
+    return rC;
 }
 
 void CRectangle::setRadiusOfD(float rD)
@@ -300,9 +327,19 @@ void CRectangle::setRadiusOfD(float rD)
     this->rD = validateValue(rD);
 }
 
+float CRectangle::getRadiusOfD() const
+{
+    return rD;
+}
+
 void CRectangle::setBorderWidth(float width)
 {
     this->border.width = validateValue(width);
+}
+
+float CRectangle::getBorderWidth() const
+{
+    return border.width;
 }
 
 void CRectangle::setBorderColor(const glm::vec3 &color)
@@ -318,6 +355,11 @@ void CRectangle::setTexture(const std::string &name)
 void CRectangle::setAlpha(float alpha)
 {
     this->alpha = validateValue(alpha);
+}
+
+float CRectangle::getAlpha() const
+{
+    return alpha;
 }
 
 } // namespace Core

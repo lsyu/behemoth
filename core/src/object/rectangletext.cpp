@@ -40,7 +40,7 @@ CRectangleText::~CRectangleText()
 
 void CRectangleText::configure()
 {
-    this->font->setHeight(fontHeight/* * 0.5f * (float)CApplication::getInstance()->getSize().y*/);
+    this->font->setHeight(fontHeight);
     parent = this->parent;
     x = parent->getXMin();
     y = parent->getYMin();
@@ -90,6 +90,11 @@ void CRectangleText::setFont(const std::string &name)
     this->font->setName(name);
 }
 
+std::string CRectangleText::getFontName() const
+{
+    return font->getName();
+}
+
 void CRectangleText::setFont(float height)
 {
     this->fontHeight = height;
@@ -98,6 +103,11 @@ void CRectangleText::setFont(float height)
         fontHeight -= (int)fontHeight;
     // TODO: подумать, на что домножать, когда межстрочный интервал появится!
     fontHeight *= (2.0f/3.0f) * 2.0f;
+}
+
+float CRectangleText::getFontHeight() const
+{
+    return font->getHeight();
 }
 
 void CRectangleText::setFontQuantity(int quantity)
@@ -110,14 +120,29 @@ void CRectangleText::setFontAlign(EVerticalAlign vAlign)
     this->font->setVericalAlign(vAlign);
 }
 
+EVerticalAlign CRectangleText::getVerticalAlign() const
+{
+    return font->getVerticalAlign();
+}
+
 void CRectangleText::setFontAlign(EHorizontalAlign hAlign)
 {
     this->font->setHorizontalAlign(hAlign);
 }
 
+EHorizontalAlign CRectangleText::getHorizontalAlign() const
+{
+    return font->getHorizontalAlign();
+}
+
 void CRectangleText::setText(const std::string &text)
 {
     this->text = text;
+}
+
+std::string CRectangleText::getText() const
+{
+    return text;
 }
 
 void CRectangleText::addSymbol(char symbol)

@@ -40,14 +40,15 @@ public:
 
     virtual ~CRectangle();
 
-    virtual void paint() const;
+    virtual void paint() const override;
     virtual void setColor(const glm::vec3 &color);
-    virtual float getXMin() const;
-    virtual float getXMax() const;
-    virtual float getYMin() const;
-    virtual float getYMax() const;
+    glm::vec3 getColor() const;
+    virtual float getXMin() const override;
+    virtual float getXMax() const override;
+    virtual float getYMin() const override;
+    virtual float getYMax() const override;
 
-    virtual void onClicked(const CEventMouseClick &event);
+    virtual void onClicked(const CEventMouseClick &event) override;
 
     /**
      * @brief Установить координату X левого нижнего угла прямоугольника.
@@ -81,36 +82,51 @@ public:
      */
     void setRadius(float radius);
     /**
+     * @brief Получить среднее значение rA, rB, rC, rD
+     */
+    float getRadius() const;
+    /**
      * @brief Установить радиус скругления угла при вершине A(нижний левый).
      */
     void setRadiusOfA(float rA);
+    float getRadiusOfA() const;
     /**
      * @brief Установить радиус скругления угла при вершине B(верхний левый).
      */
     void setRadiusOfB(float rB);
+    float getRadiusOfB() const;
     /**
      * @brief Установить радиус скругления угла при вершине C(верхний правый).
      */
     void setRadiusOfC(float rC);
+    float getRadiusOfC() const;
     /**
      * @brief Установить радиус скругления угла при вершине D(нижний правый).
      */
     void setRadiusOfD(float rD);
+    float getRadiusOfD() const;
     /**
      * @brief Установить толщину границы.
      */
     void setBorderWidth(float width);
+    float getBorderWidth() const;
     /**
      * @brief Установить цвет границы
      */
     void setBorderColor(const glm::vec3 &color);
+    glm::vec3 getBorderColor() const;
     /**
      * @brief Получение текстуры при помощи менеджера текстур.
      * @param name имя файла текстуры без расширения .dds
      */
     void setTexture(const std::string &name);
-
+    /**
+     * @brief Получение прозрачности.
+     *
+     * @note 0 - полностью прозрачный, 1 - полностью непрозрачный.
+     */
     void setAlpha(float alpha);
+    float getAlpha() const;
 
 protected:
     virtual void configure();

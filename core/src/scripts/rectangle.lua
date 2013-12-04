@@ -13,7 +13,7 @@ function ui:rectangle(id)
       elseif k == "color" then
         r:setColor(v)
       elseif k == "texture" then
-        r:setTexture(v)
+        r:setTexture(v) -- READ ONLY!!!
       elseif k == "radius" then
         r:setRadius(v)
       elseif k == "radiusOfA" then
@@ -27,8 +27,8 @@ function ui:rectangle(id)
       elseif k == "alpha" then
         r:setAlpha(v)
       elseif k == "border" then
-        r:setBorderWidth(v.width)
-        r:setBorderColor(v.color)
+        r:setBorderWidth(v.width) -- READ ONLY!!! TODO: MAKE WRITE
+        r:setBorderColor(v.color) -- READ ONLY!!! TODO: MAKE WRITE
       else
         -- if k is number
         r:addChild(v)

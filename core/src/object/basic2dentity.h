@@ -41,15 +41,15 @@ public:
     explicit Basic2dEntity(const std::string &id);
     virtual ~Basic2dEntity();
 
-    virtual std::string getId() const;
+    virtual std::string getId() const override;
 
-    virtual void setParent(AbstractEntity *parent);
-    virtual AbstractEntity *getParent() const;
-    virtual bool isRoot() const;
+    virtual void setParent(AbstractEntity *parent) override;
+    virtual AbstractEntity *getParent() const override;
+    virtual bool isRoot() const override;
 
-    virtual void addChild(AbstractEntity *child);
-    virtual AbstractEntity *getChild(const std::string &id);
-    virtual std::vector<AbstractEntity *> &getChilds();
+    virtual void addChild(AbstractEntity *child) override;
+    virtual AbstractEntity *getChild(const std::string &id) override;
+    virtual std::vector<AbstractEntity *> &getChilds() override;
 
     /**
      * @brief Обработка клика

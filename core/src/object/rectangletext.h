@@ -39,7 +39,7 @@ public:
     CRectangleText();
     virtual ~CRectangleText();
 
-    virtual void paint() const;
+    virtual void paint() const override;
 
     /**
      * @brief Установить цвет шрифта для отображения.
@@ -47,15 +47,20 @@ public:
      */
     void setFont(const CFont &font);
     void setFont(const std::string &name);
+    std::string getFontName() const;
     void setFont(float height);
+    float getFontHeight() const;
     void setFontQuantity(int quantity);
     void setFontAlign(core::EVerticalAlign vAlign);
+    EVerticalAlign getVerticalAlign() const;
     void setFontAlign(core::EHorizontalAlign hAlign);
+    EHorizontalAlign getHorizontalAlign() const;
     /**
      * @brief Установить текст.
      * @note в соответствии с установленым шрифтом м текстом сгенерируется буферизображения шрифта.
      */
     void setText(const std::string &text);
+    std::string getText() const;
 
 protected:
     virtual void configure();
