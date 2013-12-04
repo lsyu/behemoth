@@ -40,6 +40,7 @@ public:
     virtual ~CRectangleText();
 
     virtual void paint() const override;
+    virtual void onClicked(const CEventMouseClick &event) override;
 
     /**
      * @brief Установить цвет шрифта для отображения.
@@ -63,7 +64,7 @@ public:
     std::string getText() const;
 
 protected:
-    virtual void configure();
+    virtual void configure() override;
 
 private:
     /**

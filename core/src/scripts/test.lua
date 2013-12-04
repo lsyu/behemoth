@@ -10,9 +10,9 @@ ui:rectangle "root"
 
   ui:rectangle "modal"
   {
-    x = -0.7,
+    x = -0.5,
     y = -0.5,
-    width = 1.4,
+    width = 1.0,
     height = 1.0,
     radius = 0.1,
 
@@ -36,7 +36,7 @@ ui:rectangle "root"
         alignVerical = ui.center,
         alignHorizontal = ui.center,
         text = "Hello, world!\nThis subline does not contain delimiters! :)",
-        height = 0.4,
+        height = 0.2,
         font = "DejaVuSans"
       }
     },

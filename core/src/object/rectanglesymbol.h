@@ -37,8 +37,10 @@ public:
                      CRectangleText *parent);
     virtual ~CRectangleSymbol();
 
+    virtual void onClicked(const CEventMouseClick &event) override;
+
 protected:
-    virtual void configure();
+    virtual void configure() override;
     void prepare();
     void translate(const glm::vec2 &translate);
 

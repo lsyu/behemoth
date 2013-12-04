@@ -46,6 +46,10 @@ CRectangleSymbol::~CRectangleSymbol()
     delete symbolTex;
 }
 
+void CRectangleSymbol::onClicked(const CEventMouseClick &event)
+{
+}
+
 void CRectangleSymbol::configure()
 {
     vPos2[0] = glm::vec2(x, y);

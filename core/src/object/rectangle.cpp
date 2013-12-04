@@ -24,6 +24,8 @@
 #include "core/application.h"
 #include "core/events/eventmouseclick.h"
 
+#include <iostream>
+
 namespace core {
 
 CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
@@ -203,6 +205,37 @@ void CRectangle::setColor(const glm::vec3 &color)
     vColor[3] = color;
 }
 
+bool CRectangle::contains(const glm::vec2 &point) const
+{
+    if (point.x < x || point.x > x+width) {
+        std::cout << "--------------------------------------------\n";
+        std::cout << this->getId() << " X FAIL!!!\n";
+        std::cout << "--------------------------------------------\n";
+        return false;
+    }
+    if (point.y < y || point.y > y+height) {
+        std::cout << "--------------------------------------------\n";
+        std::cout << this->getId() << " Y FAIL!!!\n";
+        std::cout << "--------------------------------------------\n";
+        return false;
+    }
+
+    std::cout << "--------------------------------------------\n";
+    std::cout << this->getId() << " contains!!!\n";
+    std::cout << "event: x = " << point.x << ", y = " << point.y << "\n";
+    std::cout << "obj: x = " << x << ", y = " << y << ", w = " << width << "h = " << height << "\n";
+    std::cout << "--------------------------------------------\n";
+
+    return true;
+}
+
+void CRectangle::onClicked(const CEventMouseClick &event)
+{
+    bool c = contains(event.getCoordinates());
+    for (int i = vChilds.size()-1; i >= 0; --i)
+        dynamic_cast<Basic2dEntity*>(vChilds[i])->onClicked(event);
+}
+
 glm::vec3 CRectangle::getColor() const
 {
     return vColor[0];
@@ -226,11 +259,6 @@ float CRectangle::getYMin() const
 float CRectangle::getYMax() const
 {
     return y + height;
-}
-
-void CRectangle::onClicked(const CEventMouseClick &event)
-{
-    // TODO: Сдалать реализацию!
 }
 
 void CRectangle::setX(float x)

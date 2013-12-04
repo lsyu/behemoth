@@ -19,6 +19,7 @@
 
 #include "defaultscene.h"
 #include "eventmouseclick.h"
+#include "core/objects/2d/basic2dentity.h"
 
 #include <vector>
 
@@ -53,6 +54,8 @@ bool DefaultScene::updateGL()
 
 bool DefaultScene::updateGL(CEventMouseClick *e)
 {
+    Basic2dEntity *object = CLuaManager::getInstance()->getRootObject();
+    object->onClicked(*e);
     return false;
 }
 

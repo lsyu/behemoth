@@ -30,6 +30,7 @@
 namespace core {
 
 class AbstractEntity;
+class Basic2dEntity;
 class __CLuaManagerImplDel;
 
 /**
@@ -75,6 +76,7 @@ public:
 
     AbstractEntity *getObject(const std::string &id);
     AbstractEntity *getObject(int num);
+    Basic2dEntity *getRootObject();
     const std::vector< std::shared_ptr<AbstractEntity> >& getObjects() const;
 
     template<class T>

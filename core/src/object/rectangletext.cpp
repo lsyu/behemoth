@@ -80,6 +80,10 @@ void CRectangleText::paint() const
         vChilds[i]->paint();
 }
 
+void CRectangleText::onClicked(const CEventMouseClick &event)
+{
+}
+
 void CRectangleText::setFont(const CFont &font)
 {
     this->font = new CFont(font);

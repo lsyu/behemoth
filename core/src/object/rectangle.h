@@ -129,7 +129,12 @@ public:
     float getAlpha() const;
 
 protected:
-    virtual void configure();
+    virtual void configure() override;
+
+    /**
+     * @brief Содержит ли фигура точку point
+     */
+    bool contains(const glm::vec2 &point) const;
 
 
     CShader *shader; // Получаю с фабрики, не надо чистить память

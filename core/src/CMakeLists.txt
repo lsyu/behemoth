@@ -24,8 +24,8 @@ set(CORE_SRCS
 )
 
 add_definitions(-Wall -Wextra -pedantic -Weffc++ -Woverloaded-virtual -Wold-style-cast -Wconversion -Wsign-conversion -std=c++11)
-add_executable(hello_world ${CORE_SRCS} ${CORE_HEADERS})
-target_link_libraries(hello_world
+add_executable(bin_core ${CORE_SRCS} ${CORE_HEADERS})
+target_link_libraries(bin_core
     ${FREEGLUT_LIBS}
     ${LUA_LIBS}
     ${FREETYPE_LIBS}

@@ -136,15 +136,15 @@ float CApplication::getSecondOfLastFrame() const
 
 glm::vec2 CApplication::getRelativeCoordinate(const glm::ivec2 &absoluteCoordinate)
 {
-    float x = absoluteCoordinate.x / instance->size.x - 0.5f;
-    float y = absoluteCoordinate.y / instance->size.y - 0.5f;
+    float x = (absoluteCoordinate.x / instance->size.x - 0.5f) * 2.0f;
+    float y = (absoluteCoordinate.y / instance->size.y - 0.5f) * 2.0f;
     return glm::vec2(x, y);
 }
 
 glm::vec2 CApplication::getRelativeCoordinate(int _x, int _y)
 {
-    float x = (float)_x / (float)instance->size.x - 0.5f;
-    float y = (float)_y / (float)instance->size.y - 0.5f;
+    float x = ((float)_x / (float)instance->size.x - 0.5f) * 2.0f;
+    float y = ((float)_y / (float)instance->size.y - 0.5f) * 2.0f;
     return glm::vec2(x, y);
 }
 

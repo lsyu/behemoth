@@ -187,6 +187,11 @@ core::AbstractEntity *CLuaManager::getObject(int num)
     return objects[num].get();
 }
 
+Basic2dEntity *CLuaManager::getRootObject()
+{
+    return dynamic_cast<Basic2dEntity*>(objects.back().get());
+}
+
 const std::vector< std::shared_ptr<core::AbstractEntity> >& CLuaManager::getObjects() const
 {
     return objects;
