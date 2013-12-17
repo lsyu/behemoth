@@ -82,6 +82,12 @@ public:
     template<class T>
     void addObject(AbstractEntity *entity);
 
+    /**
+     * @brief Выполнить onClick из скрипта Lua.
+     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
+     */
+    bool runOnClickFor(AbstractEntity *entity);
+
 protected:
     /**
      * @brief Текущая задача скрипта.

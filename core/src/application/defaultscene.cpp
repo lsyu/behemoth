@@ -56,7 +56,16 @@ bool DefaultScene::updateGL(CEventMouseClick *e)
 {
     Basic2dEntity *object = CLuaManager::getInstance()->getRootObject();
     object->onClicked(*e);
-    return false;
+    if (!Basic2dEntity::objects4Event.empty()) {
+        bool clicked;
+        do {
+            clicked = CLuaManager::getInstance()->runOnClickFor(Basic2dEntity::objects4Event.back());
+            Basic2dEntity::objects4Event.pop_back();
+            if (Basic2dEntity::objects4Event.empty())
+                break;
+        } while (!clicked);
+    }
+    return true;
 }
 
 void DefaultScene::paintGL()

@@ -27,6 +27,7 @@
 #include "core/ogl/shader.h"
 #include "core/ogl/vertexbufferobject.h"
 #include "core/manager/resourcemanager.h"
+#include "core/objects/2d/basic2dentity.h"
 
 #include <iostream>
 #include <chrono>
@@ -157,7 +158,16 @@ void CApplication::key(unsigned char key, int x, int y )
 
 void CApplication::mouse(int button, int state, int x, int y)
 {
-    CEventMouseClick e(x, y);
+    Basic2dEntity::objects4Event.clear();
+
+    EMouseButton btn  = EMouseButton::left;
+    if (button == GLUT_RIGHT_BUTTON)
+        btn = EMouseButton::right;
+    else if (button == GLUT_MIDDLE_BUTTON)
+        btn = EMouseButton::middle;
+    EMouseState s = (state == GLUT_UP ? EMouseState::up : EMouseState::down);
+
+    CEventMouseClick e(x, y, btn, s);
     if (!instance->painter->updateGL(&e))
         glutLeaveMainLoop();
 }
@@ -173,7 +183,7 @@ void CApplication::display()
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<float> time_span = duration_cast< duration<double> >(t2 - t1);
     instance->secOfLastFrame = time_span.count();
-    std::cout << 1.0f / instance->secOfLastFrame << "\n";
+//    std::cout << 1.0f / instance->secOfLastFrame << "\n";
 }
 
 void CApplication::idle()

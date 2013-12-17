@@ -27,22 +27,44 @@
 namespace core {
 
 /**
+ * @brief Клавиши мыши
+ */
+enum class EMouseButton: unsigned char {
+    left,   /**< Левая.  */
+    right,  /**< Правая. */
+    middle  /**< Средняя(колесико). */
+}; // enum EMouseButton
+
+/**
+ * @brief Состояние события
+ */
+enum class EMouseState: unsigned char {
+    down,   /**< Нажата */
+    up      /**< Отпущена */
+}; // enum EMouseState
+
+/**
  * @brief Событие клика мыши
  */
 class CEventMouseClick : public AbstractEvent
 {
 public:
-    explicit CEventMouseClick(int x = 0, int y = 0);
+    explicit CEventMouseClick(int x = 0, int y = 0, EMouseButton btn = EMouseButton::left,
+                              EMouseState state = EMouseState::down);
     virtual ~CEventMouseClick();
 
     glm::vec2 getCoordinates() const;
     float getX() const;
     float getY() const;
+    EMouseButton getMouseButton() const;
+    EMouseState getMouseState() const;
 
 
 private:
-    float x;    /**< Абсцисса точки клика. В относительныйх величинах [-1..1] */
-    float y;    /**< Оордината точки клика. В относительныйх величинах [-1..1] */
+    float x;            /**< Абсцисса точки клика. В относительныйх величинах [-1..1] */
+    float y;            /**< Оордината точки клика. В относительныйх величинах [-1..1] */
+    EMouseButton btn;   /**< Кнопка */
+    EMouseState state;  /**< Состояние */
 }; // class CEventMouseClick
 
 } // namespace core

@@ -22,7 +22,8 @@
 
 namespace core {
 
-CEventMouseClick::CEventMouseClick(int x, int y) : AbstractEvent(), x(), y()
+CEventMouseClick::CEventMouseClick(int x, int y, EMouseButton btn, EMouseState state) : AbstractEvent(),
+    x(), y(), btn(btn), state(state)
 {
     glm::vec2 coord = CApplication::getInstance()->getRelativeCoordinate(x, y);
     this->x = coord.x;
@@ -46,6 +47,16 @@ float CEventMouseClick::getX() const
 float CEventMouseClick::getY() const
 {
     return y;
+}
+
+EMouseButton CEventMouseClick::getMouseButton() const
+{
+    return btn;
+}
+
+EMouseState CEventMouseClick::getMouseState() const
+{
+    return state;
 }
 
 } // namespace core

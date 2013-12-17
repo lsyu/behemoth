@@ -23,6 +23,8 @@
 
 namespace core {
 
+std::vector<Basic2dEntity*> Basic2dEntity::objects4Event;
+
 Basic2dEntity::Basic2dEntity() : id(), vPos2(), vUV(), vColor(), vChilds(), parent(nullptr)
 {
 }

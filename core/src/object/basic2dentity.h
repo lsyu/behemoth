@@ -25,6 +25,8 @@
 namespace core {
 
 class CEventMouseClick;
+class CApplication;
+class DefaultScene;
 
 struct Border {
     Border() : width(0), color(0.0f, 0.0f, 0.0f) {}
@@ -37,6 +39,10 @@ struct Border {
 class Basic2dEntity : public AbstractEntity
 {
 public:
+
+    friend class CApplication;
+    friend class DefaultScene;
+
     Basic2dEntity();
     explicit Basic2dEntity(const std::string &id);
     virtual ~Basic2dEntity();
@@ -57,14 +63,17 @@ public:
     virtual void onClicked(const CEventMouseClick &event) = 0;
 
 protected:
-
     std::string id;                         /**< идентификатор */
     std::vector<glm::vec2> vPos2;           /**< вектор координат */
     std::vector<glm::vec2> vUV;             /**< вектор текстурных координат */
     std::vector<glm::vec3> vColor;          /**< вектор цветов вершин */
 
-    std::vector<AbstractEntity *> vChilds;    /**< вектор детей */
-    AbstractEntity *parent;                  /**< родитель */
+    std::vector<AbstractEntity *> vChilds;  /**< вектор детей */
+    AbstractEntity *parent;                 /**< родитель */
+
+    static std::vector<Basic2dEntity*> objects4Event;   /**< Объекты, для которых выполнилось
+                                                         * действие.
+                                                         */
 }; // class Basic2dEntity
 
 } // namespace core

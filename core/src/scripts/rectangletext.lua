@@ -20,5 +20,9 @@ function ui:text(data)
     end
   end
   r:sync()
-  return r
+
+  local ret = {}
+  ret.obj = r
+
+  return ret
 end
