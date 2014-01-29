@@ -67,13 +67,6 @@ public:
      */
     bool readGui(const std::string &file);
 
-    /**
-     * @brief Прочитать файл конфигурации.
-     * @param file название файла конфигурации.
-     * @return true, если файл конфигурации корректен и данные успешно прочитаны, false иначе.
-     */
-    bool readConfFile(const std::string &file);
-
     AbstractEntity *getObject(const std::string &id);
     AbstractEntity *getObject(int num);
     Basic2dEntity *getRootObject();
@@ -90,22 +83,13 @@ public:
 
 protected:
     /**
-     * @brief Текущая задача скрипта.
-     *
-     * Необходим для корректной подготовки стека Lua для работы с нашими объектами
-     */
-    enum CurrentTask {
-        TaskGUI = 0,
-        TaskConfig
-    }; // enum Init
-    /**
      * @brief Закрытие.
      */
-    void close(CurrentTask task);
+    void close();
     /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
      */
-    void init(CurrentTask task);
+    void init();
     /**
      * @brief Регистрация таблицы ui
      */
@@ -127,27 +111,17 @@ protected:
      */
     void registerText();
 
-    /**
-     * @brief Регистрация таблицы conf.
-     */
-    void registerConf();
-    /**
-     * @brief регистрация методов для загрузки пути до файлов ресурсов.
-     */
-    void registerFolders();
-
 private:
     CLuaManager();
     ~CLuaManager();
     CLuaManager(const CLuaManager &);
     CLuaManager &operator=(const CLuaManager&);
 
-    bool parseFile(const std::string &fileName, CurrentTask task = TaskGUI);
+    bool parseFile(const std::string &fileName);
 
     static CLuaManager *instance;
     lua_State *lua;
     std::vector< std::shared_ptr<core::AbstractEntity> > objects; /**< Элементы сцены.(Пока только GUI) */
-    std::map<std::string, std::string> config; /**< Значения настроек конф. файлов. */
 };
 
 } // namespace Core

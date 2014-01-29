@@ -24,10 +24,11 @@
 #include <memory>
 #include <map>
 
+#include "lua/lua.h"
+
 namespace core {
 
 class __CResourceManagerImplDel;
-class CLuaManager;
 class CApplication;
 
 /**
@@ -60,7 +61,6 @@ class CResourceManager
 {
 public:
     friend class __CResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
-    friend class CLuaManager;
     friend class CApplication;
 
     /**
@@ -126,10 +126,14 @@ private:
      * @brief Инициализация ресурсов.
      */
     void initialize(int &argc, char *argv[]);
+    void registrationFolder();
+    void readConfFile();
 
-    std::string patchToApplication;
-    std::map<std::string, std::string> mapOfParam;
     static CResourceManager *instance;
+
+    std::string pathToApplication;
+    std::map<std::string, std::string> mapOfParam;
+    lua_State *lua;
 }; // class ResourceManager
 
 } // namespace Core

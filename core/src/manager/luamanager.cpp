@@ -47,14 +47,12 @@ CLuaManager *CLuaManager::getInstance()
     if (!instance) {
         instance = new CLuaManager();
         static __CLuaManagerImplDel delHelper(instance);
-        // При инициализации хорошо бы прочитать, где что находится.
-        // Важно, чтобы сначала прочитались ресурсы, а уже потом - объекты.
-        instance->init(TaskConfig);
+        instance->init();
     }
     return instance;
 }
 
-CLuaManager::CLuaManager() : lua(), objects(), config()
+CLuaManager::CLuaManager() : lua(nullptr), objects()
 {
 }
 
@@ -62,10 +60,10 @@ CLuaManager::~CLuaManager()
 {
 }
 
-bool CLuaManager::parseFile(const std::string &fileName, CurrentTask task)
+bool CLuaManager::parseFile(const std::string &fileName)
 {
     if (!lua)
-        init(task);
+        init();
     bool ret = !luaL_dofile(lua, fileName.c_str());
     // TODO: Залогировать
     if(!ret) {
@@ -73,18 +71,13 @@ bool CLuaManager::parseFile(const std::string &fileName, CurrentTask task)
         std::string ololo(lua_tostring(lua, -1));
         std::cout << ololo;
     }
-    close(task);
+    close();
     return ret;
 }
 
 bool CLuaManager::readGui(const std::string &file)
 {
-    return parseFile(file, TaskGUI);
-}
-
-bool CLuaManager::readConfFile(const std::string &file)
-{
-    return parseFile(file, TaskConfig);
+    return parseFile(file);
 }
 
 void CLuaManager::registerUI()
@@ -103,29 +96,15 @@ void CLuaManager::registerUI()
     registerRectangle();
 }
 
-void CLuaManager::registerConf()
-{
-    //! TODO: Загрузка всех скриптов для системы конфигурации
-    std::string tmp = "scripts/";
-    luaL_dofile(lua, std::string(tmp + "conf.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "folders.lua").c_str());
-
-    registerFolders();
-}
-
-void CLuaManager::close(CurrentTask task)
+void CLuaManager::close()
 {
     if (lua) {
-        if (task == TaskConfig) {
-            lua_close(lua);
-            lua = nullptr;
-        }
-        if (task == TaskGUI && !objects.empty())
+        if (!objects.empty())
             objects.back()->configure();
     }
 }
 
-void CLuaManager::init(CurrentTask task)
+void CLuaManager::init()
 {
     lua = luaL_newstate();
     if (lua) {
@@ -143,10 +122,7 @@ void CLuaManager::init(CurrentTask task)
             lib->func(lua);
             lua_settop(lua, 0);
         }
-        if (task == TaskGUI)
-            registerUI();
-        else if (task == TaskConfig)
-            registerConf();
+        registerUI();
     }
 }
 
@@ -864,49 +840,6 @@ void CLuaManager::registerText()
     lua_pushvalue(lua, -1);
     lua_setfield(lua, -1, "__index");
     lua_setglobal(lua, "Text");
-}
-
-void CLuaManager::registerFolders()
-{
-    luaL_Reg sFooRegs[] =
-    {
-        {
-            "new", [](lua_State *l)
-            {
-                CResourceManager ** resMan
-                        = static_cast<CResourceManager **>(
-                                lua_newuserdata(l, sizeof(CResourceManager *)));
-                *resMan = CResourceManager::getInstance();
-                luaL_getmetatable(l, "luaL_Folders");
-                lua_setmetatable(l, -2);
-                return 1;
-            }
-        },
-
-        {
-            "addResource", [](lua_State *l)
-            {
-                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *resName = luaL_checkstring(l, 2);
-                const char *folder = luaL_checkstring(l, 3);
-                foo->mapOfParam[resName] = std::string(folder);
-                return 1;
-            }
-        },
-
-        "__gc", [](lua_State * l)
-        {
-            // Т.к CResourceManager синглтон, и он нам еще понадобится, ничего не удаляем!
-            return 0;
-        },
-
-        { NULL, NULL }
-    }; //luaL_Reg sFooRegs
-    luaL_newmetatable(lua, "luaL_Folders");
-    luaL_setfuncs (lua, sFooRegs, 0);
-    lua_pushvalue(lua, -1);
-    lua_setfield(lua, -1, "__index");
-    lua_setglobal(lua, "Folders");
 }
 
 } // namespace Core

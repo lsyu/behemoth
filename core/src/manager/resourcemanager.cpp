@@ -49,18 +49,92 @@ CResourceManager* CResourceManager::getInstance()
 
 void CResourceManager::initialize(int &argc, char *argv[])
 {
-    patchToApplication = std::string(argv[0]);
-    size_t len = patchToApplication.find_last_of(getFileSeparator());
-    patchToApplication = patchToApplication.substr(0, len);
-    CLuaManager::getInstance()->readConfFile(getCoreConf());
+    pathToApplication = std::string(argv[0]);
+    size_t len = pathToApplication.find_last_of(getFileSeparator());
+    pathToApplication = pathToApplication.substr(0, len) + getFileSeparator();
+    registrationFolder();
+    readConfFile();
 }
 
-CResourceManager::CResourceManager() : mapOfParam(std::map<std::string, std::string>()) {}
+void CResourceManager::registrationFolder()
+{
+    luaL_Reg sFooRegs[] =
+    {
+        {
+            "new", [](lua_State *l)
+            {
+                CResourceManager ** resMan
+                        = static_cast<CResourceManager **>(
+                                lua_newuserdata(l, sizeof(CResourceManager *)));
+                *resMan = CResourceManager::getInstance();
+                luaL_getmetatable(l, "luaL_Folders");
+                lua_setmetatable(l, -2);
+                return 1;
+            }
+        },
+
+        {
+            "addResource", [](lua_State *l)
+            {
+                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+                const char *resName = luaL_checkstring(l, 2);
+                const char *folder = luaL_checkstring(l, 3);
+                foo->mapOfParam[resName] = folder;
+                return 1;
+            }
+        },
+
+        "__gc", [](lua_State * l)
+        {
+            // Т.к CResourceManager синглтон, и он нам еще понадобится, ничего не удаляем!
+            return 0;
+        },
+
+        { NULL, NULL }
+    }; //luaL_Reg sFooRegs
+    luaL_newmetatable(lua, "luaL_Folders");
+    luaL_setfuncs (lua, sFooRegs, 0);
+    lua_pushvalue(lua, -1);
+    lua_setfield(lua, -1, "__index");
+    lua_setglobal(lua, "Folders");
+}
+
+void CResourceManager::readConfFile()
+{
+    //! TODO: Загрузка всех скриптов для системы конфигурации
+    std::string path = pathToApplication + "scripts" + getFileSeparator();
+    luaL_dofile(lua, std::string(path + "conf.lua").c_str());
+    luaL_dofile(lua, std::string(path + "folders.lua").c_str());
+    luaL_dofile(lua, std::string(pathToApplication + "core.conf").c_str());
+    lua_close(lua);
+}
+
+CResourceManager::CResourceManager() : pathToApplication(), mapOfParam(std::map<std::string, std::string>()),
+        lua(luaL_newstate())
+{
+    if (lua) {
+        const luaL_Reg lualibs[] =
+        {
+            { "base", luaopen_base },
+            { LUA_IOLIBNAME, luaopen_io},
+            { LUA_TABLIBNAME, luaopen_table},
+            { NULL, NULL}
+        };
+
+        const luaL_Reg *lib = lualibs;
+        for(; lib->func != NULL; lib++)
+        {
+            lib->func(lua);
+            lua_settop(lua, 0);
+        }
+    }
+}
+
 CResourceManager::~CResourceManager() {}
 
 string CResourceManager::getPatchToApplication() const
 {
-    return patchToApplication + getFileSeparator();
+    return pathToApplication + getFileSeparator();
 }
 
 string CResourceManager::getResource(const string &name) const
