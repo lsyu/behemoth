@@ -17,7 +17,7 @@
  *
  */
 
-#include "luamanager.h"
+#include "guimanager.h"
 
 #include "core/objects/abstractentity.h"
 #include "core/objects/2d/rectangle.h"
@@ -32,79 +32,49 @@
 
 namespace core {
 
-CLuaManager *CLuaManager::instance = nullptr;
+CGUIManager *CGUIManager::instance = nullptr;
 
-class __CLuaManagerImplDel {
+class __CGUIManagerImplDel {
 public:
-    explicit __CLuaManagerImplDel(CLuaManager *luaManager) : luaManager(luaManager) {}
-    ~__CLuaManagerImplDel() {delete luaManager;}
+    explicit __CGUIManagerImplDel(CGUIManager *luaManager) : luaManager(luaManager) {}
+    ~__CGUIManagerImplDel() {delete luaManager;}
 private:
-    CLuaManager *luaManager;
+    CGUIManager *luaManager;
 };
 
-CLuaManager *CLuaManager::getInstance()
+CGUIManager *CGUIManager::getInstance()
 {
     if (!instance) {
-        instance = new CLuaManager();
-        static __CLuaManagerImplDel delHelper(instance);
+        instance = new CGUIManager();
+        static __CGUIManagerImplDel delHelper(instance);
         instance->init();
     }
     return instance;
 }
 
-CLuaManager::CLuaManager() : lua(nullptr), objects()
+CGUIManager::CGUIManager() : lua(nullptr), objects()
 {
 }
 
-CLuaManager::~CLuaManager()
+CGUIManager::~CGUIManager()
 {
 }
 
-bool CLuaManager::parseFile(const std::string &fileName)
+bool CGUIManager::readGui(const std::string &fileName)
 {
     if (!lua)
         init();
     bool ret = !luaL_dofile(lua, fileName.c_str());
-    // TODO: Залогировать
     if(!ret) {
         // TODO: Залогировать!
-        std::string ololo(lua_tostring(lua, -1));
-        std::cout << ololo;
+        std::string log(lua_tostring(lua, -1));
+        std::cout << log;
     }
     close();
     return ret;
 }
 
-bool CLuaManager::readGui(const std::string &file)
-{
-    return parseFile(file);
-}
-
-void CLuaManager::registerUI()
-{
-    //! TODO: Загрузка всех скриптов объектов сцены
-    std::string tmp = "scripts/";
-    luaL_dofile(lua, std::string(tmp + "vec.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "ui.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "rectangletext.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "rectangle.lua").c_str());
-
-
-    registerVec2();
-    registerVec3();
-    registerText();
-    registerRectangle();
-}
-
-void CLuaManager::close()
-{
-    if (lua) {
-        if (!objects.empty())
-            objects.back()->configure();
-    }
-}
-
-void CLuaManager::init()
+void CGUIManager::init()
 {
     lua = luaL_newstate();
     if (lua) {
@@ -126,7 +96,31 @@ void CLuaManager::init()
     }
 }
 
-core::AbstractEntity *CLuaManager::getObject(const std::string &id)
+void CGUIManager::close()
+{
+    if (lua) {
+        if (!objects.empty())
+            objects.back()->configure();
+    }
+}
+
+void CGUIManager::registerUI()
+{
+    //! TODO: Загрузка всех скриптов объектов сцены
+    std::string tmp = "scripts/";
+    luaL_dofile(lua, std::string(tmp + "vec.lua").c_str());
+    luaL_dofile(lua, std::string(tmp + "ui.lua").c_str());
+    luaL_dofile(lua, std::string(tmp + "rectangletext.lua").c_str());
+    luaL_dofile(lua, std::string(tmp + "rectangle.lua").c_str());
+
+
+    registerVec2();
+    registerVec3();
+    registerText();
+    registerRectangle();
+}
+
+core::AbstractEntity *CGUIManager::getObject(const std::string &id)
 {
     std::vector< std::shared_ptr<core::AbstractEntity> >::iterator it
             = std::find_if(objects.begin(), objects.end(),
@@ -137,30 +131,30 @@ core::AbstractEntity *CLuaManager::getObject(const std::string &id)
     return it != objects.end() ? static_cast<core::AbstractEntity*>(&(*it->get())) : nullptr;
 }
 
-core::AbstractEntity *CLuaManager::getObject(int num)
+core::AbstractEntity *CGUIManager::getObject(int num)
 {
     if (num < 0 || num >= static_cast<int>(objects.size()))
         return nullptr;
     return objects[num].get();
 }
 
-Basic2dEntity *CLuaManager::getRootObject()
+Basic2dEntity *CGUIManager::getRootObject()
 {
     return dynamic_cast<Basic2dEntity*>(objects.back().get());
 }
 
-const std::vector< std::shared_ptr<core::AbstractEntity> >& CLuaManager::getObjects() const
+const std::vector< std::shared_ptr<core::AbstractEntity> >& CGUIManager::getObjects() const
 {
     return objects;
 }
 
 template<class T>
-void CLuaManager::addObject(AbstractEntity *t)
+void CGUIManager::addObject(AbstractEntity *t)
 {
     objects.push_back(std::shared_ptr<AbstractEntity>(dynamic_cast<T*>(t)));
 }
 
-bool CLuaManager::runOnClickFor(AbstractEntity *entity)
+bool CGUIManager::runOnClickFor(AbstractEntity *entity)
 {
     lua_getglobal(lua, "ui");
     if (lua_istable(lua, -1))
@@ -186,7 +180,7 @@ bool CLuaManager::runOnClickFor(AbstractEntity *entity)
 }
 
 
-void CLuaManager::registerVec2()
+void CGUIManager::registerVec2()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
@@ -256,7 +250,7 @@ void CLuaManager::registerVec2()
     lua_setglobal(lua, "Vec2");
 }
 
-void CLuaManager::registerVec3()
+void CGUIManager::registerVec3()
 {
     //! TODO: Сделать параметризацию загрузки
     luaL_Reg sFooRegs[] =
@@ -345,7 +339,7 @@ void CLuaManager::registerVec3()
     lua_setglobal(lua, "Vec3");
 }
 
-void CLuaManager::registerRectangle()
+void CGUIManager::registerRectangle()
 {
     luaL_Reg sFooRegs[] =
     {
@@ -572,90 +566,7 @@ void CLuaManager::registerRectangle()
             {
 
                 CRectangle * foo = *static_cast<CRectangle **>(luaL_checkudata(l, 1, "luaL_Rectangle"));
-//                lua_newtable(l);//Создаем новую таблицу в Lua
-//                lua_pushstring(l,"__newindex");
-//                lua_pushlightuserdata(l, foo);
-//                lua_pushcclosure
-//                (
-//                    l,
-//                    [](lua_State *l){
-//                        std::string property = luaL_checkstring(l,2);
-//                        CRectangle *foo = *static_cast<CRectangle **>(lua_touserdata(l, 1));
-//                        if (property == "x")
-//                            foo->setX(lua_tonumber(l, -1));
-//                        else if (property == "y")
-//                            foo->setY(lua_tonumber(l, -1));
-//                        else if (property == "width")
-//                            foo->setWidth(lua_tonumber(l, -1));
-//                        else if (property == "height")
-//                            foo->setHeight(lua_tonumber(l, -1));
-//                        else if (property == "color") {
-//                            glm::vec3 *color = *static_cast<glm::vec3 **>(luaL_checkudata(l, 2, "luaL_Vec3"));
-//                            foo->setColor(*color);
-//                        } else if (property == "texture")
-//                            foo->setTexture(lua_tostring(l , -1));
-//                        else if (property == "radius")
-//                            foo->setRadius(lua_tonumber(l, -1));
-//                        else if (property == "radiusOfA")
-//                            foo->setRadiusOfA(lua_tonumber(l, -1));
-//                        else if (property == "radiusOfB")
-//                            foo->setRadiusOfB(lua_tonumber(l, -1));
-//                        else if (property == "radiusOfC")
-//                            foo->setRadiusOfC(lua_tonumber(l, -1));
-//                        else if (property == "radiusOfD")
-//                            foo->setRadiusOfD(lua_tonumber(l, -1));
-//                        else if (property == "alpha")
-//                            foo->setAlpha(lua_tonumber(l, -1));
-//                        else
-//                            return 0;
-//                        return 1;
-//                    },
-//                    1
-//                );
-//                lua_rawset(l, -3);
-//                lua_setmetatable(l,-2);
-//                lua_getmetatable(l, -1);
-//                lua_pushstring(l, "__index");
-//                lua_pushlightuserdata(l,foo);
-//                lua_pushcclosure
-//                (
-//                    l,
-//                    [](lua_State *l){
-//                        std::string property = luaL_checkstring(l, 2);
-//                        CRectangle *foo = *static_cast<CRectangle **>(lua_touserdata(l, 1));
-//                        if (property == "x")
-//                            lua_pushnumber(l, foo->getXMin());
-//                        else if (property == "y")
-//                            lua_pushnumber(l, foo->getYMin());
-//                        else if (property == "width")
-//                            lua_pushnumber(l, foo->getWidth());
-//                        else if (property == "height")
-//                            lua_pushnumber(l, foo->getHeight());
-//                        else if (property == "color") {
-//                            glm::vec3 color = foo->getColor();
-//                            lua_pushlightuserdata(l, &color);
-//                        } else if (property == "radius")
-//                            lua_pushnumber(l, foo->getRadius());
-//                        else if (property == "radiusOfA")
-//                            lua_pushnumber(l, foo->getRadiusOfA());
-//                        else if (property == "radiusOfB")
-//                            lua_pushnumber(l, foo->getRadiusOfB());
-//                        else if (property == "radiusOfC")
-//                            lua_pushnumber(l, foo->getRadiusOfC());
-//                        else if (property == "radiusOfD")
-//                            lua_pushnumber(l, foo->getRadiusOfD());
-//                        else if (property == "alpha")
-//                            lua_pushnumber(l, foo->getAlpha());
-//                        else
-//                            return 0;
-//                        return 1;
-//                    },
-//                    1
-//                );
-//                lua_rawset(l, -3);
-//                lua_setmetatable(l, -2);//Устанавливаем метатаблицу для нашей новой таблицы
-//                lua_setglobal(l, "luaL_Rectangle");
-                CLuaManager::getInstance()->addObject<CRectangle>(foo);
+                CGUIManager::getInstance()->addObject<CRectangle>(foo);
                 return 1;
             }
         },
@@ -676,7 +587,7 @@ void CLuaManager::registerRectangle()
     lua_setglobal(lua, "Rectangle");
 }
 
-void CLuaManager::registerText()
+void CGUIManager::registerText()
 {
     luaL_Reg sFooRegs[] =
     {
@@ -760,70 +671,7 @@ void CLuaManager::registerText()
             {
 
                 CRectangleText * foo = *static_cast<CRectangleText **>(luaL_checkudata(l, 1, "luaL_Text"));
-//                lua_newtable(l);//Создаем новую таблицу в Lua
-//                lua_pushstring(l,"__newindex");
-//                lua_pushlightuserdata(l, foo);
-//                lua_pushcclosure
-//                (
-//                    l,
-//                    [](lua_State *l){
-//                        std::string property = luaL_checkstring(l,2);
-//                        CRectangleText *foo = *static_cast<CRectangleText **>(lua_touserdata(l, 1));
-//                        if (property == "font")
-//                            foo->setFont(lua_tostring(l, -1));
-//                        else if (property == "height")
-//                            foo->setFont(lua_tonumber(l, -1));
-//                        else if (property == "text")
-//                            foo->setText(lua_tostring(l, -1));
-//                        else if (property == "alignVerical") {
-//                            std::string align = lua_tostring(l, -1);
-//                            if (align == "center")
-//                                foo->setFontAlign(EVerticalAlign::Center);
-//                            else if (align == "top")
-//                                foo->setFontAlign(EVerticalAlign::Top);
-//                            else if (align == "bottom")
-//                                foo->setFontAlign(EVerticalAlign::Bottom);
-//                        } else if (property == "alignHorizontal") {
-//                            std::string align = lua_tostring(l, -1);
-//                            if (align == "center")
-//                                foo->setFontAlign(EHorizontalAlign::Center);
-//                            else if (align == "left")
-//                                foo->setFontAlign(EHorizontalAlign::Left);
-//                            else if (align == "right")
-//                                foo->setFontAlign(EHorizontalAlign::Right);
-//                        } else
-//                            return 0;
-//                        return 1;
-//                    },
-//                    1
-//                );
-//                lua_rawset(l, -3);
-//                lua_setmetatable(l,-2);
-//                lua_getmetatable(l, -1);
-//                lua_pushstring(l, "__index");
-//                lua_pushlightuserdata(l,foo);
-//                lua_pushcclosure
-//                (
-//                    l,
-//                    [](lua_State *l){
-//                        std::string property = luaL_checkstring(l, 2);
-//                        CRectangleText *foo = *static_cast<CRectangleText **>(lua_touserdata(l, 1));
-//                        if (property == "font")
-//                            lua_pushstring(l, foo->getFontName().c_str());
-//                        else if (property == "height")
-//                            lua_pushnumber(l, foo->getFontHeight());
-//                        else if (property == "text")
-//                            lua_pushstring(l, foo->getText().c_str());
-//                        else
-//                            return 0;
-//                        return 1;
-//                    },
-//                    1
-//                );
-//                lua_rawset(l, -3);
-//                lua_setmetatable(l, -2);//Устанавливаем метатаблицу для нашей новой таблицы
-//                lua_setglobal(l, "luaL_Text");
-                CLuaManager::getInstance()->addObject<CRectangle>(foo);
+                CGUIManager::getInstance()->addObject<CRectangle>(foo);
                 return 1;
             }
         },

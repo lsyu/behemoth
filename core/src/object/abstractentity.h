@@ -30,7 +30,7 @@
  */
 namespace core {
 
-class CLuaManager;
+class CGUIManager;
 
 /**
  * @brief Абстрактная сущность объекта сцены.
@@ -39,7 +39,7 @@ class AbstractEntity
 {
 public:
 
-    friend class CLuaManager;
+    friend class CGUIManager;
     friend class CRectangle;
 
     AbstractEntity() {}

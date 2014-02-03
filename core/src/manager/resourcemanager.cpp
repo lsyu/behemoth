@@ -19,7 +19,7 @@
 
 #include "resourcemanager.h"
 
-#include "core/manager/luamanager.h"
+#include "core/manager/guimanager.h"
 
 #include <fstream>
 

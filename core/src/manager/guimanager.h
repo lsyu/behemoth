@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef LUAMANAGER_H
-#define LUAMANAGER_H
+#ifndef GUIMANAGER_H
+#define GUIMANAGER_H
 
 #include <memory>
 #include <string>
@@ -31,7 +31,7 @@ namespace core {
 
 class AbstractEntity;
 class Basic2dEntity;
-class __CLuaManagerImplDel;
+class __CGUIManagerImplDel;
 
 /**
  * @brief Менеджер работы с Lua.
@@ -48,24 +48,24 @@ class __CLuaManagerImplDel;
  * - Text - в разработке!
  *
  */
-class CLuaManager
+class CGUIManager
 {
 public:
-    friend class __CLuaManagerImplDel; /**< Даже не думайте его использовать:) */
+    friend class __CGUIManagerImplDel; /**< Даже не думайте его использовать:) */
     /**
      * @brief Получить экземпляр менеджера работы с Lua.
      */
-    static CLuaManager *getInstance();
+    static CGUIManager *getInstance();
 
     /**
-     * @brief Прочитать файл описания интерфейса @a file.
+     * @brief Прочитать файл описания интерфейса с именем @a fileName.
      *
      * После парсинга скрипта луа наши декларативно описанные элементы
      * сохраняются в вектор, получить доступ к которым можно, воспользовавшись
      * методами @sa getObject, getObjects
      * @return true если скрипт выполнен, false в противном случае.
      */
-    bool readGui(const std::string &file);
+    bool readGui(const std::string &fileName);
 
     AbstractEntity *getObject(const std::string &id);
     AbstractEntity *getObject(int num);
@@ -83,13 +83,13 @@ public:
 
 protected:
     /**
-     * @brief Закрытие.
-     */
-    void close();
-    /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
      */
     void init();
+    /**
+     * @brief Закрытие.
+     */
+    void close();
     /**
      * @brief Регистрация таблицы ui
      */
@@ -112,18 +112,16 @@ protected:
     void registerText();
 
 private:
-    CLuaManager();
-    ~CLuaManager();
-    CLuaManager(const CLuaManager &);
-    CLuaManager &operator=(const CLuaManager&);
+    CGUIManager();
+    ~CGUIManager();
+    CGUIManager(const CGUIManager &);
+    CGUIManager &operator=(const CGUIManager&);
 
-    bool parseFile(const std::string &fileName);
-
-    static CLuaManager *instance;
+    static CGUIManager *instance;
     lua_State *lua;
     std::vector< std::shared_ptr<core::AbstractEntity> > objects; /**< Элементы сцены.(Пока только GUI) */
 };
 
 } // namespace Core
 
-#endif // LUAMANAGER_H
+#endif // GUIMANAGER_H

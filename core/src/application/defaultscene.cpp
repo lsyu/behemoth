@@ -25,7 +25,7 @@
 
 #include "core/ogl/ogl.h"
 
-#include "core/manager/luamanager.h"
+#include "core/manager/guimanager.h"
 #include "core/factory/shaderfactory.h"
 #include "core/objects/abstractentity.h"
 
@@ -41,7 +41,7 @@ DefaultScene::~DefaultScene()
 
 void DefaultScene::prepareGL()
 {
-    CLuaManager::getInstance()->readGui("scripts/test.lua");
+    CGUIManager::getInstance()->readGui("scripts/test.lua");
 
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
@@ -54,12 +54,12 @@ bool DefaultScene::updateGL()
 
 bool DefaultScene::updateGL(CEventMouseClick *e)
 {
-    Basic2dEntity *object = CLuaManager::getInstance()->getRootObject();
+    Basic2dEntity *object = CGUIManager::getInstance()->getRootObject();
     object->onClicked(*e);
     if (!Basic2dEntity::objects4Event.empty()) {
         bool clicked;
         do {
-            clicked = CLuaManager::getInstance()->runOnClickFor(Basic2dEntity::objects4Event.back());
+            clicked = CGUIManager::getInstance()->runOnClickFor(Basic2dEntity::objects4Event.back());
             Basic2dEntity::objects4Event.pop_back();
             if (Basic2dEntity::objects4Event.empty())
                 break;
@@ -81,7 +81,7 @@ void DefaultScene::paintGL()
     CShader *shader = CShaderFactory::getInstance()->getShader("test");
     if (shader) {
         shader->bind();
-        const std::vector<std::shared_ptr<AbstractEntity> > &objects = CLuaManager::getInstance()->getObjects();
+        const std::vector<std::shared_ptr<AbstractEntity> > &objects = CGUIManager::getInstance()->getObjects();
         for (int i = objects.size()-1; i >= 0; --i)
             if (objects[i]->isRoot())
                 objects[i]->paint();
