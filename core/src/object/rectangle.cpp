@@ -29,7 +29,7 @@
 namespace core {
 
 CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
-    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), border()
+    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(), border()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -376,9 +376,20 @@ void CRectangle::setBorderColor(const glm::vec3 &color)
     this->border.color = color;
 }
 
+glm::vec3 CRectangle::getBorderColor() const
+{
+    return border.color;
+}
+
 void CRectangle::setTexture(const std::string &name)
 {
+    this->textureName = name;
     this->texture = CTextureFactory::getInstance()->getTexture(name);
+}
+
+std::string CRectangle::getTexture() const
+{
+    return textureName;
 }
 
 void CRectangle::setAlpha(float alpha)

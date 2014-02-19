@@ -54,8 +54,12 @@ public:
     void setFontQuantity(int quantity);
     void setFontAlign(core::EVerticalAlign vAlign);
     EVerticalAlign getVerticalAlign() const;
+    void setVerticalAlign(const std::string &vAlign);
+    std::string getVericalAlignStr() const;
     void setFontAlign(core::EHorizontalAlign hAlign);
     EHorizontalAlign getHorizontalAlign() const;
+    void setHorizontalAlign(const std::string &hAlign);
+    std::string getHorizontalAlignStr() const;
     /**
      * @brief Установить текст.
      * @note в соответствии с установленым шрифтом м текстом сгенерируется буферизображения шрифта.

@@ -120,6 +120,7 @@ public:
      * @param name имя файла текстуры без расширения .dds
      */
     void setTexture(const std::string &name);
+    std::string getTexture() const;
     /**
      * @brief Получение прозрачности.
      *
@@ -154,6 +155,7 @@ protected:
     float rD;
     float alpha;
     uint texture;
+    std::string textureName;
     Border border;
 }; //class Rectangle
 

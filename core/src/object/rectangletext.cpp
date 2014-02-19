@@ -129,6 +129,32 @@ EVerticalAlign CRectangleText::getVerticalAlign() const
     return font->getVerticalAlign();
 }
 
+void CRectangleText::setVerticalAlign(const std::string &align)
+{
+    if (align == "center")
+        setFontAlign(EVerticalAlign::Center);
+    else if (align == "top")
+        setFontAlign(EVerticalAlign::Top);
+    else if (align == "bottom")
+        setFontAlign(EVerticalAlign::Bottom);
+    //else
+    // TODO: Обработка ситуации неправильного ввода
+}
+
+std::string CRectangleText::getVericalAlignStr() const
+{
+    switch (getVerticalAlign()) {
+    case EVerticalAlign::Center:
+        return "center";
+    case EVerticalAlign::Top:
+        return "top";
+    case EVerticalAlign::Bottom:
+        return "bottom";
+    default:
+        return "undefined";
+    }
+}
+
 void CRectangleText::setFontAlign(EHorizontalAlign hAlign)
 {
     this->font->setHorizontalAlign(hAlign);
@@ -137,6 +163,32 @@ void CRectangleText::setFontAlign(EHorizontalAlign hAlign)
 EHorizontalAlign CRectangleText::getHorizontalAlign() const
 {
     return font->getHorizontalAlign();
+}
+
+void CRectangleText::setHorizontalAlign(const std::string &align)
+{
+    if (align == "center")
+        setFontAlign(EHorizontalAlign::Center);
+    else if (align == "left")
+        setFontAlign(EHorizontalAlign::Left);
+    else if (align == "right")
+        setFontAlign(EHorizontalAlign::Right);
+    //else
+    // TODO: Обработка ситуации неправильного ввода
+}
+
+std::string CRectangleText::getHorizontalAlignStr() const
+{
+    switch (getHorizontalAlign()) {
+    case EHorizontalAlign::Center:
+        return "center";
+    case EHorizontalAlign::Left:
+        return "left";
+    case EHorizontalAlign::Right:
+        return "right";
+    default:
+        return "undefined";
+    }
 }
 
 void CRectangleText::setText(const std::string &text)

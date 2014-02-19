@@ -30,8 +30,6 @@
 
 namespace __CLuaWrapper {
 static std::map<std::type_index, std::string> types;
-static std::string nameOfMetaTable;
-static std::string nameOfGlobal;
 
 template<typename Arg>
 Arg *checkUserData(lua_State *l, int numArg)  {
@@ -45,12 +43,12 @@ Arg checkType(lua_State *l, int numArg)  {
 
 template<>
 inline int checkType <int> (lua_State *l, int numArg) {
-    return luaL_checkinteger(l, numArg);
+    return static_cast<int>(luaL_checkinteger(l, numArg));
 }
 
 template<>
 inline float checkType <float> (lua_State *l, int numArg) {
-    return luaL_checknumber(l, numArg);
+    return static_cast<float>(luaL_checknumber(l, numArg));
 }
 
 template<>
@@ -99,7 +97,7 @@ inline void pushType(lua_State *l, double arg) {
 }
 
 // Arg(T::*func)() const
-template<typename T, typename Arg, typename Fun>
+template<typename T, typename Arg, typename Fun, int id>
 class GetterAdapter {
 public:
     explicit GetterAdapter(Fun fun) : fun(fun) {}
@@ -115,7 +113,7 @@ private:
 }; // class GetterAdapter
 
 // void(T::*func)(Arg)
-template<typename T, typename Arg, typename Fun>
+template<typename T, typename Arg, typename Fun, int id>
 class SetterAdapter {
 public:
     explicit SetterAdapter(Fun fun) : fun(fun) {}
@@ -131,7 +129,7 @@ private:
 }; // class SetterAdapter
 
 // Arg T::*m
-template<typename T, typename Arg, typename Member>
+template<typename T, typename Arg, typename Member, int id>
 class GetMemberAdapter {
 public:
     explicit GetMemberAdapter(Member m) : m(m) {}
@@ -147,7 +145,7 @@ private:
 }; // class GetMemberAdapter
 
 // Arg T::*m
-template<typename T, typename Arg, typename Member>
+template<typename T, typename Arg, typename Member, int id>
 class SetMemberAdapter {
 public:
     explicit SetMemberAdapter(Member m) : m(m) {}
@@ -162,37 +160,37 @@ private:
     Member m;
 }; // class SetMemberAdapter
 
-template<typename T, typename Arg, typename Fun>
+template<typename T, typename Arg, typename Fun, int id>
 lua_CFunction getterAdapterInC(Fun fun)
 {
-    static GetterAdapter<T, Arg, Fun> my_functor(fun);
+    static GetterAdapter<T, Arg, Fun, id> my_functor(fun);
     return [](lua_State *l) {
         return my_functor(l);
     };
 } // getterAdapterInC
 
-template<typename T, typename Arg, typename Fun>
+template<typename T, typename Arg, typename Fun, int id>
 lua_CFunction setterAdapterInC(Fun fun)
 {
-    static SetterAdapter<T, Arg, Fun> my_functor(fun);
+    static SetterAdapter<T, Arg, Fun, id > my_functor(fun);
     return [](lua_State *l) {
         return my_functor(l);
     };
 } // setterAdapterInC
 
-template<typename T, typename Arg, typename Member>
+template<typename T, typename Arg, typename Member, int id>
 lua_CFunction getMemberAdapterInC(Member m)
 {
-    static GetMemberAdapter<T, Arg, Member> my_functor(m);
+    static GetMemberAdapter<T, Arg, Member, id> my_functor(m);
     return [](lua_State *l) {
         return my_functor(l);
     };
 } // getterAdapterInC
 
-template<typename T, typename Arg, typename Member>
+template<typename T, typename Arg, typename Member, int id>
 lua_CFunction setMemberAdapterInC(Member m)
 {
-    static SetMemberAdapter<T, Arg, Member> my_functor(m);
+    static SetMemberAdapter<T, Arg, Member, id> my_functor(m);
     return [](lua_State *l) {
         return my_functor(l);
     };
@@ -206,16 +204,15 @@ template <typename T>
 class CLuaWrapper
 {
 public:
-    CLuaWrapper(lua_State *lua, const std::string &name) : lua(lua), lReg(), lRegMemHelper()  {
-        __CLuaWrapper::nameOfGlobal = name;
-        __CLuaWrapper::nameOfMetaTable = std::string("lua_") + name;
+    CLuaWrapper(lua_State *lua, const std::string &name) : lua(lua), nameOfGlobal(name),
+        nameOfMetaTable(std::string("luaL_") + name), lReg(), lRegMemHelper()  {
     }
 
     /**
      * @brief Сгенерировать конструктор класса
      */
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = __CLuaWrapper::nameOfMetaTable;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 T **userData = newUserData<T>(l);
@@ -233,7 +230,7 @@ public:
      */
     template <typename Arg>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = __CLuaWrapper::nameOfMetaTable;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg arg = __CLuaWrapper::checkType<Arg>(l, 1);
@@ -252,7 +249,7 @@ public:
      */
     template <typename Arg1, typename Arg2>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = __CLuaWrapper::nameOfMetaTable;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg1 arg1 = __CLuaWrapper::checkType<Arg1>(l, 1);
@@ -272,7 +269,7 @@ public:
      */
     template <typename Arg1, typename Arg2, typename Arg3>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = __CLuaWrapper::nameOfMetaTable;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg1 arg1 = __CLuaWrapper::checkType<Arg1>(l, 1);
@@ -291,17 +288,17 @@ public:
     /**
      * @brief Добавить свойство типа Arg с именем name
      */
-    template <typename Arg>
+    template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(const Arg&)) {
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
-             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const >(getter)
+             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const, id >(getter)
         };
         lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
            lRegMemHelper.back().c_str(),
-            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(const Arg&) > (setter)
+            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(const Arg&), id > (setter)
         };
         lReg.push_back(get);
         lReg.push_back(set);
@@ -310,17 +307,17 @@ public:
     /**
      * @brief Добавить свойство типа Arg с именем name
      */
-    template <typename Arg>
+    template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(Arg)) {
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
-             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const >(getter)
+             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const, id>(getter)
         };
         lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
            lRegMemHelper.back().c_str(),
-            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg) > (setter)
+            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg), id > (setter)
         };
         lReg.push_back(get);
         lReg.push_back(set);
@@ -329,17 +326,17 @@ public:
     /**
      * @brief Добавить свойство типа Arg с именем name
      */
-    template <typename Arg>
+    template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)(), void(T::*setter)(Arg)) {
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
-             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)()>(getter)
+             __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)(), id >(getter)
         };
         lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
            lRegMemHelper.back().c_str(),
-            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg) > (setter)
+            __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg), id > (setter)
         };
         lReg.push_back(get);
         lReg.push_back(set);
@@ -348,28 +345,28 @@ public:
     /**
      * @brief Добавить свойство типа Arg с именем name
      */
-    template <typename Arg>
+    template <typename Arg, int id>
     void addProperty(const std::string &name, Arg T::*member) {
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
-             __CLuaWrapper::getMemberAdapterInC<T, Arg, Arg T::* >(member)
+             __CLuaWrapper::getMemberAdapterInC<T, Arg, Arg T::*, id >(member)
         };
         lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
            lRegMemHelper.back().c_str(),
-            __CLuaWrapper::setMemberAdapterInC<T, Arg, Arg T::* > (member)
+            __CLuaWrapper::setMemberAdapterInC<T, Arg, Arg T::*, id > (member)
         };
         lReg.push_back(get);
         lReg.push_back(set);
     }
 
-//    /**
-//     * @brief Добавить свойство типа Arg с именем name
-//     */
-//    void addProperty(const luaL_Reg &member) {
-//        lReg.push_back(member);
-//    }
+    /**
+     * @brief Добавить свойство типа Arg с именем name
+     */
+    void addProperty(const luaL_Reg &member) {
+        lReg.push_back(member);
+    }
 
     /**
      * @brief Добавить деструктор
@@ -391,14 +388,11 @@ public:
      */
     void complete() {
         lReg.push_back({NULL, NULL});
-        luaL_newmetatable(lua, __CLuaWrapper::nameOfMetaTable.c_str());
+        luaL_newmetatable(lua, nameOfMetaTable.c_str());
         luaL_setfuncs(lua, &lReg[0], 0);
         lua_pushvalue(lua, -1);
         lua_setfield(lua, -1, "__index");
-        lua_setglobal(lua, __CLuaWrapper::nameOfGlobal.c_str());
-
-        __CLuaWrapper::nameOfGlobal.clear();
-        __CLuaWrapper::nameOfMetaTable.clear();
+        lua_setglobal(lua, nameOfGlobal.c_str());
     }
 
 protected:
@@ -408,7 +402,12 @@ protected:
     }
 
 private:
+    CLuaWrapper(const CLuaWrapper &);
+    const CLuaWrapper &operator= (const CLuaWrapper &);
+
     lua_State *lua;
+    std::string nameOfGlobal;
+    std::string nameOfMetaTable;
     std::vector<luaL_Reg> lReg;
     std::vector<std::string> lRegMemHelper; // для корректного хранения строк в luaL_Reg
 };
