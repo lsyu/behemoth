@@ -1,10 +1,6 @@
 # scripts
 
 set ( SCRIPT_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/ui.lua
-    ${CMAKE_CURRENT_SOURCE_DIR}/vec.lua
-    ${CMAKE_CURRENT_SOURCE_DIR}/rectangle.lua
-    ${CMAKE_CURRENT_SOURCE_DIR}/rectangletext.lua
     ${CMAKE_CURRENT_SOURCE_DIR}/test.lua
 
     ${CMAKE_CURRENT_SOURCE_DIR}/conf.lua

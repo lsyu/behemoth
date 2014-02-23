@@ -107,18 +107,88 @@ void CGUIManager::close()
 
 void CGUIManager::registerUI()
 {
-    //! TODO: Загрузка всех скриптов объектов сцены
-    std::string tmp = "scripts/";
-    luaL_dofile(lua, std::string(tmp + "vec.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "ui.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "rectangletext.lua").c_str());
-    luaL_dofile(lua, std::string(tmp + "rectangle.lua").c_str());
-
-
+    luaL_dostring(lua, "ui = {}");
     registerVec2();
     registerVec3();
     registerText();
     registerRectangle();
+}
+
+void CGUIManager::registerVec2()
+{
+    CLuaWrapper<glm::vec2> v(lua, "vec2");
+    v.addConstructor<float, float>();
+    v.addProperty<float, 1>("x", &glm::vec2::x);
+    v.addProperty<float, 2>("y", &glm::vec2::y);
+    v.addDestructor();
+    v.complete();
+}
+
+void CGUIManager::registerVec3()
+{
+    CLuaWrapper<glm::vec3> v(lua, "vec3");
+    v.addConstructor<float, float, float>();
+    v.addProperty<float, 1>("x", &glm::vec3::x);
+    v.addProperty<float, 2>("y", &glm::vec3::y);
+    v.addProperty<float, 3>("z", &glm::vec3::z);
+    v.addDestructor();
+    v.complete();
+}
+
+void CGUIManager::registerRectangle()
+{
+    CLuaWrapper<CRectangle> r(lua, "rectangle");
+    r.addConstructor<std::string>();
+    r.addProperty<float, 1>("x", &CRectangle::getXMin, &CRectangle::setX);
+    r.addProperty<float, 2>("y", &CRectangle::getYMin, &CRectangle::setY);
+    r.addProperty<float, 3>("width", &CRectangle::getWidth, &CRectangle::setWidth);
+    r.addProperty<float, 4>("height", &CRectangle::getHeight, &CRectangle::setHeight);
+    r.addProperty<glm::vec3, 5>("color", &CRectangle::getColor, &CRectangle::setColor);
+    r.addProperty<float, 6>("radiusOfA", &CRectangle::getRadiusOfA, &CRectangle::setRadiusOfA);
+    r.addProperty<float, 7>("radiusOfB", &CRectangle::getRadiusOfB, &CRectangle::setRadiusOfB);
+    r.addProperty<float, 8>("radiusOfC", &CRectangle::getRadiusOfC, &CRectangle::setRadiusOfC);
+    r.addProperty<float, 9>("radiusOfD", &CRectangle::getRadiusOfD, &CRectangle::setRadiusOfD);
+    r.addProperty<float, 10>("radius", &CRectangle::getRadius, &CRectangle::setRadius);
+    r.addProperty<float, 11>("alpha", &CRectangle::getAlpha, &CRectangle::setAlpha);
+    r.addProperty<std::string, 12>("texture", &CRectangle::getTexture, &CRectangle::setTexture);
+    r.addProperty<float, 13>("borderWidth", &CRectangle::getBorderWidth, &CRectangle::setBorderWidth);
+    r.addProperty<glm::vec3, 14>("borderColor", &CRectangle::getBorderColor, &CRectangle::setBorderColor);
+
+
+    r.addProperty({"addChild", [](lua_State *l) {
+                       CRectangle * foo = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
+                       AbstractEntity * bar = *static_cast<AbstractEntity **>(lua_touserdata(l, 2));
+                       foo->addChild(bar);
+                       return 1;
+                   }
+                  });
+    r.addProperty({"sync", [](lua_State *l) {
+                       CRectangle *t = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
+                       CGUIManager::getInstance()->addObject<CRectangle>(t);
+                       return 1;
+                   }
+                  });
+    r.complete();
+}
+
+void CGUIManager::registerText()
+{
+    CLuaWrapper<CRectangleText> t(lua, "text");
+    t.addConstructor();
+    t.addProperty<std::string, 1>("text", &CRectangleText::getText, &CRectangleText::setText);
+    t.addProperty<std::string, 2>("font", &CRectangleText::getFontName, &CRectangleText::setFont);
+    t.addProperty<float, 3>("height", &CRectangleText::getFontHeight, &CRectangleText::setFont);
+    t.addProperty<std::string, 4>("alignVertical", &CRectangleText::getVericalAlignStr, &CRectangleText::setVerticalAlign);
+    t.addProperty<std::string, 5>("alignHorizontal", &CRectangleText::getHorizontalAlignStr, &CRectangleText::setHorizontalAlign);
+    t.addProperty({"sync", [](lua_State *l)
+                   {
+
+                       CRectangleText *t = __CLuaWrapper::checkUserData<CRectangleText>(l, 1);
+                       CGUIManager::getInstance()->addObject<CRectangle>(t);
+                       return 1;
+                   }
+                  });
+    t.complete();
 }
 
 core::AbstractEntity *CGUIManager::getObject(const std::string &id)
@@ -178,84 +248,6 @@ bool CGUIManager::runOnClickFor(AbstractEntity *entity)
         return true;
     }
     return false;
-}
-
-
-void CGUIManager::registerVec2()
-{
-    CLuaWrapper<glm::vec2> v(lua, "Vec2");
-    v.addConstructor<float, float>();
-    v.addProperty<float, 1>("X", &glm::vec2::x);
-    v.addProperty<float, 2>("Y", &glm::vec2::y);
-    v.addDestructor();
-    v.complete();
-}
-
-void CGUIManager::registerVec3()
-{
-    CLuaWrapper<glm::vec3> v(lua, "Vec3");
-    v.addConstructor<float, float, float>();
-    v.addProperty<float, 1>("X", &glm::vec3::x);
-    v.addProperty<float, 2>("Y", &glm::vec3::y);
-    v.addProperty<float, 3>("Z", &glm::vec3::z);
-    v.addDestructor();
-    v.complete();
-}
-
-void CGUIManager::registerRectangle()
-{
-    CLuaWrapper<CRectangle> r(lua, "Rectangle");
-    r.addConstructor<std::string>();
-    r.addProperty<float, 1>("X", &CRectangle::getXMin, &CRectangle::setX);
-    r.addProperty<float, 2>("Y", &CRectangle::getYMin, &CRectangle::setY);
-    r.addProperty<float, 3>("Width", &CRectangle::getWidth, &CRectangle::setWidth);
-    r.addProperty<float, 4>("Height", &CRectangle::getHeight, &CRectangle::setHeight);
-    r.addProperty<glm::vec3, 5>("Color", &CRectangle::getColor, &CRectangle::setColor);
-    r.addProperty<float, 6>("RadiusOfA", &CRectangle::getRadiusOfA, &CRectangle::setRadiusOfA);
-    r.addProperty<float, 7>("RadiusOfB", &CRectangle::getRadiusOfB, &CRectangle::setRadiusOfB);
-    r.addProperty<float, 8>("RadiusOfC", &CRectangle::getRadiusOfC, &CRectangle::setRadiusOfC);
-    r.addProperty<float, 9>("RadiusOfD", &CRectangle::getRadiusOfD, &CRectangle::setRadiusOfD);
-    r.addProperty<float, 10>("Radius", &CRectangle::getRadius, &CRectangle::setRadius);
-    r.addProperty<float, 11>("Alpha", &CRectangle::getAlpha, &CRectangle::setAlpha);
-    r.addProperty<std::string, 12>("Texture", &CRectangle::getTexture, &CRectangle::setTexture);
-    r.addProperty<float, 13>("BorderWidth", &CRectangle::getBorderWidth, &CRectangle::setBorderWidth);
-    r.addProperty<glm::vec3, 14>("BorderColor", &CRectangle::getBorderColor, &CRectangle::setBorderColor);
-
-
-    r.addProperty({"addChild", [](lua_State *l) {
-                       CRectangle * foo = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
-                       AbstractEntity * bar = *static_cast<AbstractEntity **>(lua_touserdata(l, 2));
-                       foo->addChild(bar);
-                       return 1;
-                   }
-                  });
-    r.addProperty({"sync", [](lua_State *l) {
-                       CRectangle *t = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
-                       CGUIManager::getInstance()->addObject<CRectangle>(t);
-                       return 1;
-                   }
-                  });
-    r.complete();
-}
-
-void CGUIManager::registerText()
-{
-    CLuaWrapper<CRectangleText> t(lua, "Text");
-    t.addConstructor();
-    t.addProperty<std::string, 1>("Text", &CRectangleText::getText, &CRectangleText::setText);
-    t.addProperty<std::string, 2>("Name", &CRectangleText::getFontName, &CRectangleText::setFont);
-    t.addProperty<float, 3>("Height", &CRectangleText::getFontHeight, &CRectangleText::setFont);
-    t.addProperty<std::string, 4>("AlignVertical", &CRectangleText::getVericalAlignStr, &CRectangleText::setVerticalAlign);
-    t.addProperty<std::string, 5>("AlignHorizontal", &CRectangleText::getHorizontalAlignStr, &CRectangleText::setHorizontalAlign);
-    t.addProperty({"sync", [](lua_State *l)
-                   {
-
-                       CRectangleText *t = __CLuaWrapper::checkUserData<CRectangleText>(l, 1);
-                       CGUIManager::getInstance()->addObject<CRectangle>(t);
-                       return 1;
-                   }
-                  });
-    t.complete();
 }
 
 } // namespace Core

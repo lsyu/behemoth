@@ -6,9 +6,9 @@ ui:rectangle "root"
   y = -0.5;
   width = 1.0;
   height = 1.0;
-  color = vec3(0.0, 1.0, 1.0);
+  color = ui:vec3(0.0, 1.0, 1.0);
 
-  ui:rectangle "111"
+  ui:rectangle "a11"
   {
     x = -0.5;
     y = -0.5;
@@ -18,10 +18,10 @@ ui:rectangle "root"
 
     radius = 0.2;
 
-    border = {
-      color = vec3(0.5, 0.5, 0.5);
-      width = 0.02;
-    };
+    -- border = {
+    --   color = ui:vec3(0.5, 0.5, 0.5);
+    --   width = 0.02;
+    -- };
 
     onClick = function()
       print ("hello world from lua declarative!")
@@ -29,8 +29,8 @@ ui:rectangle "root"
 
     ui:text
     {
-      alignVerical = ui.center;
-      alignHorizontal = ui.center;
+      alignVerical = "center";
+      alignHorizontal = "center";
       text = "Hello, world!\nThis subline does not contain delimiters! :)";
       height = 0.2;
       font = "DejaVuSans";
