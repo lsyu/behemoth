@@ -103,11 +103,15 @@ protected:
      */
     void registerVec3();
     /**
-     * @brief Регистрация прямоугольника.
+     * @brief регистрация core::Border
+     */
+    void registerBorder();
+    /**
+     * @brief Регистрация core::Rectangle.
      */
     void registerRectangle();
     /**
-     * @brief Регистрация текста.
+     * @brief Регистрация core::RectangleText.
      */
     void registerText();
 

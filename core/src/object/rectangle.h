@@ -116,6 +116,11 @@ public:
     void setBorderColor(const glm::vec3 &color);
     glm::vec3 getBorderColor() const;
     /**
+     * @brief Установить границу
+     */
+    void setBorder(const CBorder &border);
+    CBorder getBorder() const;
+    /**
      * @brief Получение текстуры при помощи менеджера текстур.
      * @param name имя файла текстуры без расширения .dds
      */
@@ -156,7 +161,7 @@ protected:
     float alpha;
     uint texture;
     std::string textureName;
-    Border border;
+    CBorder border;
 }; //class Rectangle
 
 } // namespace Core

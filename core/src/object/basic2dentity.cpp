@@ -43,6 +43,11 @@ std::string Basic2dEntity::getId() const
     return id;
 }
 
+void Basic2dEntity::setId(const std::string &id)
+{
+    this->id = id;
+}
+
 void Basic2dEntity::setParent(AbstractEntity *parent)
 {
     this->parent = parent;

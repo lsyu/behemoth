@@ -28,9 +28,9 @@ class CEventMouseClick;
 class CApplication;
 class DefaultScene;
 
-struct Border {
-    Border() : width(0), color(0.0f, 0.0f, 0.0f) {}
-    Border(const Border &other) : width(other.width), color(other.color) {}
+struct CBorder {
+    CBorder() : width(0), color(0.0f, 0.0f, 0.0f) {}
+    CBorder(const CBorder &other) : width(other.width), color(other.color) {}
 
     float width;
     glm::vec3 color;
@@ -48,6 +48,7 @@ public:
     virtual ~Basic2dEntity();
 
     virtual std::string getId() const override;
+    void setId(const std::string &id);
 
     virtual void setParent(AbstractEntity *parent) override;
     virtual AbstractEntity *getParent() const override;

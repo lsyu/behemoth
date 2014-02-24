@@ -11,20 +11,25 @@ ui:rectangle "root"
   ui:rectangle "a11"
   {
     x = -0.5;
-    y = -0.5;
+    y = -1.0;
     width = 1.0;
-    height = 1.0;
+    height = 2.0;
     texture = "test";
 
     radius = 0.2;
 
-    -- border = {
-    --   color = ui:vec3(0.5, 0.5, 0.5);
-    --   width = 0.02;
-    -- };
+    border = ui:border 
+    {
+      color = ui:vec3(0.5, 0.5, 0.5);
+      width = 0.02;
+    };
 
     onClick = function()
       print ("hello world from lua declarative!")
+      print ("x      = " .. ui.a11.x)
+      print ("y      = " .. ui.a11.y)
+      print ("width  = " .. ui.a11.width)
+      print ("height = " .. ui.a11.height)
     end;
 
     ui:text
@@ -38,6 +43,8 @@ ui:rectangle "root"
 
   };
 };
+
+print (ui.root)
 
 -- ui:rectangle "root"
 -- {

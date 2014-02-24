@@ -208,7 +208,7 @@ class CLuaWrapper
 {
 public:
     CLuaWrapper(lua_State *lua, const std::string &name) : lua(lua), nameOfGlobal(name),
-        nameOfMetaTable(std::string("luaL_") + name), cntArgConstr(), argIsStr(false), sync(false),
+        nameOfMetaTable(std::string("luaL_") + name), cntArgConstr(), sync(false),
         addChild(false), lReg(), lRegMemHelper(), properties()  {
     }
 
@@ -237,7 +237,6 @@ public:
     void addConstructor() {
         __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
         cntArgConstr = 1;
-        argIsStr = (typeid(Arg) == typeid(std::string) || typeid(Arg) == typeid(const char*));
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg arg = __CLuaWrapper::checkType<Arg>(l, 1);
@@ -299,7 +298,8 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(const Arg&)) {
-        properties.push_back(name);
+        properties.push_back(std::pair<std::string, bool>(name,
+                __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
@@ -319,7 +319,8 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(Arg)) {
-        properties.push_back(name);
+        properties.push_back(std::pair<std::string, bool>(name,
+                __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
@@ -339,7 +340,8 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)(), void(T::*setter)(Arg)) {
-        properties.push_back(name);
+        properties.push_back(std::pair<std::string, bool>(name,
+                __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
@@ -359,7 +361,8 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg T::*member) {
-        properties.push_back(name);
+        properties.push_back(std::pair<std::string, bool>(name,
+                __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
         lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
             lRegMemHelper.back().c_str(),
@@ -378,7 +381,6 @@ public:
      * @brief Добавить свойство типа Arg с именем name
      */
     void addProperty(const luaL_Reg &member) {
-        //properties.push_back(std::string(member.name));
         if (member.name == "sync")
             sync = true;
         if (member.name == "addChild")
@@ -404,8 +406,8 @@ public:
      * @brief Завершить конструирование обертки, сгенерировав все необходимое для
      * общения С++ - Lua
      */
-    void complete() {
-        generateString4Declarative();
+    void complete(bool generateDeclarativeStuff = false) {
+        generateString4Declarative(generateDeclarativeStuff);
         bool ret = !luaL_dostring(lua, doStr.c_str());
         if (!ret) {
             std::string log(lua_tostring(lua, -1));
@@ -430,51 +432,25 @@ private:
     CLuaWrapper(const CLuaWrapper &);
     const CLuaWrapper &operator= (const CLuaWrapper &);
 
+    void generateString4Declarative(bool generateDeclarativeStuff) {
+        std::string argsConstr = "";
+        for (int i = 0; i < cntArgConstr; ++i) {
+            argsConstr += "arg" + std::to_string(i) + (i == cntArgConstr-1 ? "" : ", ");
+        }
 
-    void generateString4Declarative() {
-        if (!argIsStr) {
-            doStr = "function ui:" + nameOfGlobal + "(";
-            for (int i = 0; i < cntArgConstr; ++i) {
-                doStr += "arg" + std::to_string(i) + (i == cntArgConstr-1 ? ")\n" : ", ");
-            }
-            if (cntArgConstr != 0) {
-                doStr += "  return " + nameOfGlobal + ".new(";
-                for (int i = 0; i < cntArgConstr; ++i) {
-                    doStr += "arg" + std::to_string(i) + (i == cntArgConstr-1 ? ")\n" : ", ");
-                }
-                doStr += "end\n";
-            } else {
-                doStr += "data)\n";
-                doStr += "  local ret = " + nameOfGlobal + ".new()\n";
-                doStr += "  for k, v in pairs(data) do\n";
-                doStr += "    if k == \"" + properties[0] + "\" then\n";
-                doStr += "      ret:set" + properties[0] + "(v)\n";
-                for (int i = 1, n = properties.size(); i < n; ++i) {
-                    doStr += "    elseif k == \"" + properties[i] + "\" then\n";
-                    doStr += "      ret:set" + properties[i] + "(v)\n";
-                }
-                doStr += "    end\n  end\n";
+        doStr = "function ui:" + nameOfGlobal + "(" + (argsConstr.empty() ? "data" : argsConstr) + ")\n";
+        doStr += "  local r = " + nameOfGlobal + ".new(" +argsConstr + ")\n";
 
-                if (sync)
-                    doStr += "  ret:sync()\n";
-
-                doStr += "  local r = {}\n";
-                doStr += "  r.obj = ret\n";
-                doStr += "  return r\nend\n";
-            }
-        } else {
-            // наш объект - элемент GUI
-            doStr += "function ui:" + nameOfGlobal + "(id)\n";
-            doStr += "  return function(data)\n";
-            doStr += "  local r = " + nameOfGlobal + ".new(id)\n";
+        if (generateDeclarativeStuff) {
+            if (cntArgConstr)
+                doStr += "  return function(data)\n";
             doStr += "  local ret = {}\n";
-
             doStr += "  for k, v in pairs(data) do\n";
-            doStr += "    if k == \"" + properties[0] + "\" then\n";
-            doStr += "      r:set" + properties[0] + "(v)\n";
+            doStr += "    if k == \"" + properties[0].first + "\" then\n";
+            doStr += "      r:set" + properties[0].first + (properties[0].second ? "(v)\n" : "(v.obj)\n");
             for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif k == \"" + properties[i] + "\" then\n";
-                doStr += "      r:set" + properties[i] + "(v)\n";
+                doStr += "    elseif k == \"" + properties[i].first + "\" then\n";
+                doStr += "      r:set" + properties[i].first + (properties[i].second ? "(v)\n" : "(v.obj)\n");
             }
             doStr += "    elseif k == \"onClick\" then\n      ret.onClick = v\n";
 
@@ -482,34 +458,53 @@ private:
                 doStr += "    else\n      r:addChild(v.obj)\n";
             doStr += "    end\n  end\n";
 
-            doStr += "  ret.obj = r\n";
-
             doStr += "  local mt = {}\n";
             doStr += "  mt.__index = function(self, key)\n";
-            doStr += "    if k == \"" + properties[0] + "\" then\n";
-            doStr += "      self.obj:get" + properties[0] + "()\n";
+            doStr += "    if key == \"" + properties[0].first + "\" then\n";
+            doStr += "      return self.obj:get" + properties[0].first + "()\n";
             for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif k == \"" + properties[i] + "\" then\n";
-                doStr += "      self.obj:get" + properties[i] + "()\n";
+                doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
+                doStr += "      return self.obj:get" + properties[i].first + "()\n";
             }
             doStr += "    else\n      return rawget(self, key)\n    end\n  end\n";
 
             doStr += "  mt.__newindex = function(self, key, value)\n";
-            doStr += "    if k == \"" + properties[0] + "\" then\n";
-            doStr += "      self.obj:set" + properties[0] + "(value)\n";
+            doStr += "    if key == \"" + properties[0].first + "\" then\n";
+            doStr += "      self.obj:set" + properties[0].first + (properties[0].second ? "(value)\n" : "(value.obj)\n");
             for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif k == \"" + properties[i] + "\" then\n";
-                doStr += "      self.obj:set" + properties[i] + "(value)\n";
+                doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
+                doStr += "      self.obj:set" + properties[i].first + (properties[i].second ? "(value)\n" : "(value.obj)\n");
             }
             doStr += "    end\n  end\n";
 
-            doStr += "  setmetatable(ret, mt)\n  ui[id] = ret\n";
             if (sync)
                 doStr += "  r:sync()\n";
-            doStr += "  return ret\n";
+            doStr += "  ret.obj = r\n";
+            doStr += "  setmetatable(ret, mt)\n";
 
-            doStr += "  end\nend\n";
+            bool containId = false;
+            for(auto it: properties) {
+                if (it.first == "id") {
+                    containId = true;
+                    break;
+                }
+            }
+            if (containId)
+                doStr += "  ui[arg0] = ret\n"; //TODO: придумать, как передать явно!
+
+            doStr += "  return ret\n";
+            if (cntArgConstr)
+                doStr += "  end\nend\n";
+            else
+                doStr += "  end\n";
+        } else {
+            doStr += "  ret = {}\n";
+            doStr += "  ret.obj = r\n";
+            doStr += "  return ret\n";
+            doStr += "  end\n";
         }
+
+
         std::cout << doStr;
     }
 
@@ -518,12 +513,11 @@ private:
     std::string nameOfMetaTable;
     static std::string doStr;
     int cntArgConstr;
-    bool argIsStr;
     bool sync;
     bool addChild;
     std::vector<luaL_Reg> lReg;
     std::vector<std::string> lRegMemHelper; // для корректного хранения строк в luaL_Reg
-    std::vector<std::string> properties;
+    std::vector< std::pair<std::string, bool> > properties;
 };
 
 template <typename T>

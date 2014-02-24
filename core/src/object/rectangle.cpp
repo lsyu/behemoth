@@ -381,6 +381,16 @@ glm::vec3 CRectangle::getBorderColor() const
     return border.color;
 }
 
+void CRectangle::setBorder(const CBorder &border)
+{
+    this->border = border;
+}
+
+CBorder CRectangle::getBorder() const
+{
+    return border;
+}
+
 void CRectangle::setTexture(const std::string &name)
 {
     this->textureName = name;
