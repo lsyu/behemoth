@@ -18,8 +18,7 @@
  */
 
 #include "resourcemanager.h"
-
-#include "core/manager/guimanager.h"
+#include "luawrapper.h"
 
 #include <fstream>
 
@@ -47,7 +46,7 @@ CResourceManager* CResourceManager::getInstance()
     return instance;
 }
 
-void CResourceManager::initialize(int &argc, char *argv[])
+void CResourceManager::initialize(int &/*argc*/, char *argv[])
 {
     pathToApplication = std::string(argv[0]);
     size_t len = pathToApplication.find_last_of(getFileSeparator());
@@ -58,53 +57,39 @@ void CResourceManager::initialize(int &argc, char *argv[])
 
 void CResourceManager::registrationFolder()
 {
-    luaL_Reg sFooRegs[] =
+    CLuaWrapper<CResourceManager> f(lua, "Folders");
+    f.addProperty({"new", [](lua_State *l)
     {
-        {
-            "new", [](lua_State *l)
-            {
-                CResourceManager ** resMan
-                        = static_cast<CResourceManager **>(
-                                lua_newuserdata(l, sizeof(CResourceManager *)));
-                *resMan = CResourceManager::getInstance();
-                luaL_getmetatable(l, "luaL_Folders");
-                lua_setmetatable(l, -2);
-                return 1;
-            }
-        },
-
-        {
-            "addResource", [](lua_State *l)
-            {
-                CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
-                const char *resName = luaL_checkstring(l, 2);
-                const char *folder = luaL_checkstring(l, 3);
-                foo->mapOfParam[resName] = folder;
-                return 1;
-            }
-        },
-
-        "__gc", [](lua_State * l)
-        {
-            // Т.к CResourceManager синглтон, и он нам еще понадобится, ничего не удаляем!
-            return 0;
-        },
-
-        { NULL, NULL }
-    }; //luaL_Reg sFooRegs
-    luaL_newmetatable(lua, "luaL_Folders");
-    luaL_setfuncs (lua, sFooRegs, 0);
-    lua_pushvalue(lua, -1);
-    lua_setfield(lua, -1, "__index");
-    lua_setglobal(lua, "Folders");
+        CResourceManager ** resMan
+                = static_cast<CResourceManager **>(
+                        lua_newuserdata(l, sizeof(CResourceManager *)));
+        *resMan = CResourceManager::getInstance();
+        luaL_getmetatable(l, "luaL_Folders");
+        lua_setmetatable(l, -2);
+        return 1;
+    }});
+    f.addProperty({"addResource", [](lua_State *l)
+    {
+        CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
+        const char *resName = luaL_checkstring(l, 2);
+        const char *folder = luaL_checkstring(l, 3);
+        foo->mapOfParam[resName] = folder;
+        return 1;
+    }});
+    f.complete(false);
 }
 
 void CResourceManager::readConfFile()
 {
-    //! TODO: Загрузка всех скриптов для системы конфигурации
-    std::string path = pathToApplication + "scripts" + getFileSeparator();
-    luaL_dofile(lua, std::string(path + "conf.lua").c_str());
-    luaL_dofile(lua, std::string(path + "folders.lua").c_str());
+    luaL_dostring(lua, "conf = {}");
+    luaL_dostring(lua,
+                  "function conf:folders(data)\n"
+                  "  local config = Folders.new()\n"
+                  "  for k, v in pairs(data) do\n"
+                  "    config:addResource(k, v)\n"
+                  "  end\n"
+                  "  return config\n"
+                  "end");
     luaL_dofile(lua, std::string(pathToApplication + "core.conf").c_str());
     lua_close(lua);
 }
