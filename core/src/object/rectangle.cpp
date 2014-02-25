@@ -18,6 +18,7 @@
  */
 
 #include "rectangle.h"
+
 #include "core/ogl/ogl.h"
 #include "core/factory/shaderfactory.h"
 #include "core/factory/texturefactory.h"
@@ -29,7 +30,8 @@
 namespace core {
 
 CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
-    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(), border()
+    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(),
+    border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -207,25 +209,10 @@ void CRectangle::setColor(const glm::vec3 &color)
 
 bool CRectangle::contains(const glm::vec2 &point) const
 {
-    if (point.x < x || point.x > x+width) {
-//        std::cout << "--------------------------------------------\n";
-//        std::cout << this->getId() << " X FAIL!!!\n";
-//        std::cout << "--------------------------------------------\n";
+    if (point.x < x || point.x > x+width)
         return false;
-    }
-    if (point.y < y || point.y > y+height) {
-//        std::cout << "--------------------------------------------\n";
-//        std::cout << this->getId() << " Y FAIL!!!\n";
-//        std::cout << "--------------------------------------------\n";
+    if (point.y < y || point.y > y+height)
         return false;
-    }
-
-//    std::cout << "--------------------------------------------\n";
-//    std::cout << this->getId() << " contains!!!\n";
-//    std::cout << "event: x = " << point.x << ", y = " << point.y << "\n";
-//    std::cout << "obj: x = " << x << ", y = " << y << ", w = " << width << "h = " << height << "\n";
-//    std::cout << "--------------------------------------------\n";
-
     return true;
 }
 
@@ -410,6 +397,17 @@ void CRectangle::setAlpha(float alpha)
 float CRectangle::getAlpha() const
 {
     return alpha;
+}
+
+void CRectangle::setText(const CRectangleText &text)
+{
+    this->text = text;
+    addChild(&this->text);
+}
+
+CRectangleText CRectangle::getText() const
+{
+    return text;
 }
 
 } // namespace Core

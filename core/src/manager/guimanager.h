@@ -107,13 +107,13 @@ protected:
      */
     void registerBorder();
     /**
-     * @brief Регистрация core::Rectangle.
-     */
-    void registerRectangle();
-    /**
      * @brief Регистрация core::RectangleText.
      */
     void registerText();
+    /**
+     * @brief Регистрация core::Rectangle.
+     */
+    void registerRectangle();
 
 private:
     CGUIManager();

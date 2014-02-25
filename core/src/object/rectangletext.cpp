@@ -27,20 +27,19 @@
 
 namespace core {
 
-CRectangleText::CRectangleText() : CRectangle(), font(new CFont("UNKNOWN", 14)), lines(),
-        fontHeight(0.5f)
+CRectangleText::CRectangleText() : Basic2dEntity(), font("UNKNOWN", 14), lines(),
+    fontHeight(0.5f), x(-1.0f), y(-1.0f), width(2.0f), height(2.0f)
 {
     lines.push_back(std::vector<CRectangleSymbol*>());
 }
 
 CRectangleText::~CRectangleText()
 {
-    delete font;
 }
 
 void CRectangleText::configure()
 {
-    this->font->setHeight(fontHeight);
+    this->font.setHeight(fontHeight);
     parent = this->parent;
     x = parent->getXMin();
     y = parent->getYMin();
@@ -55,17 +54,17 @@ void CRectangleText::configure()
         CRectangleSymbol *s = dynamic_cast<CRectangleSymbol*>(i);
         // Каждую линию теста - в соответствии с выравниваем
         if (curLine == -1) {
-            if (font->getVerticalAlign() == EVerticalAlign::Bottom)
+            if (font.getVerticalAlign() == EVerticalAlign::Bottom)
                 y = (lines.front().front()->getYMax() - lines.back().front()->getYMin() - height);
-            else if (font->getVerticalAlign() == EVerticalAlign::Center)
+            else if (font.getVerticalAlign() == EVerticalAlign::Center)
                 y = 0.5 * (lines.front().front()->getYMax() - lines.back().front()->getYMin() - height);
-            else if (font->getVerticalAlign() == EVerticalAlign::Top); // ничего не делаем
+            else if (font.getVerticalAlign() == EVerticalAlign::Top); // ничего не делаем
         }
         if (curLine != s->lineNumber) {
-            if (font->getHorizontalAlign() == EHorizontalAlign::Left); // ничего не делаем
-            else if (font->getHorizontalAlign() == EHorizontalAlign::Center)
+            if (font.getHorizontalAlign() == EHorizontalAlign::Left); // ничего не делаем
+            else if (font.getHorizontalAlign() == EHorizontalAlign::Center)
                 x = -0.5 * (lines[s->lineNumber].back()->getXMax() - lines[s->lineNumber].front()->getXMin() - width);
-            else if (font->getHorizontalAlign() == EHorizontalAlign::Right)
+            else if (font.getHorizontalAlign() == EHorizontalAlign::Right)
                 x = -(lines[s->lineNumber].back()->getXMax() - lines[s->lineNumber].front()->getXMin() - width);
             curLine = s->lineNumber;
         }
@@ -86,17 +85,17 @@ void CRectangleText::onClicked(const CEventMouseClick &event)
 
 void CRectangleText::setFont(const CFont &font)
 {
-    this->font = new CFont(font);
+    this->font = font;
 }
 
 void CRectangleText::setFont(const std::string &name)
 {
-    this->font->setName(name);
+    this->font.setName(name);
 }
 
 std::string CRectangleText::getFontName() const
 {
-    return font->getName();
+    return font.getName();
 }
 
 void CRectangleText::setFont(float height)
@@ -111,22 +110,22 @@ void CRectangleText::setFont(float height)
 
 float CRectangleText::getFontHeight() const
 {
-    return font->getHeight();
+    return font.getHeight();
 }
 
 void CRectangleText::setFontQuantity(int quantity)
 {
-    this->font->setQuantity(quantity);
+    this->font.setQuantity(quantity);
 }
 
 void CRectangleText::setFontAlign(EVerticalAlign vAlign)
 {
-    this->font->setVericalAlign(vAlign);
+    this->font.setVericalAlign(vAlign);
 }
 
 EVerticalAlign CRectangleText::getVerticalAlign() const
 {
-    return font->getVerticalAlign();
+    return font.getVerticalAlign();
 }
 
 void CRectangleText::setVerticalAlign(const std::string &align)
@@ -157,12 +156,12 @@ std::string CRectangleText::getVericalAlignStr() const
 
 void CRectangleText::setFontAlign(EHorizontalAlign hAlign)
 {
-    this->font->setHorizontalAlign(hAlign);
+    this->font.setHorizontalAlign(hAlign);
 }
 
 EHorizontalAlign CRectangleText::getHorizontalAlign() const
 {
-    return font->getHorizontalAlign();
+    return font.getHorizontalAlign();
 }
 
 void CRectangleText::setHorizontalAlign(const std::string &align)
@@ -203,7 +202,7 @@ std::string CRectangleText::getText() const
 
 void CRectangleText::addSymbol(char symbol)
 {
-    CRectangleSymbol *s = new CRectangleSymbol(symbol, font, width, height, fontHeight, this);
+    CRectangleSymbol *s = new CRectangleSymbol(symbol, &font, width, height, fontHeight, this);
     s->prepare();
 }
 

@@ -21,6 +21,7 @@
 #define RECTANGLE_H
 
 #include "basic2dentity.h"
+#include "rectangletext.h"
 
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
@@ -133,6 +134,12 @@ public:
      */
     void setAlpha(float alpha);
     float getAlpha() const;
+    /**
+     * @brief Получение текста для данного прямоугольника
+     * @param text текст
+     */
+    void setText(const CRectangleText &text);
+    CRectangleText getText() const;
 
 protected:
     virtual void configure() override;
@@ -162,6 +169,7 @@ protected:
     uint texture;
     std::string textureName;
     CBorder border;
+    CRectangleText text;
 }; //class Rectangle
 
 } // namespace Core

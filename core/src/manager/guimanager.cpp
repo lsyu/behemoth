@@ -146,6 +146,18 @@ void CGUIManager::registerBorder()
     b.complete(true);
 }
 
+void CGUIManager::registerText()
+{
+    CLuaWrapper<CRectangleText> t(lua, "text");
+    t.addConstructor();
+    t.addProperty<std::string, 1>("text", &CRectangleText::getText, &CRectangleText::setText);
+    t.addProperty<std::string, 2>("font", &CRectangleText::getFontName, &CRectangleText::setFont);
+    t.addProperty<float, 3>("height", &CRectangleText::getFontHeight, &CRectangleText::setFont);
+    t.addProperty<std::string, 4>("alignVertical", &CRectangleText::getVericalAlignStr, &CRectangleText::setVerticalAlign);
+    t.addProperty<std::string, 5>("alignHorizontal", &CRectangleText::getHorizontalAlignStr, &CRectangleText::setHorizontalAlign);
+    t.complete(true);
+}
+
 void CGUIManager::registerRectangle()
 {
     CLuaWrapper<CRectangle> r(lua, "rectangle");
@@ -164,6 +176,7 @@ void CGUIManager::registerRectangle()
     r.addProperty<float, 11>("alpha", &CRectangle::getAlpha, &CRectangle::setAlpha);
     r.addProperty<std::string, 12>("texture", &CRectangle::getTexture, &CRectangle::setTexture);
     r.addProperty<CBorder, 13>("border", &CRectangle::getBorder, &CRectangle::setBorder);
+    r.addProperty<CRectangleText, 14>("text", &CRectangle::getText, &CRectangle::setText);
 
 
     r.addProperty({"addChild", [](lua_State *l) {
@@ -180,18 +193,6 @@ void CGUIManager::registerRectangle()
                    }
                   });
     r.complete(true);
-}
-
-void CGUIManager::registerText()
-{
-    CLuaWrapper<CRectangleText> t(lua, "text");
-    t.addConstructor();
-    t.addProperty<std::string, 1>("text", &CRectangleText::getText, &CRectangleText::setText);
-    t.addProperty<std::string, 2>("font", &CRectangleText::getFontName, &CRectangleText::setFont);
-    t.addProperty<float, 3>("height", &CRectangleText::getFontHeight, &CRectangleText::setFont);
-    t.addProperty<std::string, 4>("alignVertical", &CRectangleText::getVericalAlignStr, &CRectangleText::setVerticalAlign);
-    t.addProperty<std::string, 5>("alignHorizontal", &CRectangleText::getHorizontalAlignStr, &CRectangleText::setHorizontalAlign);
-    t.complete(true);
 }
 
 core::AbstractEntity *CGUIManager::getObject(const std::string &id)
@@ -233,7 +234,6 @@ bool CGUIManager::runOnClickFor(AbstractEntity *entity)
     lua_getglobal(lua, "ui");
     if (lua_istable(lua, -1))
     {
-        //lua_getfield(lua, -1, );
         lua_getfield(lua, -1, entity->getId().c_str());
         if (lua_istable(lua, -1)) {
             lua_getfield(lua, -1, "onClick");

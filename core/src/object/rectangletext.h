@@ -20,7 +20,7 @@
 #ifndef RECTANGLETEXT_H
 #define RECTANGLETEXT_H
 
-#include "rectangle.h"
+#include "basic2dentity.h"
 #include "font.h"
 #include <vector>
 
@@ -31,7 +31,7 @@ class CRectangleSymbol;
 /**
  * @brief The CRectangleFont class
  */
-class CRectangleText : public CRectangle
+class CRectangleText : public Basic2dEntity
 {
 public:
     friend class CRectangleSymbol;
@@ -41,6 +41,12 @@ public:
 
     virtual void paint() const override;
     virtual void onClicked(const CEventMouseClick &event) override;
+
+    virtual void setColor(const glm::vec3 &/*color*/) {}
+    virtual float getXMin() const override {return x;}
+    virtual float getXMax() const override {return x+width;}
+    virtual float getYMin() const override {return y;}
+    virtual float getYMax() const override {return y+height;}
 
     /**
      * @brief Установить цвет шрифта для отображения.
@@ -76,10 +82,14 @@ private:
      */
     void addSymbol(char symbol);
 
-    CFont *font;
+    CFont font;
     std::vector< std::vector<CRectangleSymbol*> > lines;
     float fontHeight;
     std::string text;
+    float x;
+    float y;
+    float width;
+    float height;
 }; // class CRectangleFont
 
 } // namespace core
