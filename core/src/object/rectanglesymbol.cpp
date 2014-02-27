@@ -46,8 +46,20 @@ CRectangleSymbol::~CRectangleSymbol()
     delete symbolTex;
 }
 
+void CRectangleSymbol::paint() const
+{
+    vao.bind();
+    glDrawArrays(GL_QUADS, 0, 4);
+    vao.disable();
+}
+
 void CRectangleSymbol::onClicked(const CEventMouseClick &event)
 {
+}
+
+bool CRectangleSymbol::operator >(CRectangleSymbol *other) const
+{
+    return this->symbol > other->symbol;
 }
 
 void CRectangleSymbol::configure()

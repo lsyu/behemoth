@@ -505,7 +505,7 @@ private:
         }
 
 
-        std::cout << doStr;
+//        std::cout << doStr;
     }
 
     lua_State *lua;

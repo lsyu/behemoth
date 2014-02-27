@@ -23,6 +23,9 @@
 #include "basic2dentity.h"
 #include "font.h"
 #include <vector>
+#include <set>
+
+class CShader;
 
 namespace core {
 
@@ -84,6 +87,8 @@ private:
 
     CFont font;
     std::vector< std::vector<CRectangleSymbol*> > lines;
+    std::multiset<CRectangleSymbol*> symbols;
+    CShader *shader; // Получаю с фабрики, не надо чистить память
     float fontHeight;
     std::string text;
     float x;

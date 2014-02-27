@@ -37,7 +37,10 @@ public:
                      CRectangleText *parent);
     virtual ~CRectangleSymbol();
 
+    virtual void paint() const override;
     virtual void onClicked(const CEventMouseClick &event) override;
+
+    bool operator >(CRectangleSymbol *other) const;
 
 protected:
     virtual void configure() override;

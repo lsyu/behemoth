@@ -25,10 +25,12 @@
 #include "core/factory/shaderfactory.h"
 #include "core/application.h"
 
+#include "algorithm"
+
 namespace core {
 
-CRectangleText::CRectangleText() : Basic2dEntity(), font("UNKNOWN", 14), lines(),
-    fontHeight(0.5f), x(-1.0f), y(-1.0f), width(2.0f), height(2.0f)
+CRectangleText::CRectangleText() : Basic2dEntity(), font("UNKNOWN", 14), lines(), symbols(),
+    shader(nullptr), fontHeight(0.5f), x(-1.0f), y(-1.0f), width(2.0f), height(2.0f)
 {
     lines.push_back(std::vector<CRectangleSymbol*>());
 }
@@ -71,15 +73,44 @@ void CRectangleText::configure()
         s->translate(glm::vec2(x, y));
         s->configure();
     }
+    shader = CShaderFactory::getInstance()->getShader("test");
 }
 
 void CRectangleText::paint() const
 {
-    for (int i = vChilds.size()-1; i >= 0; --i)
-        vChilds[i]->paint();
+    glm::ivec2 size = CApplication::getInstance()->getSize();
+    float aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
+    shader->setUniform("aspect", aspect);
+    shader->setUniform("rA", 0.0f);
+    shader->setUniform("rB", 0.0f);
+    shader->setUniform("rC", 0.0f);
+    shader->setUniform("rD", 0.0f);
+    shader->setUniform("alpha", 1.0f);
+    shader->setUniform("borderWidth", 0.0f);
+    shader->setUniform("borderColor", glm::vec3());
+
+    shader->setUniform("textureUse", 1);
+    shader->setUniform("texture", 0);
+
+    CRectangleSymbol *prev = nullptr;
+    for (std::multiset<CRectangleSymbol*>::iterator it = symbols.cbegin(), end = symbols.cend();
+         it != end; ++it) {
+        shader->setUniform("x", (*it)->x);
+        shader->setUniform("y", (*it)->y);
+        shader->setUniform("width", (*it)->width);
+        shader->setUniform("height", (*it)->height);
+
+        if (!prev || prev->symbol != (*it)->symbol) {
+            glEnable(GL_TEXTURE_2D);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, (*it)->texture);
+        }
+        (*it)->paint();
+        prev = *it;
+    }
 }
 
-void CRectangleText::onClicked(const CEventMouseClick &event)
+void CRectangleText::onClicked(const CEventMouseClick &/*event*/)
 {
 }
 
@@ -203,6 +234,7 @@ std::string CRectangleText::getText() const
 void CRectangleText::addSymbol(char symbol)
 {
     CRectangleSymbol *s = new CRectangleSymbol(symbol, &font, width, height, fontHeight, this);
+    symbols.insert(s);
     s->prepare();
 }
 
