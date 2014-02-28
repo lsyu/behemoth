@@ -77,16 +77,16 @@ public:
     glm::vec3 getColor() const;
 
 private:
+    static int quantity;        /**< Качество шрифта. @n
+                                  * Настоящая высота шрифта при загрузке(в пикселях).
+                                  */
     std::string name;           /**< Название шрифта. */
     float height;               /**< Высота шрифта. @n
                                   * Отображаемая высота (оттносительная)
                                   */
-    static int quantity;        /**< Качество шрифта. @n
-                                  * Настоящая высота шрифта при загрузке(в пикселях).
-                                  */
     EVerticalAlign vAlign;      /**< Выравнивание по вертикали */
     EHorizontalAlign hAlign;    /**< Выравнивание по горизонтали */
-    glm::vec3 color;            /**< Цыет шрифта */
+    glm::vec3 color;            /**< Цвет шрифта */
 }; // class CFont
 
 } // namespace core

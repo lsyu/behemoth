@@ -32,8 +32,7 @@ CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, 
     parentWidth(parentWidth), parentHeight(parentHeight), fontHeight(fontHeight), lineNumber(0)
 {
     parent->addChild(this);
-    symbolTex = new CSymbolTexture(CTextureFactory::getInstance()->getSymbol(symbol, *font,
-                parentWidth, parentHeight));
+    symbolTex = new CSymbolTexture(CTextureFactory::getInstance()->getSymbol(symbol, *font));
     texture = symbolTex->texture;
 
     float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;

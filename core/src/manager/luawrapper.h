@@ -381,9 +381,9 @@ public:
      * @brief Добавить свойство типа Arg с именем name
      */
     void addProperty(const luaL_Reg &member) {
-        if (member.name == "sync")
+        if (std::string(member.name) == "sync")
             sync = true;
-        if (member.name == "addChild")
+        if (std::string(member.name) == "addChild")
             addChild = true;
         lReg.push_back(member);
     }

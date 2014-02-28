@@ -74,7 +74,7 @@ public:
      */
     uint getTexture(const CTextBuffer &buffer) const;
 
-    CSymbolTexture getSymbol(char symbol, const CFont &font, float parentWidth, float parentHeight);
+    CSymbolTexture getSymbol(char symbol, const CFont &font);
 
 private:
     CTextureFactory();

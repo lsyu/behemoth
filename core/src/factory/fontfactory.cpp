@@ -80,14 +80,14 @@ CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
     for (int y = 0, n = g->bitmap_top; y < n; ++y) {
         for (int x = 0, n = g->bitmap.pitch; x < n; ++x) {
             unsigned char c = g->bitmap.buffer[y * g->bitmap.pitch + x];
-            ret.symbol.insert(ret.symbol.end(), {font.getColor().r,
-                                                 font.getColor().g,
-                                                 font.getColor().b,
+            ret.symbol.insert(ret.symbol.end(), {static_cast<unsigned char>(font.getColor().r),
+                                                 static_cast<unsigned char>(font.getColor().g),
+                                                 static_cast<unsigned char>(font.getColor().b),
                                                  c});
         }
         // добиваем по x пустыми символами
         for (int x = 0, n = ret.width - g->bitmap.pitch; x < n; ++x)
-            ret.symbol.insert(ret.symbol.end(), {0.0f, 0.0f, 0.0f, 0.0f});
+            ret.symbol.insert(ret.symbol.end(), {0, 0, 0, 0});
     }
 
     // Отступ - пока что пол размера шрифта
@@ -97,14 +97,14 @@ CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
     for (int y = g->bitmap_top, n = g->bitmap.rows; y < n; ++y) {
         for (int x = 0, n = g->bitmap.pitch; x < n; ++x) {
             unsigned char c = g->bitmap.buffer[y * g->bitmap.pitch + x];
-            ret.symbol.insert(ret.symbol.end(), {font.getColor().r,
-                                                 font.getColor().g,
-                                                 font.getColor().b,
+            ret.symbol.insert(ret.symbol.end(), {static_cast<unsigned char>(font.getColor().r),
+                                                 static_cast<unsigned char>(font.getColor().g),
+                                                 static_cast<unsigned char>(font.getColor().b),
                                                  c});
         }
         // добиваем по x
         for (int x = 0, n = ret.width - g->bitmap.pitch; x < n; ++x)
-            ret.symbol.insert(ret.symbol.end(), {0.0f, 0.0f, 0.0f, 0.0f});
+            ret.symbol.insert(ret.symbol.end(), {0, 0, 0, 0});
     }
     // Добиваем отступ
     for (int dx = 0, h = ret.height / 2.0f - (g->bitmap.rows - g->bitmap_top); dx < ret.width; ++dx)

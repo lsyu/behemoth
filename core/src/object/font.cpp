@@ -24,7 +24,7 @@ namespace core {
 int CFont::quantity = 50;
 
 CFont::CFont(const std::string &name, int height) : name(name), height(height),
-    color(1, 0, 0), vAlign(EVerticalAlign::Center), hAlign(EHorizontalAlign::Center)
+    vAlign(EVerticalAlign::Center), hAlign(EHorizontalAlign::Center), color(1, 0, 0)
 {
 }
 

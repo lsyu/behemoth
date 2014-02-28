@@ -142,17 +142,16 @@ uint CTextureFactory::getTexture(const string &name)
     return texture->second;
 }
 
-CSymbolTexture CTextureFactory::getSymbol(char symbol, const CFont &font, float parentWidth, float parentHeight)
+CSymbolTexture CTextureFactory::getSymbol(char symbol, const CFont &font)
 {
     std::map<char, CSymbolTexture>::const_iterator s = symbols.find(symbol);
     CSymbolTexture retSymbol;
     if (s == symbols.end()) {
         CTextBuffer buffer = CFontFactory::getInstance()->getTextBuffer(symbol, font);
         uint retTexture = getTexture(buffer);
-        glm::ivec2 size = CApplication::getInstance()->getSize();
         retSymbol.texture = retTexture;
-        retSymbol.width = (float)buffer.width/* / (0.5f * parentWidth * (float)size.x)*/;
-        retSymbol.height = (float)buffer.height/* / (0.5f * parentHeight * (float)size.y)*/;
+        retSymbol.width = static_cast<float>(buffer.width);
+        retSymbol.height = static_cast<float>(buffer.height);
         symbols[symbol] = retSymbol;
     } else {
         retSymbol = s->second;
