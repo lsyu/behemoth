@@ -41,7 +41,7 @@ DefaultScene::~DefaultScene()
 
 void DefaultScene::prepareGL()
 {
-    CGUIManager::getInstance()->readGui("scripts/test.lua");
+    CGUIManager::getInstance()->readGui("gui/example.lua");
 
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
@@ -78,7 +78,7 @@ void DefaultScene::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    CShader *shader = CShaderFactory::getInstance()->getShader("test");
+    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
     if (shader) {
         shader->bind();
         const std::vector<std::shared_ptr<AbstractEntity> > &objects = CGUIManager::getInstance()->getObjects();

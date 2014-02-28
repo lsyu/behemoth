@@ -21,8 +21,6 @@
 #include "core/manager/resourcemanager.h"
 #include "core/application.h"
 
-#include "glm/gtc/type_ptr.hpp"
-
 using std::string;
 
 

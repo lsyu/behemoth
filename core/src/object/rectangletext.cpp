@@ -73,7 +73,7 @@ void CRectangleText::configure()
         s->translate(glm::vec2(x, y));
         s->configure();
     }
-    shader = CShaderFactory::getInstance()->getShader("test");
+    shader = CShaderFactory::getInstance()->getShader("gui");
 }
 
 void CRectangleText::paint() const

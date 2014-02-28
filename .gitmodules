@@ -1,0 +1,6 @@
+[submodule "core/src/glm"]
+	path = core/src/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "core/src/gli"]
+	path = core/src/gli
+	url = https://github.com/g-truc/gli.git

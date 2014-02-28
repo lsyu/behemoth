@@ -69,7 +69,7 @@ void CRectangleSymbol::configure()
     vPos2[2] = glm::vec2(x + width, y + height);
     vPos2[3] = glm::vec2(x, y + height);
 
-    shader = CShaderFactory::getInstance()->getShader("test");
+    shader = CShaderFactory::getInstance()->getShader("gui");
 
     vao.genBuffer();
     vao.bind();

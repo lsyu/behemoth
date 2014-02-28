@@ -99,6 +99,9 @@ private:
      * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
     uint loadSymbol(char symbol);
+
+    //from http://www.g-truc.net/project-0024.html#menu
+    unsigned int createTexture2D(const std::string &filename);
     
     static CTextureFactory *instance;
     std::map<std::string, uint> textures;

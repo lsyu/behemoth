@@ -81,17 +81,23 @@ void CResourceManager::registrationFolder()
 
 void CResourceManager::readConfFile()
 {
-    luaL_dostring(lua, "conf = {}");
-    luaL_dostring(lua,
-                  "function conf:folders(data)\n"
-                  "  local config = Folders.new()\n"
-                  "  for k, v in pairs(data) do\n"
-                  "    config:addResource(k, v)\n"
-                  "  end\n"
-                  "  return config\n"
-                  "end");
-    luaL_dofile(lua, std::string(pathToApplication + "core.conf").c_str());
-    lua_close(lua);
+    string confFile = pathToApplication + "core.conf";
+    ifstream file(confFile.c_str());
+    bool exists = file.good();
+    file.close();
+    if (exists) {
+        luaL_dostring(lua, "conf = {}");
+        luaL_dostring(lua,
+                      "function conf:folders(data)\n"
+                      "  local config = Folders.new()\n"
+                      "  for k, v in pairs(data) do\n"
+                      "    config:addResource(k, v)\n"
+                      "  end\n"
+                      "  return config\n"
+                      "end");
+        luaL_dofile(lua, confFile.c_str());
+        lua_close(lua);
+    }
 }
 
 CResourceManager::CResourceManager() : pathToApplication(), mapOfParam(std::map<std::string, std::string>()),
@@ -126,7 +132,7 @@ string CResourceManager::getResource(const string &name) const
 {
     if (mapOfParam.find(name) != mapOfParam.end())
         return getPatchToApplication() + mapOfParam.at(name);
-    return getPatchToApplication();
+    return getPatchToApplication() + getFileSeparator() + "res" + getFileSeparator() + name;
 }
 
 string CResourceManager::getCoreConf() const
@@ -136,27 +142,27 @@ string CResourceManager::getCoreConf() const
 
 string CResourceManager::getMeshFolder() const
 {
-    return getResource("mesh");
+    return getResource("meshs");
 }
 
 string CResourceManager::getMaterialFolder() const
 {
-    return getResource("material");
+    return getResource("materials");
 }
 
 string CResourceManager::getShaderFolder() const
 {
-    return getResource("shader");
+    return getResource("shaders");
 }
 
 string CResourceManager::getTextureFolder() const
 {
-    return getResource("texture");
+    return getResource("textures");
 }
 
 string CResourceManager::getFontFolder() const
 {
-    return getResource("font");
+    return getResource("fonts");
 }
 
 string CResourceManager::getFileSeparator() const
