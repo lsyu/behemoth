@@ -68,10 +68,7 @@ void CBasicGUILayer::paintGL()
     CShader *shader = CShaderFactory::getInstance()->getShader("gui");
     if (shader) {
         shader->bind();
-        const std::vector<std::shared_ptr<AbstractEntity> > &objects = CGUIManager::getInstance()->getObjects();
-        for (int i = objects.size()-1; i >= 0; --i)
-            if (objects[i]->isRoot())
-                objects[i]->paint();
+        CGUIManager::getInstance()->getRootObject()->paint();
         shader->disable();
     }
 
