@@ -131,8 +131,8 @@ string CResourceManager::getPatchToApplication() const
 string CResourceManager::getResource(const string &name) const
 {
     if (mapOfParam.find(name) != mapOfParam.end())
-        return getPatchToApplication() + mapOfParam.at(name);
-    return getPatchToApplication() + getFileSeparator() + "res" + getFileSeparator() + name + getFileSeparator();
+        return getPatchToApplication() + mapOfParam.at(name) + getFileSeparator();
+    return getPatchToApplication() + "res" + getFileSeparator() + name + getFileSeparator();
 }
 
 string CResourceManager::getCoreConf() const
