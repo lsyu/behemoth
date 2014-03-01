@@ -132,7 +132,7 @@ string CResourceManager::getResource(const string &name) const
 {
     if (mapOfParam.find(name) != mapOfParam.end())
         return getPatchToApplication() + mapOfParam.at(name);
-    return getPatchToApplication() + getFileSeparator() + "res" + getFileSeparator() + name;
+    return getPatchToApplication() + getFileSeparator() + "res" + getFileSeparator() + name + getFileSeparator();
 }
 
 string CResourceManager::getCoreConf() const
@@ -163,6 +163,11 @@ string CResourceManager::getTextureFolder() const
 string CResourceManager::getFontFolder() const
 {
     return getResource("fonts");
+}
+
+std::string CResourceManager::getGUIFolder() const
+{
+    return getResource("gui");
 }
 
 string CResourceManager::getFileSeparator() const

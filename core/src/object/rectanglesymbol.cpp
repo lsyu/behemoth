@@ -23,7 +23,6 @@
 #include "core/factory/texturefactory.h"
 #include "core/factory/fontfactory.h"
 #include "core/factory/shaderfactory.h"
-#include "core/application.h"
 
 namespace core {
 

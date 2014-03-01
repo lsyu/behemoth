@@ -22,7 +22,7 @@
 #include "core/ogl/ogl.h"
 #include "core/factory/shaderfactory.h"
 #include "core/factory/texturefactory.h"
-#include "core/application.h"
+#include "core/application/application.h"
 #include "core/events/eventmouseclick.h"
 
 #include <iostream>

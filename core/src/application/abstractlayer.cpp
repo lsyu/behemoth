@@ -17,24 +17,24 @@
  *
  */
 
-#include "abstractscene.h"
+#include "abstractlayer.h"
 
 namespace core {
 
-AbstractScene::AbstractScene()
+AbstractLayer::AbstractLayer()
 {
 }
 
-AbstractScene::~AbstractScene()
+AbstractLayer::~AbstractLayer()
 {
 }
 
-bool AbstractScene::updateGL()
+bool AbstractLayer::updateGL()
 {
     return true;
 }
 
-bool AbstractScene::updateGL(CEventMouseClick*)
+bool AbstractLayer::updateGL(CEventMouseClick*)
 {
     return true;
 }

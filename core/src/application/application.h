@@ -57,7 +57,7 @@
 namespace core {
 
 class AbstractEvent;
-class AbstractScene;
+class AbstractLayer;
 class __CApplicationImplDel;
 
 /**
@@ -81,7 +81,7 @@ enum class EColorDepth: unsigned short int {
 class CApplication
 {
 public:
-    friend class AbstractScene;
+    friend class AbstractLayer;
     friend class __CApplicationImplDel;
 
     /**
@@ -133,10 +133,9 @@ public:
     void close();
 
     /**
-     * @brief Установить обработчика рисования.
-     * @param painter обработчик рисования.
+     * @brief Установить слой GUI.
      */
-    void setScene(core::AbstractScene *scene);
+    void setGUILayer(AbstractLayer *guiLayer);
 
     /**
      * @brief Установить заголовок окна.
@@ -239,7 +238,7 @@ private:
     glm::ivec2 size;            /**< Размеры окна(Высота, ширина). */
     glm::ivec2 displaySize;     /**< Размеры экрана. */
     EColorDepth depth;          /**< Глубина цвета. */
-    AbstractScene *painter;     /**< Сцена для рисования. */
+    AbstractLayer *guiLayer;    /**< Слой пользовательского интерфейса. */
     int windowId;               /**< Идентификатор окна. */
     float secOfLastFrame;       /**< Время визуализации последнего кадра. */
 }; // class Application

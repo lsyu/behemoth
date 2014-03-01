@@ -17,30 +17,33 @@
  *
  */
 
-#ifndef DEFAULTSCENE_H
-#define DEFAULTSCENE_H
+#ifndef BASICGUILAYER_H
+#define BASICGUILAYER_H
 
-#include "abstractscene.h"
-
-#include "glm/glm.h"
+#include "abstractlayer.h"
 
 namespace core {
 
 /**
- * @brief Сцена по-умолчанию.
+ * @brief Базовый класс слоя пользовательского интерфейса.
+ *
+ * Для того, чтобы создать пользовательский слой GUI, необходимо
+ * наследоваться от данного класса и определить реализацию метода
+ * virtual void prepareGL() из интерфейса AbstractLayer.
+ * Для формирования данных для отрисовки пользовательского интерфейса
+ * достаточно выполнить CGUIManager::getInstance()->readGui("example.lua");
  */
-class DefaultScene : public AbstractScene
+class CBasicGUILayer : public AbstractLayer
 {
 public:
-    DefaultScene();
-    ~DefaultScene();
+    CBasicGUILayer();
+    virtual ~CBasicGUILayer();
 
-    virtual void prepareGL() override;
     virtual bool updateGL() override;
     virtual bool updateGL(CEventMouseClick *e) override;
     virtual void paintGL() override;
-}; // class DefautScene
+}; // class CBasicGUILayer
 
-} // namespace Core
+} // namespace core
 
-#endif // DEFAULTSCENE_H
+#endif // BASICGUILAYER_H

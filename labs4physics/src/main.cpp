@@ -1,5 +1,5 @@
-#include "core/application.h"
-#include "core/defaultscene.h"
+#include "core/application/application.h"
+#include "layers/guilayer.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     app->setColorDepth(EColorDepth::_32);
 
 
-    DefaultScene scene;
-    app->setScene(&scene);
+    GUILayer guiLayer;
+    app->setGUILayer(&guiLayer);
 
     app->exec();
 

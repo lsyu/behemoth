@@ -65,7 +65,8 @@ bool CGUIManager::readGui(const std::string &fileName)
 {
     if (!lua)
         init();
-    bool ret = !luaL_dofile(lua, fileName.c_str());
+    std::string scriptPath = CResourceManager::getInstance()->getGUIFolder() + fileName;
+    bool ret = !luaL_dofile(lua, scriptPath.c_str());
     if(!ret) {
         // TODO: Залогировать!
         std::string log(lua_tostring(lua, -1));

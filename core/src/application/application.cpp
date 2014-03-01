@@ -18,7 +18,7 @@
  */
 
 #include "application.h"
-#include "abstractscene.h"
+#include "abstractlayer.h"
 #include "abstractevent.h"
 #include "eventmouseclick.h"
 
@@ -55,7 +55,7 @@ CApplication* CApplication::getInstance()
 
 CApplication::CApplication()
     : title("Unknown"), fullScreen(false), position(0,0), size(640,480), displaySize(0, 0),
-      depth(EColorDepth::_32), painter(), windowId(0), secOfLastFrame(0)
+      depth(EColorDepth::_32), guiLayer(nullptr), windowId(0), secOfLastFrame(0)
 {
 }
 
@@ -168,7 +168,7 @@ void CApplication::mouse(int button, int state, int x, int y)
     EMouseState s = (state == GLUT_UP ? EMouseState::up : EMouseState::down);
 
     CEventMouseClick e(x, y, btn, s);
-    if (!instance->painter->updateGL(&e))
+    if (!instance->guiLayer->updateGL(&e))
         glutLeaveMainLoop();
 }
 
@@ -177,7 +177,7 @@ void CApplication::display()
     using namespace std::chrono;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-    instance->painter->paintGL();
+    instance->guiLayer->paintGL();
     glutSwapBuffers();
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -188,13 +188,13 @@ void CApplication::display()
 
 void CApplication::idle()
 {
-    instance->painter->updateGL();
+    instance->guiLayer->updateGL();
     glutPostRedisplay();
 }
 
 void CApplication::exec()
 {
-    if (painter && displaySize.x) {
+    if (guiLayer && displaySize.x) {
         glutInitContextVersion(2, 1);
         glutInitWindowPosition(position.x, position.y);
         glutInitWindowSize(size.x, size.y);
@@ -203,7 +203,7 @@ void CApplication::exec()
         glutMouseFunc(&CApplication::mouse);
         glutDisplayFunc(&CApplication::display);
         glutIdleFunc(&CApplication::idle);
-        instance->painter->prepareGL();
+        instance->guiLayer->prepareGL();
 
         glutMainLoop();
     }
@@ -214,9 +214,9 @@ void CApplication::close()
     glutLeaveMainLoop();
 }
 
-void CApplication::setScene(AbstractScene *painter)
+void CApplication::setGUILayer(AbstractLayer *guiLayer)
 {
-    this->painter = painter;
+    this->guiLayer = guiLayer;
 }
 
 } // namespace Core
