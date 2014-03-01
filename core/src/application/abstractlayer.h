@@ -17,21 +17,22 @@
  *
  */
 
-#ifndef ABSTRACTSCENE_H
-#define ABSTRACTSCENE_H
+#ifndef ABSTRACTLAYER_H
+#define ABSTRACTLAYER_H
 
 namespace core {
 
 class CEventMouseClick;
 
 /**
- * @brief Интерфейс сцены.
+ * @brief Интерфейс слоя.
+ * Это может быть слой 3D сцены, слой GUI
  */
-class AbstractScene
+class AbstractLayer
 {
 public:
-    AbstractScene();
-    virtual ~AbstractScene();
+    AbstractLayer();
+    virtual ~AbstractLayer();
 
     /**
      * @brief Подготовить обработчик рисования для работы.
@@ -53,8 +54,8 @@ public:
      * @brief Перерисовать очередной кадр.
      */
     virtual void paintGL() = 0;
-}; // class AbstractScene
+}; // class AbstractLayer
 
 } // namespace Core
 
-#endif // ABSTRACTSCENE_H
+#endif // ABSTRACTLayer_H

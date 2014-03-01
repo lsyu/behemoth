@@ -17,42 +17,30 @@
  *
  */
 
-#include "defaultscene.h"
-#include "eventmouseclick.h"
-#include "core/objects/2d/basic2dentity.h"
-
-#include <vector>
+#include "basicguilayer.h"
 
 #include "core/ogl/ogl.h"
-
-#include "core/manager/guimanager.h"
 #include "core/factory/shaderfactory.h"
-#include "core/objects/abstractentity.h"
+#include "core/manager/guimanager.h"
+#include "core/objects/2d/basic2dentity.h"
 
 namespace core {
 
-DefaultScene::DefaultScene() : AbstractScene()
+
+CBasicGUILayer::CBasicGUILayer() : AbstractLayer()
 {
 }
 
-DefaultScene::~DefaultScene()
+CBasicGUILayer::~CBasicGUILayer()
 {
 }
 
-void DefaultScene::prepareGL()
-{
-    CGUIManager::getInstance()->readGui("gui/example.lua");
-
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
-}
-
-bool DefaultScene::updateGL()
+bool CBasicGUILayer::updateGL()
 {
     return true;
 }
 
-bool DefaultScene::updateGL(CEventMouseClick *e)
+bool CBasicGUILayer::updateGL(CEventMouseClick *e)
 {
     Basic2dEntity *object = CGUIManager::getInstance()->getRootObject();
     object->onClicked(*e);
@@ -68,9 +56,8 @@ bool DefaultScene::updateGL(CEventMouseClick *e)
     return true;
 }
 
-void DefaultScene::paintGL()
+void CBasicGUILayer::paintGL()
 {
-    // TODO: После рисования 3d сцены чистить не нужно!
     glDisable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -92,4 +79,6 @@ void DefaultScene::paintGL()
     glEnable(GL_DEPTH_TEST);
 }
 
-} // namespace Core
+
+
+} //namespace core

@@ -41,7 +41,7 @@ class Basic2dEntity : public AbstractEntity
 public:
 
     friend class CApplication;
-    friend class DefaultScene;
+    friend class CBasicGUILayer;
 
     Basic2dEntity();
     explicit Basic2dEntity(const std::string &id);

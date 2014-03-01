@@ -112,6 +112,11 @@ public:
     std::string getFontFolder() const;
 
     /**
+     * @brief Путь до папки с декларативными описаниями интерфейса.
+     */
+    std::string getGUIFolder() const;
+
+    /**
      * @return string разделитель.
      */
     std::string getFileSeparator() const;
