@@ -18,7 +18,6 @@
  */
 
 #include "texturefactory.h"
-#include "core/application/application.h"
 #include "core/manager/resourcemanager.h"
 #include "core/factory/fontfactory.h"
 #include "core/objects/font.h"

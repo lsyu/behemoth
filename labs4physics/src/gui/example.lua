@@ -8,10 +8,6 @@ ui:rectangle "root"
   height = 2.0;
   texture = "test";
 
-  onClick = function()
-    print ("hello world from lua declarative!")
-  end;
-
   ui:rectangle "modal"
   {
     x = -0.5;
@@ -28,10 +24,6 @@ ui:rectangle "root"
       width = 0.02;
     };
 
-    onClick = function()
-      print ("Clicked MODAL!")
-    end;
-
     ui:rectangle "hideItem"
     {
       x = -0.9;
@@ -44,14 +36,10 @@ ui:rectangle "root"
       {
         alignVerical = "center";
         alignHorizontal = "center";
-        text = "Hello, world!\nThis subline does not contain delimiters! :)";
+        text = "'Hello world' from lua! :)\nMessageBox example...";
         height = 0.2;
         font = "DejaVuSans";
       };
-
-      onClick = function()
-        print ("Clicked HIDEITEM!")
-      end;
     };
 
     ui:rectangle "button"
