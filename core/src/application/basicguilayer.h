@@ -22,6 +22,8 @@
 
 #include "abstractlayer.h"
 
+class CShader;
+
 namespace core {
 
 /**
@@ -42,6 +44,9 @@ public:
     virtual bool updateGL() override;
     virtual bool updateGL(CEventMouseClick *e) override;
     virtual void paintGL() override;
+
+private:
+    CShader *shader;
 }; // class CBasicGUILayer
 
 } // namespace core

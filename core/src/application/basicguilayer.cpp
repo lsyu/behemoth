@@ -27,7 +27,7 @@
 namespace core {
 
 
-CBasicGUILayer::CBasicGUILayer() : AbstractLayer()
+CBasicGUILayer::CBasicGUILayer() : AbstractLayer(), shader(nullptr)
 {
 }
 
@@ -65,8 +65,9 @@ void CBasicGUILayer::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
-    if (shader) {
+    if (!shader) {
+        shader = CShaderFactory::getInstance()->getShader("gui");
+    } else {
         shader->bind();
         CGUIManager::getInstance()->getRootObject()->paint();
         shader->disable();
