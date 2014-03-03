@@ -158,7 +158,7 @@ void CApplication::key(unsigned char key, int x, int y )
 
 void CApplication::mouse(int button, int state, int x, int y)
 {
-    Basic2dEntity::objects4Event.clear();
+    CBasic2dEntity::objects4Event.clear();
 
     EMouseButton btn  = EMouseButton::left;
     if (button == GLUT_RIGHT_BUTTON)

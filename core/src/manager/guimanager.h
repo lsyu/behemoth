@@ -30,7 +30,7 @@
 namespace core {
 
 class AbstractEntity;
-class Basic2dEntity;
+class CBasic2dEntity;
 class __CGUIManagerImplDel;
 
 /**
@@ -69,7 +69,7 @@ public:
 
     AbstractEntity *getObject(const std::string &id);
     AbstractEntity *getObject(int num);
-    Basic2dEntity *getRootObject();
+    CBasic2dEntity *getRootObject();
     const std::vector< std::shared_ptr<AbstractEntity> >& getObjects() const;
 
     template<class T>
@@ -79,7 +79,17 @@ public:
      * @brief Выполнить onClick из скрипта Lua.
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
-    bool runOnClickFor(AbstractEntity *entity);
+    bool onClick(AbstractEntity *entity);
+    /**
+     * @brief Выполнить onPressed из скрипта Lua.
+     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
+     */
+    bool onPressed(AbstractEntity *entity);
+    /**
+     * @brief Выполнить onReleased из скрипта Lua.
+     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
+     */
+    bool onReleased(AbstractEntity *entity);
 
 protected:
     /**
@@ -114,6 +124,12 @@ protected:
      * @brief Регистрация core::Rectangle.
      */
     void registerRectangle();
+
+    /**
+     * @brief Выполнить действие из скрипта в lua
+     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
+     */
+    bool executeAction(AbstractEntity *entity, const std::string &action);
 
 private:
     CGUIManager();

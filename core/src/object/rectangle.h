@@ -30,7 +30,7 @@ class CShader;
 
 namespace core {
 
-class CRectangle : public Basic2dEntity
+class CRectangle : public CBasic2dEntity
 {
 public:
     CRectangle();

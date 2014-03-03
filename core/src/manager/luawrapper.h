@@ -453,6 +453,8 @@ private:
                 doStr += "      r:set" + properties[i].first + (properties[i].second ? "(v)\n" : "(v.obj)\n");
             }
             doStr += "    elseif k == \"onClick\" then\n      ret.onClick = v\n";
+            doStr += "    elseif k == \"onPressed\" then\n      ret.onPressed = v\n";
+            doStr += "    elseif k == \"onReleased\" then\n      ret.onReleased = v\n";
 
             if (addChild)
                 doStr += "    else\n      r:addChild(v.obj)\n";

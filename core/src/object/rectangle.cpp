@@ -29,7 +29,7 @@
 
 namespace core {
 
-CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
+CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
     width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(),
     border(), text()
 {
@@ -64,7 +64,7 @@ CRectangle::CRectangle() : Basic2dEntity(), shader(nullptr), vao(), vertex(), co
     aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
-CRectangle::CRectangle(const std::string &id) : Basic2dEntity(id), shader(nullptr), vao(), vertex(),
+CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(), vertex(),
     color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
     alpha(1.0f), texture(0),border()
 {
@@ -221,7 +221,7 @@ void CRectangle::onClicked(const CEventMouseClick &event)
     if (contains(event.getCoordinates()))
         objects4Event.push_back(this);
     for (int i = vChilds.size()-1; i >= 0; --i)
-        dynamic_cast<Basic2dEntity*>(vChilds[i])->onClicked(event);
+        dynamic_cast<CBasic2dEntity*>(vChilds[i])->onClicked(event);
 }
 
 glm::vec3 CRectangle::getColor() const

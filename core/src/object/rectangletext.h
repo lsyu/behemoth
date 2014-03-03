@@ -34,7 +34,7 @@ class CRectangleSymbol;
 /**
  * @brief The CRectangleFont class
  */
-class CRectangleText : public Basic2dEntity
+class CRectangleText : public CBasic2dEntity
 {
 public:
     friend class CRectangleSymbol;

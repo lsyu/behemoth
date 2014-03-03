@@ -36,16 +36,16 @@ struct CBorder {
     glm::vec3 color;
 }; // struct Border
 
-class Basic2dEntity : public AbstractEntity
+class CBasic2dEntity : public AbstractEntity
 {
 public:
 
     friend class CApplication;
     friend class CBasicGUILayer;
 
-    Basic2dEntity();
-    explicit Basic2dEntity(const std::string &id);
-    virtual ~Basic2dEntity();
+    CBasic2dEntity();
+    explicit CBasic2dEntity(const std::string &id);
+    virtual ~CBasic2dEntity();
 
     virtual std::string getId() const override;
     void setId(const std::string &id);
@@ -72,7 +72,7 @@ protected:
     std::vector<AbstractEntity *> vChilds;  /**< вектор детей */
     AbstractEntity *parent;                 /**< родитель */
 
-    static std::vector<Basic2dEntity*> objects4Event;   /**< Объекты, для которых выполнилось
+    static std::vector<CBasic2dEntity*> objects4Event;   /**< Объекты, для которых выполнилось
                                                          * действие.
                                                          */
 }; // class Basic2dEntity

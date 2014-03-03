@@ -214,9 +214,9 @@ core::AbstractEntity *CGUIManager::getObject(int num)
     return objects[num].get();
 }
 
-Basic2dEntity *CGUIManager::getRootObject()
+CBasic2dEntity *CGUIManager::getRootObject()
 {
-    return dynamic_cast<Basic2dEntity*>(objects.back().get());
+    return dynamic_cast<CBasic2dEntity*>(objects.back().get());
 }
 
 const std::vector< std::shared_ptr<core::AbstractEntity> >& CGUIManager::getObjects() const
@@ -230,14 +230,14 @@ void CGUIManager::addObject(AbstractEntity *t)
     objects.push_back(std::shared_ptr<AbstractEntity>(dynamic_cast<T*>(t)));
 }
 
-bool CGUIManager::runOnClickFor(AbstractEntity *entity)
+bool CGUIManager::executeAction(AbstractEntity *entity, const std::string &action)
 {
     lua_getglobal(lua, "ui");
     if (lua_istable(lua, -1))
     {
         lua_getfield(lua, -1, entity->getId().c_str());
         if (lua_istable(lua, -1)) {
-            lua_getfield(lua, -1, "onClick");
+            lua_getfield(lua, -1, action.c_str());
             if (!lua_isfunction(lua, -1)) {
                 lua_pop(lua, 3);
                 return false;
@@ -252,6 +252,21 @@ bool CGUIManager::runOnClickFor(AbstractEntity *entity)
         return true;
     }
     return false;
+}
+
+bool CGUIManager::onClick(AbstractEntity *entity)
+{
+    return executeAction(entity, "onClick");
+}
+
+bool CGUIManager::onPressed(AbstractEntity *entity)
+{
+    return executeAction(entity, "onPressed");
+}
+
+bool CGUIManager::onReleased(AbstractEntity *entity)
+{
+    return executeAction(entity, "onReleased");
 }
 
 } // namespace Core

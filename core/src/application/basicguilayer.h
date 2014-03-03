@@ -26,6 +26,9 @@ class CShader;
 
 namespace core {
 
+class CGUIManager;
+class AbstractEntity;
+
 /**
  * @brief Базовый класс слоя пользовательского интерфейса.
  *
@@ -46,6 +49,10 @@ public:
     virtual void paintGL() override;
 
 private:
+    /**
+     * @brief Выполнить действие action
+     */
+    void executeAction(bool(CGUIManager::*action)(AbstractEntity *));
     CShader *shader;
 }; // class CBasicGUILayer
 

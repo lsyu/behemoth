@@ -67,10 +67,17 @@ ui:rectangle "root"
         font = "DejaVuSans";
       };
 
+      onPressed = function()
+        print ("Pressed BUTTON")
+      end;
+
       onClick = function()
         print ("Clicked BUTTON!")
       end;
 
+      onReleased = function()
+        print ("Released BUTTON")
+      end;
       
     };
   };

@@ -23,55 +23,55 @@
 
 namespace core {
 
-std::vector<Basic2dEntity*> Basic2dEntity::objects4Event;
+std::vector<CBasic2dEntity*> CBasic2dEntity::objects4Event;
 
-Basic2dEntity::Basic2dEntity() : id(), vPos2(), vUV(), vColor(), vChilds(), parent(nullptr)
+CBasic2dEntity::CBasic2dEntity() : id(), vPos2(), vUV(), vColor(), vChilds(), parent(nullptr)
 {
 }
 
-Basic2dEntity::Basic2dEntity(const std::string &id) : AbstractEntity(id), id(id), vPos2(), vUV(),
+CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(id), id(id), vPos2(), vUV(),
     vColor(), vChilds(), parent(nullptr)
 {
 }
 
-Basic2dEntity::~Basic2dEntity()
+CBasic2dEntity::~CBasic2dEntity()
 {
 }
 
-std::string Basic2dEntity::getId() const
+std::string CBasic2dEntity::getId() const
 {
     return id;
 }
 
-void Basic2dEntity::setId(const std::string &id)
+void CBasic2dEntity::setId(const std::string &id)
 {
     this->id = id;
 }
 
-void Basic2dEntity::setParent(AbstractEntity *parent)
+void CBasic2dEntity::setParent(AbstractEntity *parent)
 {
     this->parent = parent;
     if (!parent->getChild(this->id))
         parent->addChild(this);
 }
 
-AbstractEntity *Basic2dEntity::getParent() const
+AbstractEntity *CBasic2dEntity::getParent() const
 {
     return parent;
 }
 
-bool Basic2dEntity::isRoot() const
+bool CBasic2dEntity::isRoot() const
 {
     return parent == nullptr;
 }
 
-void Basic2dEntity::addChild(AbstractEntity *child)
+void CBasic2dEntity::addChild(AbstractEntity *child)
 {
     vChilds.push_back(child);
     child->setParent(this);
 }
 
-AbstractEntity *Basic2dEntity::getChild(const std::string &id)
+AbstractEntity *CBasic2dEntity::getChild(const std::string &id)
 {
     std::vector<AbstractEntity *>::const_iterator it = std::find_if(vChilds.begin(), vChilds.end(),
     [&id](AbstractEntity *child) -> bool
@@ -83,7 +83,7 @@ AbstractEntity *Basic2dEntity::getChild(const std::string &id)
     return nullptr;
 }
 
-std::vector<AbstractEntity *> &Basic2dEntity::getChilds()
+std::vector<AbstractEntity *> &CBasic2dEntity::getChilds()
 {
     return vChilds;
 }

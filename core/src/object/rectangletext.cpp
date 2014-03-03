@@ -29,7 +29,7 @@
 
 namespace core {
 
-CRectangleText::CRectangleText() : Basic2dEntity(), font("UNKNOWN", 14), lines(), symbols(),
+CRectangleText::CRectangleText() : CBasic2dEntity(), font("UNKNOWN", 14), lines(), symbols(),
     shader(nullptr), fontHeight(0.5f), x(-1.0f), y(-1.0f), width(2.0f), height(2.0f)
 {
     lines.push_back(std::vector<CRectangleSymbol*>());

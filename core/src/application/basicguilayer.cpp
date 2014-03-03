@@ -24,6 +24,8 @@
 #include "core/manager/guimanager.h"
 #include "core/objects/2d/basic2dentity.h"
 
+#include "core/events/eventmouseclick.h"
+
 namespace core {
 
 
@@ -42,16 +44,23 @@ bool CBasicGUILayer::updateGL()
 
 bool CBasicGUILayer::updateGL(CEventMouseClick *e)
 {
-    Basic2dEntity *object = CGUIManager::getInstance()->getRootObject();
+    static CBasic2dEntity *entityDown = nullptr, *entityUp = nullptr;
+    EMouseState state = e->getMouseState();
+    CBasic2dEntity *object = CGUIManager::getInstance()->getRootObject();
     object->onClicked(*e);
-    if (!Basic2dEntity::objects4Event.empty()) {
-        bool clicked;
-        do {
-            clicked = CGUIManager::getInstance()->runOnClickFor(Basic2dEntity::objects4Event.back());
-            Basic2dEntity::objects4Event.pop_back();
-            if (Basic2dEntity::objects4Event.empty())
-                break;
-        } while (!clicked);
+    if (!CBasic2dEntity::objects4Event.empty()) {
+        if (state == EMouseState::down) {
+            entityDown = CBasic2dEntity::objects4Event.back();
+            entityUp = nullptr;
+            executeAction(&CGUIManager::onPressed);
+        } else {
+            entityUp = CBasic2dEntity::objects4Event.back();
+            executeAction(&CGUIManager::onReleased);
+        }
+        if (entityUp && entityDown && entityDown->getId() == entityUp->getId()) {
+            entityUp = entityDown = nullptr;
+            executeAction(&CGUIManager::onClick);
+        }
     }
     return true;
 }
@@ -75,6 +84,19 @@ void CBasicGUILayer::paintGL()
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
+}
+
+void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(AbstractEntity *))
+{
+    std::vector<CBasic2dEntity*> tmp = CBasic2dEntity::objects4Event;
+    while (true) {
+        if ((CGUIManager::getInstance()->*action)(CBasic2dEntity::objects4Event.back()))
+            break;
+        CBasic2dEntity::objects4Event.pop_back();
+        if (CBasic2dEntity::objects4Event.empty())
+            break;
+    }
+    CBasic2dEntity::objects4Event = tmp;
 }
 
 
