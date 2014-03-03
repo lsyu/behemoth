@@ -1,5 +1,5 @@
-#include <GL/gl.h>
+#include "../../gl/gl.h"
 #include "../../gl/freeglut.h"
-#include <GL/glext.h>
+#include "../../gl/glext.h"
 #include "shader.h"
 #include "vertexbufferobject.h"

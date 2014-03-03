@@ -1,0 +1,17 @@
+# 3d
+
+set(CORE_SRCS
+    ${CORE_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
+    
+    PARENT_SCOPE
+)
+
+set(CORE_HEADERS
+    ${CORE_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/light.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/camera.h
+    
+    PARENT_SCOPE
+)

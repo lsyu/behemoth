@@ -21,8 +21,8 @@
 #include "luawrapper.h"
 
 #include "core/objects/abstractentity.h"
-#include "core/objects/2d/rectangle.h"
-#include "core/objects/2d/rectangletext.h"
+#include "core/objects/gui/rectangle.h"
+#include "core/objects/gui/rectangletext.h"
 
 #include "core/manager/resourcemanager.h"
 

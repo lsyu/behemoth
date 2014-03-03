@@ -20,9 +20,9 @@
 #include "rectangletext.h"
 #include "rectanglesymbol.h"
 #include "core/ogl/ogl.h"
-#include "core/factory/texturefactory.h"
-#include "core/factory/fontfactory.h"
-#include "core/factory/shaderfactory.h"
+#include "core/ogl/texturefactory.h"
+#include "core/ogl/shaderfactory.h"
+#include "core/fonts/fontfactory.h"
 #include "core/application/application.h"
 
 #include "algorithm"

@@ -20,9 +20,9 @@
 #include "basicguilayer.h"
 
 #include "core/ogl/ogl.h"
-#include "core/factory/shaderfactory.h"
+#include "core/ogl/shaderfactory.h"
 #include "core/manager/guimanager.h"
-#include "core/objects/2d/basic2dentity.h"
+#include "core/objects/gui/basic2dentity.h"
 
 #include "core/events/eventmouseclick.h"
 

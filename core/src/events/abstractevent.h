@@ -30,8 +30,8 @@ namespace core {
 class AbstractEvent
 {
 public:
-    AbstractEvent();
-    virtual ~AbstractEvent();
+    AbstractEvent() {}
+    virtual ~AbstractEvent() {}
 }; // class AbstractEvent
 
 } // namespace core

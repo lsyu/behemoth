@@ -1,1 +1,1 @@
-#include "../../../core/src/openglstuff/vertexarrayobject.h"
+#include "../../../core/src/gl/vertexarrayobject.h"

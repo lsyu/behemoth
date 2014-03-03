@@ -9,12 +9,13 @@ include_directories(
 )
 
 add_subdirectory(application)
-add_subdirectory(factory)
+add_subdirectory(events)
+add_subdirectory(fonts)
+add_subdirectory(objects)
+add_subdirectory(gl)
 add_subdirectory(glm/glm)
 add_subdirectory(gli/gli)
-add_subdirectory(object)
-add_subdirectory(openglstuff)
-add_subdirectory(manager)
+add_subdirectory(lua)
 
 set(CORE_SRCS
     ${CORE_SRCS}

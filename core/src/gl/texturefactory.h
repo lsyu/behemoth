@@ -25,7 +25,7 @@
 #include <map>
 #include <vector>
 
-#include "core/objects/textbuffer.h"
+#include "core/objects/gui/textbuffer.h"
 
 #include "glm/glm.h"
 

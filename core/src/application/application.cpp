@@ -19,15 +19,17 @@
 
 #include "application.h"
 #include "abstractlayer.h"
-#include "abstractevent.h"
-#include "eventmouseclick.h"
 
 #include "gl/freeglut.h"
 
 #include "core/ogl/shader.h"
 #include "core/ogl/vertexbufferobject.h"
+
+#include "core/events/abstractevent.h"
+#include "core/events/eventmouseclick.h"
+
 #include "core/manager/resourcemanager.h"
-#include "core/objects/2d/basic2dentity.h"
+#include "core/objects/gui/basic2dentity.h"
 
 #include <iostream>
 #include <chrono>

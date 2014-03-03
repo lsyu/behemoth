@@ -1,1 +1,1 @@
-#include "../../../core/src/openglstuff/vertexbufferobject.h"
+#include "../../../core/src/gl/vertexbufferobject.h"

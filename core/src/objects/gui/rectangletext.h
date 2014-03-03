@@ -21,7 +21,7 @@
 #define RECTANGLETEXT_H
 
 #include "basic2dentity.h"
-#include "font.h"
+#include "core/fonts/font.h"
 #include <vector>
 #include <set>
 

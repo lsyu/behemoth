@@ -18,7 +18,7 @@
  */
 
 #include "eventmouseclick.h"
-#include "application.h"
+#include "core/application/application.h"
 
 namespace core {
 

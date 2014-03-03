@@ -1,1 +1,1 @@
-#include "../../../core/src/manager/resourcemanager.h"
+#include "../../../core/src/lua/resourcemanager.h"

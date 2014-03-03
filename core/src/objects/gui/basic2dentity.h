@@ -20,7 +20,7 @@
 #ifndef BASIC2DENTITY_H
 #define BASIC2DENTITY_H
 
-#include "abstractentity.h"
+#include "core/objects/abstractentity.h"
 
 namespace core {
 

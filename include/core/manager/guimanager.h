@@ -1,1 +1,1 @@
-#include "../../../core/src/manager/guimanager.h"
+#include "../../../core/src/lua/guimanager.h"

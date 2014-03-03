@@ -20,8 +20,8 @@
 #ifndef FONTFACTORY_H
 #define FONTFACTORY_H
 
-#include "core/objects/font.h"
-#include "core/objects/textbuffer.h"
+#include "core/fonts/font.h"
+#include "core/objects/gui/textbuffer.h"
 
 #include <ft2build.h>
 #include <freetype/freetype.h>

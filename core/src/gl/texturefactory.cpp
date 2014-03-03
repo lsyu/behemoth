@@ -19,8 +19,7 @@
 
 #include "texturefactory.h"
 #include "core/manager/resourcemanager.h"
-#include "core/factory/fontfactory.h"
-#include "core/objects/font.h"
+#include "core/fonts/fontfactory.h"
 #include "core/ogl/ogl.h"
 
 #include "gli/gli.h"

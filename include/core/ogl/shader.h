@@ -1,1 +1,1 @@
-#include "../../../core/src/openglstuff/shader.h"
+#include "../../../core/src/gl/shader.h"
