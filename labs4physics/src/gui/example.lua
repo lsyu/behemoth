@@ -69,6 +69,11 @@ ui:rectangle "root"
 
       onPressed = function()
         print ("Pressed BUTTON")
+        ui.button.border = ui:border
+        {
+          color = ui:vec3(0.9, 0.9, 0.9);
+          width = 0.1;
+        };
       end;
 
       onClick = function()
@@ -77,6 +82,11 @@ ui:rectangle "root"
 
       onReleased = function()
         print ("Released BUTTON")
+        ui.button.border = ui:border
+        {
+          color = ui:vec3(0.2, 0.2, 0.2);
+          width = 0.1;
+        };
       end;
       
     };
