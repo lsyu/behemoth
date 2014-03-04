@@ -78,7 +78,9 @@ void CBasicGUILayer::paintGL()
         shader = CShaderFactory::getInstance()->getShader("gui");
     } else {
         shader->bind();
-        CGUIManager::getInstance()->getRootObject()->paint();
+        CBasic2dEntity *root = CGUIManager::getInstance()->getRootObject();
+        if (root)
+            root->paint();
         shader->disable();
     }
 

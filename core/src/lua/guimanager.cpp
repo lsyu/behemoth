@@ -216,7 +216,7 @@ core::AbstractEntity *CGUIManager::getObject(int num)
 
 CBasic2dEntity *CGUIManager::getRootObject()
 {
-    return dynamic_cast<CBasic2dEntity*>(objects.back().get());
+    return objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(objects.back().get());
 }
 
 const std::vector< std::shared_ptr<core::AbstractEntity> >& CGUIManager::getObjects() const

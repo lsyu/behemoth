@@ -107,16 +107,6 @@ public:
     void setRadiusOfD(float rD);
     float getRadiusOfD() const;
     /**
-     * @brief Установить толщину границы.
-     */
-    void setBorderWidth(float width);
-    float getBorderWidth() const;
-    /**
-     * @brief Установить цвет границы
-     */
-    void setBorderColor(const glm::vec3 &color);
-    glm::vec3 getBorderColor() const;
-    /**
      * @brief Установить границу
      */
     void setBorder(const CBorder &border);

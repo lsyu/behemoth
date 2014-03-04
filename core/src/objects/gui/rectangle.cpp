@@ -117,7 +117,7 @@ void CRectangle::configure()
         height = height * scHeight;
     }
 
-    float halfOfMinSide = 0.5f * std::min(width, height)/* - 0.001f*/; // correct in min
+    float halfOfMinSide = 0.5f * std::min(width, height);
     rA *= halfOfMinSide;
     rB *= halfOfMinSide;
     rC *= halfOfMinSide;
@@ -346,26 +346,6 @@ void CRectangle::setRadiusOfD(float rD)
 float CRectangle::getRadiusOfD() const
 {
     return rD;
-}
-
-void CRectangle::setBorderWidth(float width)
-{
-    this->border.width = validateValue(width);
-}
-
-float CRectangle::getBorderWidth() const
-{
-    return border.width;
-}
-
-void CRectangle::setBorderColor(const glm::vec3 &color)
-{
-    this->border.color = color;
-}
-
-glm::vec3 CRectangle::getBorderColor() const
-{
-    return border.color;
 }
 
 void CRectangle::setBorder(const CBorder &border)

@@ -71,7 +71,12 @@ inline const char *checkType <const char*> (lua_State *l, int numArg) {
 
 template<typename Arg>
 void pushType(lua_State *l, Arg arg) {
-    lua_pushlightuserdata(l, reinterpret_cast<void*>(&arg));
+    Arg **fromLua = static_cast<Arg **>(lua_newuserdata(l, sizeof(Arg*)));
+    *fromLua = new Arg();
+    (**fromLua) = arg;
+    luaL_getmetatable(l, __CLuaWrapper::types[std::type_index(typeid(Arg))].c_str());
+    lua_setmetatable(l, -2);
+
 }
 
 template<>
@@ -208,7 +213,7 @@ class CLuaWrapper
 {
 public:
     CLuaWrapper(lua_State *lua, const std::string &name) : lua(lua), nameOfGlobal(name),
-        nameOfMetaTable(std::string("luaL_") + name), cntArgConstr(), sync(false),
+        nameOfMetaTable(std::string("luaL_") + name), nsp("ui"), cntArgConstr(), sync(false),
         addChild(false), lReg(), lRegMemHelper(), properties()  {
     }
 
@@ -422,6 +427,10 @@ public:
         lua_setglobal(lua, nameOfGlobal.c_str());
     }
 
+    void setNameSpace(const std::string &nsp) {
+        this->nsp = nsp;
+    }
+
 protected:
     template <typename Arg>
     static Arg** newUserData(lua_State *l) {
@@ -438,7 +447,7 @@ private:
             argsConstr += "arg" + std::to_string(i) + (i == cntArgConstr-1 ? "" : ", ");
         }
 
-        doStr = "function ui:" + nameOfGlobal + "(" + (argsConstr.empty() ? "data" : argsConstr) + ")\n";
+        doStr = "function " + nsp + ":" + nameOfGlobal + "(" + (argsConstr.empty() ? "data" : argsConstr) + ")\n";
         doStr += "  local r = " + nameOfGlobal + ".new(" +argsConstr + ")\n";
 
         if (generateDeclarativeStuff) {
@@ -458,24 +467,28 @@ private:
 
             if (addChild)
                 doStr += "    else\n      r:addChild(v.obj)\n";
-            doStr += "    end\n  end\n";
+            doStr += "    end\n";
+            doStr += "ret[k..\"_meta\"]=v\n";
+            doStr +="  end\n";
 
             doStr += "  local mt = {}\n";
             doStr += "  mt.__index = function(self, key)\n";
             doStr += "    if key == \"" + properties[0].first + "\" then\n";
-            doStr += "      return self.obj:get" + properties[0].first + "()\n";
+            doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[0].first + "()\n";
             for (int i = 1, n = properties.size(); i < n; ++i) {
                 doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
-                doStr += "      return self.obj:get" + properties[i].first + "()\n";
+                doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[i].first + "()\n";
             }
             doStr += "    else\n      return rawget(self, key)\n    end\n  end\n";
 
             doStr += "  mt.__newindex = function(self, key, value)\n";
             doStr += "    if key == \"" + properties[0].first + "\" then\n";
             doStr += "      self.obj:set" + properties[0].first + (properties[0].second ? "(value)\n" : "(value.obj)\n");
+            doStr += "      self[key..\"_meta\"] = value\n";
             for (int i = 1, n = properties.size(); i < n; ++i) {
                 doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
                 doStr += "      self.obj:set" + properties[i].first + (properties[i].second ? "(value)\n" : "(value.obj)\n");
+                doStr += "      self[key..\"_meta\"] = value\n";
             }
             doStr += "    end\n  end\n";
 
@@ -513,6 +526,7 @@ private:
     lua_State *lua;
     std::string nameOfGlobal;
     std::string nameOfMetaTable;
+    std::string nsp;
     static std::string doStr;
     int cntArgConstr;
     bool sync;

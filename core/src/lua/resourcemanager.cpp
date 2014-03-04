@@ -51,6 +51,7 @@ void CResourceManager::initialize(int &/*argc*/, char *argv[])
     pathToApplication = std::string(argv[0]);
     size_t len = pathToApplication.find_last_of(getFileSeparator());
     pathToApplication = pathToApplication.substr(0, len) + getFileSeparator();
+    luaL_dostring(lua, "conf = {}");
     registrationFolder();
     readConfFile();
 }
@@ -58,6 +59,7 @@ void CResourceManager::initialize(int &/*argc*/, char *argv[])
 void CResourceManager::registrationFolder()
 {
     CLuaWrapper<CResourceManager> f(lua, "Folders");
+    f.setNameSpace("conf");
     f.addProperty({"new", [](lua_State *l)
     {
         CResourceManager ** resMan
@@ -86,7 +88,6 @@ void CResourceManager::readConfFile()
     bool exists = file.good();
     file.close();
     if (exists) {
-        luaL_dostring(lua, "conf = {}");
         luaL_dostring(lua,
                       "function conf:folders(data)\n"
                       "  local config = Folders.new()\n"
