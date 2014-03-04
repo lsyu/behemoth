@@ -31,6 +31,9 @@
 
 #include "lua/lua.h"
 
+/**
+ * @brief вспомогательное пространство имен. Не используйте его.
+ */
 namespace __CLuaWrapper {
 static std::map<std::type_index, std::string> types;
 
@@ -207,7 +210,19 @@ lua_CFunction setMemberAdapterInC(Member m)
 } // namespace __CLuaWrapper
 
 
-
+/**
+ * @brief Обертка для загрузки объектов из с++ в lua.
+ * @n
+ * Пример использования:
+ * @code
+ * CLuaWrapper<CBorder> b(lua, "border");
+ * b.addConstructor();
+ * b.addProperty<float, 1>("width", &CBorder::width);
+ * b.addProperty<glm::vec3, 2>("color", &CBorder::color);
+ * b.addDestructor();
+ * b.complete(true);
+ * @endcode
+ */
 template <typename T>
 class CLuaWrapper
 {
@@ -410,6 +425,16 @@ public:
     /**
      * @brief Завершить конструирование обертки, сгенерировав все необходимое для
      * общения С++ - Lua
+     * @param generateDeclarativeStuff - генерировать ли код для декларативного описания.
+     * Если параметр установлен в истину, сгенерируется код, благодаря которому можно будет писать
+     * вот так:
+     * @code
+     * ui:border
+     * {
+     *   color = ui:vec3(0.2, 0.2, 0.2);
+     *   width = 0.02;
+     * }
+     * @endcode
      */
     void complete(bool generateDeclarativeStuff = false) {
         generateString4Declarative(generateDeclarativeStuff);
@@ -427,6 +452,9 @@ public:
         lua_setglobal(lua, nameOfGlobal.c_str());
     }
 
+    /**
+     * @brief Установить область имен для данного объекта
+     */
     void setNameSpace(const std::string &nsp) {
         this->nsp = nsp;
     }
@@ -441,6 +469,9 @@ private:
     CLuaWrapper(const CLuaWrapper &);
     const CLuaWrapper &operator= (const CLuaWrapper &);
 
+    /**
+     * @brief Генерирование дополнительного lua-кода для возможности декларативного описания интерфейса
+     */
     void generateString4Declarative(bool generateDeclarativeStuff) {
         std::string argsConstr = "";
         for (int i = 0; i < cntArgConstr; ++i) {
