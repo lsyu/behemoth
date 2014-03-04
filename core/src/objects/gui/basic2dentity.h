@@ -28,14 +28,20 @@ class CEventMouseClick;
 class CApplication;
 class DefaultScene;
 
+/**
+ * @brief Грани области.
+ */
 struct CBorder {
     CBorder() : width(0), color(0.0f, 0.0f, 0.0f) {}
     CBorder(const CBorder &other) : width(other.width), color(other.color) {}
 
-    float width;
-    glm::vec3 color;
+    float width;        /**< размер */
+    glm::vec3 color;    /**< цвет */
 }; // struct Border
 
+/**
+ * @brief Базовая сущность для генерирования и вывода пользовательского интерфейса.
+ */
 class CBasic2dEntity : public AbstractEntity
 {
 public:

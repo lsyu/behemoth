@@ -32,7 +32,11 @@ namespace core {
 class CRectangleSymbol;
 
 /**
- * @brief The CRectangleFont class
+ * @brief Область текста.
+ *
+ * Текст составляется из объектов CRectangleSymbol.
+ * @n
+ *
  */
 class CRectangleText : public CBasic2dEntity
 {
@@ -71,7 +75,7 @@ public:
     std::string getHorizontalAlignStr() const;
     /**
      * @brief Установить текст.
-     * @note в соответствии с установленым шрифтом м текстом сгенерируется буферизображения шрифта.
+     * @note в соответствии с установленым шрифтом м текстом сгенерируется буфер изображения шрифта.
      */
     void setText(const std::string &text);
     std::string getText() const;

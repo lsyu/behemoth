@@ -33,6 +33,12 @@ class AbstractEntity;
 class CBasic2dEntity;
 class __CGUIManagerImplDel;
 
+void registerVec2();
+void registerVec3();
+void registerBorder();
+void registerText();
+void registerRectangle();
+
 /**
  * @brief Менеджер работы с Lua.
  *
@@ -42,10 +48,13 @@ class __CGUIManagerImplDel;
  * На данный момент есть возможность загрузки элементов графического пользовательского интерфейса,
  * а также загрузка путей ресурсов. @n
  * Элементы GUI:
- * - glm::vec2 (конструктор)
- * - glm::vec3 (конструктор)
- * - Rectangle
- * - Text - в разработке!
+ * - ui::vec2 - 2хмерный вектор
+ * - ui::vec3 - 3хмерный вектор
+ * - ui:rectangle - прямоугольник
+ * - ui:border - грани прямоугольника
+ * - ui:text - текст для вывода
+ *
+ * @todo Пример описания интерфейса
  *
  */
 class CGUIManager
@@ -72,9 +81,6 @@ public:
     CBasic2dEntity *getRootObject();
     const std::vector< std::shared_ptr<AbstractEntity> >& getObjects() const;
 
-    template<class T>
-    void addObject(AbstractEntity *entity);
-
     /**
      * @brief Выполнить onClick из скрипта Lua.
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
@@ -92,6 +98,11 @@ public:
     bool onReleased(AbstractEntity *entity);
 
 protected:
+    /**
+     * @brief добавить готовый объект в контейнер на вывод.
+     */
+    template<class T>
+    void addObject(AbstractEntity *entity);
     /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
      */

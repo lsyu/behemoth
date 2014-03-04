@@ -28,6 +28,11 @@ class CFont;
 class CRectangleText;
 struct CSymbolTexture;
 
+/**
+ * @brief Область буквы.
+ *
+ * Прямоугольник с текстурой генерируется при выполнении void CRectangleText::addSymbol(char symbol)
+ */
 class CRectangleSymbol : public CRectangle
 {
 public:

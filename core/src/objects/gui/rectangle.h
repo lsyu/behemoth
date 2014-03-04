@@ -30,6 +30,11 @@ class CShader;
 
 namespace core {
 
+/**
+ * @brief Прямоугольник.
+ *
+ * Данная сущность генерирует и выводит на экран прямоугольник с заданными параметрами.
+ */
 class CRectangle : public CBasic2dEntity
 {
 public:
