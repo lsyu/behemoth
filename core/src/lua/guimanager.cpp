@@ -112,6 +112,7 @@ void CGUIManager::registerUI()
     registerVec2();
     registerVec3();
     registerBorder();
+    registerGradient();
     registerText();
     registerRectangle();
 }
@@ -147,6 +148,18 @@ void CGUIManager::registerBorder()
     b.complete(true);
 }
 
+void CGUIManager::registerGradient()
+{
+    CLuaWrapper<CGradient> g(lua, "gradient");
+    g.addConstructor();
+    g.addProperty<glm::vec3, 1>("bottomLeft", &CGradient::bottomLeft);
+    g.addProperty<glm::vec3, 2>("topLeft", &CGradient::topLeft);
+    g.addProperty<glm::vec3, 3>("topRight", &CGradient::topRight);
+    g.addProperty<glm::vec3, 4>("bottomRight", &CGradient::bottomRight);
+    g.addDestructor();
+    g.complete(true);
+}
+
 void CGUIManager::registerText()
 {
     CLuaWrapper<CRectangleText> t(lua, "text");
@@ -177,7 +190,8 @@ void CGUIManager::registerRectangle()
     r.addProperty<float, 11>("alpha", &CRectangle::getAlpha, &CRectangle::setAlpha);
     r.addProperty<std::string, 12>("texture", &CRectangle::getTexture, &CRectangle::setTexture);
     r.addProperty<CBorder, 13>("border", &CRectangle::getBorder, &CRectangle::setBorder);
-    r.addProperty<CRectangleText, 14>("text", &CRectangle::getText, &CRectangle::setText);
+    r.addProperty<CGradient, 14>("gradient", &CRectangle::getGradient, &CRectangle::setGradient);
+    r.addProperty<CRectangleText, 15>("text", &CRectangle::getText, &CRectangle::setText);
 
 
     r.addProperty({"addChild", [](lua_State *l) {

@@ -6,7 +6,13 @@ ui:rectangle "root"
   y = -1.0;
   width = 2.0;
   height = 2.0;
-  texture = "test";
+  gradient = ui:gradient
+  {
+    bottomLeft = ui:vec3(0.1, 0.1, 0.1);
+    topLeft = ui:vec3(0.3, 0.3, 0.3);
+    topRight= ui:vec3(0.6, 0.6, 0.6);
+    bottomRight = ui:vec3(0.9, 0.9, 0.9);
+  };
 
   ui:rectangle "modal"
   {

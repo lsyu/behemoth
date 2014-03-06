@@ -40,6 +40,20 @@ struct CBorder {
 }; // struct Border
 
 /**
+ * @brief Градиент.
+ */
+struct CGradient{
+    CGradient() : bottomLeft(), topLeft(), topRight(), bottomRight() {}
+    CGradient(const glm::vec3 &bottomLeft, const glm::vec3 &topLeft, const glm::vec3 &topRight, const glm::vec3 &bottomRight)
+        :bottomLeft(bottomLeft), topLeft(topLeft), topRight(topRight), bottomRight(bottomRight) {}
+
+    glm::vec3 bottomLeft;
+    glm::vec3 topLeft;
+    glm::vec3 topRight;
+    glm::vec3 bottomRight;
+}; // struct CGradient
+
+/**
  * @brief Базовая сущность для генерирования и вывода пользовательского интерфейса.
  */
 class CBasic2dEntity : public AbstractEntity

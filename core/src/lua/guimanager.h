@@ -124,9 +124,13 @@ protected:
      */
     void registerVec3();
     /**
-     * @brief регистрация core::Border
+     * @brief регистрация core::CBorder
      */
     void registerBorder();
+    /**
+     * @brief регистрация core::CGradient
+     */
+    void registerGradient();
     /**
      * @brief Регистрация core::RectangleText.
      */

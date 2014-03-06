@@ -369,6 +369,19 @@ std::string CRectangle::getTexture() const
     return textureName;
 }
 
+void CRectangle::setGradient(const CGradient &gradient)
+{
+    vColor[0] = gradient.bottomLeft;
+    vColor[1] = gradient.topLeft;
+    vColor[2] = gradient.topRight;
+    vColor[3] = gradient.bottomRight;
+}
+
+CGradient CRectangle::getGradient() const
+{
+    return CGradient(vColor[0], vColor[1], vColor[2], vColor[3]);
+}
+
 void CRectangle::setAlpha(float alpha)
 {
     this->alpha = validateValue(alpha);

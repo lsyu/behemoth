@@ -123,6 +123,12 @@ public:
     void setTexture(const std::string &name);
     std::string getTexture() const;
     /**
+     * @brief Получение градиента.
+     * @param gradient градиент.
+     */
+    void setGradient(const CGradient &gradient);
+    CGradient getGradient() const;
+    /**
      * @brief Получение прозрачности.
      *
      * @note 0 - полностью прозрачный, 1 - полностью непрозрачный.
