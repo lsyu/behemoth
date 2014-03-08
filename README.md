@@ -87,7 +87,7 @@ ui:rectangle "modal"
 };
 ```
 
-Загрузить этот код на c++ можно ![вот так](https://github.com/lsyu/gui/blob/master/labs4physics/src/layers/guilayer.cpp "example of c++ source"). Подробнее - ![тут](https://github.com/lsyu/gui/blob/master/labs4physics/src/ "example app")
+Загрузить этот код на c++ можно [вот так](https://github.com/lsyu/gui/blob/master/labs4physics/src/layers/guilayer.cpp). Подробнее - [тут](https://github.com/lsyu/gui/blob/master/labs4physics/src/)
 
 Пример сборки:
 ``` bash
