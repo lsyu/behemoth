@@ -20,7 +20,6 @@ ui:rectangle "root"
     y = -0.5;
     width = 1.0;
     height = 1.0;
-    radius = 0.1;
 
     color = glm:vec3(0.6, 0.6, 0.6);
 
@@ -28,6 +27,12 @@ ui:rectangle "root"
     {
       color = glm:vec3(0.2, 0.2, 0.2);
       width = 0.02;
+    };
+
+    radius = ui:radius
+    {
+      radius = 0.1;
+      topRight =0.5;
     };
 
     ui:rectangle "hideItem"
@@ -54,7 +59,6 @@ ui:rectangle "root"
       y = -0.9;
       width = 1.8;
       height = 0.35;
-      radius = 0.5;
 
       color = glm:vec3(0.4, 0.4, 0.4);
 
@@ -62,6 +66,11 @@ ui:rectangle "root"
       {
         color = glm:vec3(0.2, 0.2, 0.2);
         width = 0.1;
+      };
+
+      radius = ui:radius
+      {
+        radius = 0.5;
       };
 
       text = ui:text
@@ -78,7 +87,7 @@ ui:rectangle "root"
         ui.button.border = ui:border
         {
           color = glm:vec3(0.9, 0.9, 0.9);
-          width = 0.1;
+          width = 0.01;
         };
       end;
 
@@ -91,7 +100,7 @@ ui:rectangle "root"
         ui.button.border = ui:border
         {
           color = glm:vec3(0.2, 0.2, 0.2);
-          width = 0.1;
+          width = 0.01;
         };
       end;
       

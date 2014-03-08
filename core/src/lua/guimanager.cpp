@@ -143,6 +143,16 @@ void CGUIManager::registerVec3()
 
 void CGUIManager::registerBorder()
 {
+    CLuaWrapper<CBorderRadius> r(lua, "radius");
+    r.addConstructor();
+    r.AddProperty(float)("radius", &CBorderRadius::getRadius, &CBorderRadius::setRadius);
+    r.AddProperty(float)("bottomLeft", &CBorderRadius::getBottomLeft, &CBorderRadius::setBottomLeft);
+    r.AddProperty(float)("topLeft", &CBorderRadius::getTopLeft, &CBorderRadius::setTopLeft);
+    r.AddProperty(float)("topRight", &CBorderRadius::getTopRight, &CBorderRadius::setTopRight);
+    r.AddProperty(float)("bottomRight", &CBorderRadius::getBottomRight, &CBorderRadius::setBottomRight);
+    r.addDestructor();
+    r.complete(true);
+
     CLuaWrapper<CBorder> b(lua, "border");
     b.addConstructor();
     b.AddProperty(float)("width", &CBorder::width);
@@ -185,13 +195,9 @@ void CGUIManager::registerRectangle()
     r.AddProperty(float)("width", &CRectangle::getWidth, &CRectangle::setWidth);
     r.AddProperty(float)("height", &CRectangle::getHeight, &CRectangle::setHeight);
     r.AddProperty(glm::vec3)("color", &CRectangle::getColor, &CRectangle::setColor);
-    r.AddProperty(float)("radiusOfA", &CRectangle::getRadiusOfA, &CRectangle::setRadiusOfA);
-    r.AddProperty(float)("radiusOfB", &CRectangle::getRadiusOfB, &CRectangle::setRadiusOfB);
-    r.AddProperty(float)("radiusOfC", &CRectangle::getRadiusOfC, &CRectangle::setRadiusOfC);
-    r.AddProperty(float)("radiusOfD", &CRectangle::getRadiusOfD, &CRectangle::setRadiusOfD);
-    r.AddProperty(float)("radius", &CRectangle::getRadius, &CRectangle::setRadius);
     r.AddProperty(float)("alpha", &CRectangle::getAlpha, &CRectangle::setAlpha);
     r.AddProperty(std::string)("texture", &CRectangle::getTexture, &CRectangle::setTexture);
+    r.AddProperty(CBorderRadius)("radius", &CRectangle::getRadius, &CRectangle::setRadius);
     r.AddProperty(CBorder)("border", &CRectangle::getBorder, &CRectangle::setBorder);
     r.AddProperty(CGradient)("gradient", &CRectangle::getGradient, &CRectangle::setGradient);
     r.AddProperty(CRectangleText)("text", &CRectangle::getText, &CRectangle::setText);

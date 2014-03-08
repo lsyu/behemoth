@@ -31,7 +31,7 @@ namespace core {
 
 CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
     width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(),
-    border(), text()
+    radius(), border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -66,7 +66,7 @@ CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), c
 
 CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(), vertex(),
     color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
-    alpha(1.0f), texture(0),border()
+    alpha(1.0f), radius(), border(), texture(0), textureName()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -279,73 +279,18 @@ float CRectangle::getHeight() const
     return height;
 }
 
-// от 0 до 1
-float validateValue(float val)
+void CRectangle::setRadius(const CBorderRadius &radius)
 {
-    if (val < 0.0)
-        val *= -1.0f;
-    if (val > 1.0f)
-        val -= static_cast<float>(static_cast<int>(val));
-    return val;
+    this->radius = radius;
+    this->rA = radius.getBottomLeft();
+    this->rB = radius.getTopLeft();
+    this->rC = radius.getTopRight();
+    this->rD = radius.getBottomRight();
 }
 
-void CRectangle::setRadius(float radius)
+CBorderRadius CRectangle::getRadius() const
 {
-    radius = validateValue(radius);
-    // TODO: Подумать, как исправить этот костыль (в связи с недетерминированной послед-тью в lua)
-    if (rA == 0.0f)
-        rA = radius;
-    if (rB == 0.0f)
-        rB = radius;
-    if (rC == 0.0f)
-        rC = radius;
-    if (rD == 0.0f)
-        rD = radius;
-}
-
-float CRectangle::getRadius() const
-{
-    return (rA + rB + rC + rD) / 4.0f;
-}
-
-void CRectangle::setRadiusOfA(float rA)
-{
-    this->rA = validateValue(rA);
-}
-
-float CRectangle::getRadiusOfA() const
-{
-    return rA;
-}
-
-void CRectangle::setRadiusOfB(float rB)
-{
-    this->rB = validateValue(rB);
-}
-
-float CRectangle::getRadiusOfB() const
-{
-    return rB;
-}
-
-void CRectangle::setRadiusOfC(float rC)
-{
-    this->rC = validateValue(rC);
-}
-
-float CRectangle::getRadiusOfC() const
-{
-    return rC;
-}
-
-void CRectangle::setRadiusOfD(float rD)
-{
-    this->rD = validateValue(rD);
-}
-
-float CRectangle::getRadiusOfD() const
-{
-    return rD;
+    return radius;
 }
 
 void CRectangle::setBorder(const CBorder &border)
@@ -380,6 +325,16 @@ void CRectangle::setGradient(const CGradient &gradient)
 CGradient CRectangle::getGradient() const
 {
     return CGradient(vColor[0], vColor[1], vColor[2], vColor[3]);
+}
+
+// от 0 до 1
+float validateValue(float val)
+{
+    if (val < 0.0)
+        val *= -1.0f;
+    if (val > 1.0f)
+        val -= static_cast<float>(static_cast<int>(val));
+    return val;
 }
 
 void CRectangle::setAlpha(float alpha)

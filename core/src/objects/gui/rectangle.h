@@ -81,36 +81,10 @@ public:
     void setHeight(float height);
     float getHeight() const;
     /**
-     * @brief Установить радиус скругления всех углов.
-     * @note Длина радиуса - отношение к половине меньшей стороны прямоугольника.
-     * @note Для радиуса верно: 0.0f=0%, 1.0f=100% от половины меньшей стороны прямоугольника.
-     * @sa setRadiusOfA, setRadiusOfB, setRadiusOfC, setRadiusOfD
+     * @brief Установить границу
      */
-    void setRadius(float radius);
-    /**
-     * @brief Получить среднее значение rA, rB, rC, rD
-     */
-    float getRadius() const;
-    /**
-     * @brief Установить радиус скругления угла при вершине A(нижний левый).
-     */
-    void setRadiusOfA(float rA);
-    float getRadiusOfA() const;
-    /**
-     * @brief Установить радиус скругления угла при вершине B(верхний левый).
-     */
-    void setRadiusOfB(float rB);
-    float getRadiusOfB() const;
-    /**
-     * @brief Установить радиус скругления угла при вершине C(верхний правый).
-     */
-    void setRadiusOfC(float rC);
-    float getRadiusOfC() const;
-    /**
-     * @brief Установить радиус скругления угла при вершине D(нижний правый).
-     */
-    void setRadiusOfD(float rD);
-    float getRadiusOfD() const;
+    void setRadius(const CBorderRadius &radius);
+    CBorderRadius getRadius() const;
     /**
      * @brief Установить границу
      */
@@ -169,6 +143,7 @@ protected:
     float alpha;
     uint texture;
     std::string textureName;
+    CBorderRadius radius;
     CBorder border;
     CRectangleText text;
 }; //class Rectangle

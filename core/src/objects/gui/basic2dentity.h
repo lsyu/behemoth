@@ -28,6 +28,49 @@ class CEventMouseClick;
 class CApplication;
 class DefaultScene;
 
+
+/**
+ * @brief Радиус скруглений углов
+ * @note Длина радиуса - отношение к половине меньшей стороны прямоугольника.
+ * @note Для радиуса верно: 0.0f=0%, 1.0f=100% от половины меньшей стороны прямоугольника.
+ */
+struct CBorderRadius {
+    CBorderRadius() : r(0), bottomLeft(0), topLeft(0), topRight(0),bottomRight(0) {}
+    CBorderRadius(const CBorderRadius &other) : r(other.r), bottomLeft(other.bottomLeft),
+        topLeft(other.topLeft), topRight(other.topRight),bottomRight(other.bottomRight) {}
+
+    void setRadius(float r) { this->r = validateValue(r); }
+    float getRadius() const { return r; }
+
+    void setBottomLeft(float bottomLeft) { this->bottomLeft = validateValue(bottomLeft); }
+    float getBottomLeft() const { return bottomLeft == 0 ? r : bottomLeft; }
+
+    void setTopLeft(float topLeft) { this->topLeft = validateValue(topLeft); }
+    float getTopLeft() const { return topLeft == 0 ? r : topLeft; }
+
+    void setTopRight(float topRight) { this->topRight = validateValue(topRight); }
+    float getTopRight() const { return topRight == 0 ? r : topRight; }
+
+    void setBottomRight(float bottomRight) { this->bottomRight = validateValue(bottomRight); }
+    float getBottomRight() const { return bottomRight == 0 ? r : bottomRight; }
+
+private:
+    // from 0 to 1
+    float validateValue(float val)
+    {
+        if (val < 0.0)
+            val *= -1.0f;
+        if (val > 1.0f)
+            val -= static_cast<float>(static_cast<int>(val));
+        return val;
+    }
+    float r;
+    float bottomLeft;
+    float topLeft;
+    float topRight;
+    float bottomRight;
+}; // struct CBorderRadius
+
 /**
  * @brief Грани области.
  */
@@ -35,8 +78,8 @@ struct CBorder {
     CBorder() : width(0), color(0.0f, 0.0f, 0.0f) {}
     CBorder(const CBorder &other) : width(other.width), color(other.color) {}
 
-    float width;        /**< размер */
-    glm::vec3 color;    /**< цвет */
+    float width;            /**< размер */
+    glm::vec3 color;        /**< цвет */
 }; // struct Border
 
 /**
