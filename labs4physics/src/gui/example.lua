@@ -8,10 +8,10 @@ ui:rectangle "root"
   height = 2.0;
   gradient = ui:gradient
   {
-    bottomLeft = ui:vec3(0.1, 0.1, 0.1);
-    topLeft = ui:vec3(0.3, 0.3, 0.3);
-    topRight= ui:vec3(0.6, 0.6, 0.6);
-    bottomRight = ui:vec3(0.9, 0.9, 0.9);
+    bottomLeft = glm:vec3(0.1, 0.1, 0.1);
+    topLeft = glm:vec3(0.3, 0.3, 0.3);
+    topRight= glm:vec3(0.6, 0.6, 0.6);
+    bottomRight = glm:vec3(0.9, 0.9, 0.9);
   };
 
   ui:rectangle "modal"
@@ -22,11 +22,11 @@ ui:rectangle "root"
     height = 1.0;
     radius = 0.1;
 
-    color = ui:vec3(0.6, 0.6, 0.6);
+    color = glm:vec3(0.6, 0.6, 0.6);
 
     border = ui:border
     {
-      color = ui:vec3(0.2, 0.2, 0.2);
+      color = glm:vec3(0.2, 0.2, 0.2);
       width = 0.02;
     };
 
@@ -56,11 +56,11 @@ ui:rectangle "root"
       height = 0.35;
       radius = 0.5;
 
-      color = ui:vec3(0.4, 0.4, 0.4);
+      color = glm:vec3(0.4, 0.4, 0.4);
 
       border = ui:border
       {
-        color = ui:vec3(0.2, 0.2, 0.2);
+        color = glm:vec3(0.2, 0.2, 0.2);
         width = 0.1;
       };
 
@@ -77,7 +77,7 @@ ui:rectangle "root"
         print ("Pressed BUTTON")
         ui.button.border = ui:border
         {
-          color = ui:vec3(0.9, 0.9, 0.9);
+          color = glm:vec3(0.9, 0.9, 0.9);
           width = 0.1;
         };
       end;
@@ -90,7 +90,7 @@ ui:rectangle "root"
         print ("Released BUTTON")
         ui.button.border = ui:border
         {
-          color = ui:vec3(0.2, 0.2, 0.2);
+          color = glm:vec3(0.2, 0.2, 0.2);
           width = 0.1;
         };
       end;

@@ -31,6 +31,9 @@
 
 #include "lua/lua.h"
 
+#define AddProperty(classname) \
+    addProperty<classname, __LINE__>
+
 /**
  * @brief вспомогательное пространство имен. Не используйте его.
  */
