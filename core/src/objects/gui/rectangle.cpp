@@ -29,9 +29,9 @@
 
 namespace core {
 
-CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), aspect(), x(-1), y(-1),
-    width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(),
-    radius(), border(), text()
+CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), uv(), aspect(),
+    x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f),
+    texture(0), textureName(), radius(), border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -64,9 +64,9 @@ CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), c
     aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
-CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(), vertex(),
-    color(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f),
-    alpha(1.0f), radius(), border(), texture(0), textureName()
+CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(),
+    vertex(), color(), uv(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f),
+    rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(), radius(), border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
