@@ -17,11 +17,6 @@ add_subdirectory(glm/glm)
 add_subdirectory(gli/gli)
 add_subdirectory(lua)
 
-set(CORE_SRCS
-    ${CORE_SRCS}
-    constants.h
-)
-
 add_library(engine_core SHARED ${CORE_SRCS} ${CORE_HEADERS})
 target_link_libraries(engine_core
     ${FREEGLUT_LIBS}

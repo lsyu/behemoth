@@ -23,61 +23,11 @@
 
 #include "glm/gtc/type_ptr.hpp"
 
-#include <memory>
-#include <fstream>
-#include <iostream>
-
 namespace core {
 
 CShader::CShader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
-    shaderProgram(0), init(false)
+    shaderProgram(0)
 {
-}
-
-CShader::CShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
-    : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0), shaderProgram(0),
-      init(false)
-{
-    prepareShader(vertShaderName, fragmentShaderName);
-}
-
-std::string getFile(const std::string &fileName)
-{
-    std::string ret((std::istreambuf_iterator<char>(*(std::auto_ptr<std::ifstream>(
-            new std::ifstream(fileName))).get())), std::istreambuf_iterator<char>());
-    return ret;
-}
-
-bool CShader::prepareShader(const std::string &vertShaderName, const std::string &fragmentShaderName)
-{
-    shaderProgram = glCreateProgram();
-
-    if (!shaderProgram)
-        return false;
-
-    std::string vs = getFile(vertShaderName);
-    int size = vs.size();
-    if (!makeShader(EShaderType::VertexShader, vs.c_str(), &size))
-        return false;
-
-    std::string fs = getFile(fragmentShaderName);
-    size = fs.size();
-    if (!makeShader(EShaderType::FragmentShader, fs.c_str(), &size))
-        return false;
-
-    glLinkProgram(shaderProgram);
-
-    if (!checkLinkStatus())
-        return false;
-
-    glValidateProgram(shaderProgram);
-
-    if (!checkValidateStatus())
-        return false;
-
-    init = true;
-
-    return true;
 }
 
 CShader::~CShader()
@@ -101,8 +51,6 @@ uint CShader::makeAttributeLocation(const std::string &nameOfParam)
         location = glGetAttribLocation(shaderProgram, nameOfParam.c_str());
         if (location != -1)
             cacheAttribute[nameOfParam] = location;
-        else
-            throw ShaderException("undefined reference to attribute " + nameOfParam);
     }
     return static_cast<uint>(location);
 }
@@ -154,8 +102,6 @@ int CShader::makeUniformLocation(const std::string &nameOfParam)
         location = glGetUniformLocation(shaderProgram, nameOfParam.c_str());
         if (location != -1)
             cacheUniform[nameOfParam] = location;
-        else
-            throw ShaderException("undefined reference to uniform " + nameOfParam);
     }
     return location;
 }
@@ -207,109 +153,6 @@ void CShader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
     glUniformMatrix4fv(location, 1, GL_TRUE, glm::value_ptr(vec));
-}
-
-bool CShader::makeShader(EShaderType type, const char *source, int *sizes)
-{
-    if (type == EShaderType::VertexShader) {
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-        if (!vertexShader)
-            return false;
-
-        glShaderSource(vertexShader, 1, &source, sizes);
-        glCompileShader(vertexShader);
-
-        if (!checkCompileShaderStatus(vertexShader))
-            return false;
-
-        appendShader(EShaderType::VertexShader);
-    } else if (type == EShaderType::FragmentShader) {
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-        if (!fragmentShader)
-            return false;
-
-        glShaderSource(fragmentShader, 1, &source, sizes);
-        glCompileShader(fragmentShader);
-
-        if (!checkCompileShaderStatus(fragmentShader))
-            return false;
-
-        appendShader(EShaderType::FragmentShader);
-    }
-    return true;
-}
-
-void CShader::appendShader(EShaderType type)
-{
-    if (type == EShaderType::VertexShader)
-        glAttachShader(shaderProgram, vertexShader);
-    else if (type == EShaderType::FragmentShader)
-        glAttachShader(shaderProgram, fragmentShader);
-}
-
-void CShader::handleError(uint shader)
-{
-    //! TODO: Залогировать!
-    //! TODO: Вывод в лог ошибки, что за нах
-    int maxLength = 0;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-    std::vector<char> infoLog(maxLength);
-    glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-    glDeleteProgram(shaderProgram);
-    shaderProgram = 0;
-    glDeleteShader(vertexShader);
-    vertexShader = 0;
-    glDeleteShader(fragmentShader);
-    fragmentShader = 0;
-
-    init = false;
-
-    for (int i = 0, n = infoLog.size(); i < n; ++i)
-        std::cout << infoLog[i];
-}
-
-bool CShader::checkCompileShaderStatus(uint shader)
-{
-    int status;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-    if (status == GL_FALSE) {
-        handleError(shader);
-        return false;
-    }
-    return true;
-}
-
-bool CShader::checkLinkStatus()
-{
-    int status;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
-    if(status == GL_FALSE)
-    {
-        handleError(shaderProgram);
-        return false;
-    }
-    return true;
-}
-
-bool CShader::checkValidateStatus()
-{
-    int status;
-    glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &status);
-    if(status == GL_FALSE)
-    {
-        handleError(shaderProgram);
-        return false;
-    }
-    return true;
-}
-
-bool CShader::isInit() const
-{
-    return init;
 }
 
 void CShader::bind() const
