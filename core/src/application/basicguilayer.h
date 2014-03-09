@@ -22,10 +22,9 @@
 
 #include "abstractlayer.h"
 
-class CShader;
-
 namespace core {
 
+class CShader;
 class CGUIManager;
 class AbstractEntity;
 

@@ -27,6 +27,8 @@
 #include <fstream>
 #include <iostream>
 
+namespace core {
+
 CShader::CShader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
     shaderProgram(0), init(false)
 {
@@ -319,3 +321,5 @@ void CShader::disable() const
 {
     glUseProgram(0);
 }
+
+} // namespace core

@@ -25,10 +25,9 @@
 #include <vector>
 #include <set>
 
-class CShader;
-
 namespace core {
 
+class CShader;
 class CRectangleSymbol;
 
 /**

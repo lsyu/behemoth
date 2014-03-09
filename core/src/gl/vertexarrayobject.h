@@ -20,6 +20,7 @@
 #ifndef VERTEXARRAYOBJECT_H
 #define VERTEXARRAYOBJECT_H
 
+namespace core {
 /**
  * @brief Адаптер для работы с VAO.
  *
@@ -52,5 +53,7 @@ public:
 private:
     unsigned int vao;
 }; // class VertexArrayObject
+
+} // namespace core
 
 #endif // VERTEXARRAYOBJECT_H

@@ -22,6 +22,8 @@
 #include "gl/gl.h"
 #include "gl/glext.h"
 
+namespace core {
+
 CVertexBufferObject::CVertexBufferObject() : vbo(0)
 {
 }
@@ -67,3 +69,5 @@ void CVertexBufferObject::setData(const std::vector<glm::vec4> *buffer) const
     bind();
     glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec4), &(*buffer)[0], GL_STATIC_DRAW);
 }
+
+} // namespace core

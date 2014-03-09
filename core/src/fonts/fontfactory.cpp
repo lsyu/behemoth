@@ -18,7 +18,7 @@
  */
 
 #include "fontfactory.h"
-#include "core/manager/resourcemanager.h"
+#include "core/lua/resourcemanager.h"
 #include "core/application/application.h"
 
 using std::string;

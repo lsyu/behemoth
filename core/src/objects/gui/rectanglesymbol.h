@@ -54,7 +54,6 @@ protected:
 
 private:
     CFont *font;
-    CSymbolTexture *symbolTex;
     char symbol;
     float parentWidth;
     float parentHeight;

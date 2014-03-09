@@ -18,7 +18,7 @@
  */
 
 #include "texturefactory.h"
-#include "core/manager/resourcemanager.h"
+#include "core/lua/resourcemanager.h"
 #include "core/fonts/fontfactory.h"
 #include "core/ogl/ogl.h"
 
@@ -48,22 +48,33 @@ CTextureFactory* CTextureFactory::getInstance()
 }
 
 
-CTextureFactory::CTextureFactory() : textures(std::map<std::string, uint>())
+CTextureFactory::CTextureFactory() : textures(std::map<std::string, CTexture>())
 {
 }
 
 CTextureFactory::~CTextureFactory()
 {
-    for (std::map<std::string, uint>::const_iterator it = textures.begin(), end = textures.end();
-            it != end; ++it)
-        glDeleteTextures(1, &(it->second));
+    for (std::map<std::string, CTexture>::const_iterator it = textures.begin(), end = textures.end();
+            it != end; ++it) {
+        unsigned int id = it->second.getId();
+        glDeleteTextures(1, &id);
+    }
+    for (std::map<std::string, CTexture>::const_iterator it = textures.begin(), end = textures.end();
+            it != end; ++it) {
+        unsigned int id = it->second.getId();
+        glDeleteTextures(1, &id);
+    }
 }
 
-unsigned int CTextureFactory::createTexture2D(const std::string &filename)
+CTexture CTextureFactory::createTexture2D(const std::string &filename)
 {
+    CTexture texture;
+    texture.fileName = filename;
     gli::texture2D Texture(gli::load_dds(filename.c_str()));
     if(Texture.empty())
-        return 0;
+        return texture;
+
+    texture.size = Texture.dimensions();
 
     gli::detail::format_desc Desc = gli::detail::getFormatInfo(Texture.format());
 
@@ -110,16 +121,17 @@ unsigned int CTextureFactory::createTexture2D(const std::string &filename)
     // Restaure previous states
     glBindTexture(GL_TEXTURE_2D, GLuint(CurrentTextureName));
     glPixelStorei(GL_UNPACK_ALIGNMENT, Alignment);
+    texture.id = Name;
 
-    return Name;
+    return texture;
 }
 
-uint CTextureFactory::loadTexture(const string &name, const string &fileName)
+CTexture CTextureFactory::loadTexture(const string &name, const string &fileName)
 {
     if (textures.find(name) != textures.end())
-        return false; // уже загружена
+        return textures[name];
 
-    uint t = createTexture2D(fileName);
+    CTexture t = createTexture2D(fileName);
 
     // добавим в наш словарь
     textures[name] = t;
@@ -130,9 +142,9 @@ uint CTextureFactory::loadTexture(const string &name, const string &fileName)
     return t;
 }
 
-uint CTextureFactory::getTexture(const string &name)
+CTexture CTextureFactory::getTexture(const string &name)
 {
-    std::map<std::string, uint>::const_iterator texture = textures.find(name);
+    std::map<std::string, CTexture>::const_iterator texture = textures.find(name);
     if (texture == textures.end()) {
         CResourceManager *res = CResourceManager::getInstance();
         return loadTexture(name, res->getTextureFolder()+ res->getFileSeparator() + name + ".dds");
@@ -140,33 +152,25 @@ uint CTextureFactory::getTexture(const string &name)
     return texture->second;
 }
 
-CSymbolTexture CTextureFactory::getSymbol(char symbol, const CFont &font)
+CTexture CTextureFactory::getSymbol(char symbol, const CFont &font)
 {
-    std::map<char, CSymbolTexture>::const_iterator s = symbols.find(symbol);
-    CSymbolTexture retSymbol;
+    std::map<char, CTexture>::const_iterator s = symbols.find(symbol);
     if (s == symbols.end()) {
         CTextBuffer buffer = CFontFactory::getInstance()->getTextBuffer(symbol, font);
-        uint retTexture = getTexture(buffer);
-        retSymbol.texture = retTexture;
-        retSymbol.width = static_cast<float>(buffer.width);
-        retSymbol.height = static_cast<float>(buffer.height);
-        symbols[symbol] = retSymbol;
-    } else {
-        retSymbol = s->second;
+        CTexture retTexture = getTexture(buffer);
+        symbols[symbol] = retTexture;
+        return retTexture;
     }
-    return retSymbol;
+    return s->second;
 }
 
-uint CTextureFactory::getTexture(const CTextBuffer &buffer) const
+CTexture CTextureFactory::getTexture(const CTextBuffer &buffer) const
 {
-    // генерим текстуру
-
     glEnable(GL_TEXTURE_2D);
     uint t;
     glGenTextures(1, &t);
     glBindTexture(GL_TEXTURE_2D, t);
 
-    // фильтрации текстуры - линейная фильтрация
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -181,7 +185,11 @@ uint CTextureFactory::getTexture(const CTextBuffer &buffer) const
                  GL_BGRA,
                  GL_UNSIGNED_BYTE,
                  buffer.buffer.data());
-    return t;
+
+    CTexture ret;
+    ret.id = t;
+    ret.size = glm::uvec2(buffer.width, buffer.height);
+    return ret;
 }
 
 } // namespace Core

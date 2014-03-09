@@ -31,7 +31,7 @@ namespace core {
 
 CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), uv(), aspect(),
     x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f),
-    texture(0), textureName(), radius(), border(), text()
+    texture(), radius(), border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -66,7 +66,7 @@ CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), c
 
 CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(),
     vertex(), color(), uv(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f),
-    rC(0.0f), rD(0.0f), alpha(1.0f), texture(0), textureName(), radius(), border(), text()
+    rC(0.0f), rD(0.0f), alpha(1.0f), texture(), radius(), border(), text()
 {
     vPos2.reserve(4);
     vColor.reserve(4);
@@ -148,7 +148,7 @@ void CRectangle::configure()
     color.setData(&vColor);
     shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
 
-    if (texture) {
+    if (texture.getId()) {
         uv.genBuffer();
         uv.setData(&vUV);
         shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
@@ -175,24 +175,24 @@ void CRectangle::paint() const
     shader->setUniform("borderWidth", border.width);
     shader->setUniform("borderColor", border.color);
 
-    if (texture) {
+    if (texture.getId()) {
         shader->setUniform("textureUse", 1);
         shader->setUniform("texture", 0);
     } else {
         shader->setUniform("textureUse", 0);
     }
 
-    if (texture) {
+    if (texture.getId()) {
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, texture.getId());
     }
 
     vao.bind();
     glDrawArrays(GL_QUADS, 0, 4);
     vao.disable();
 
-    if (texture)
+    if (texture.getId())
         glDisable(GL_TEXTURE_2D);
 
     for (int i = vChilds.size()-1; i >= 0; --i)
@@ -305,13 +305,12 @@ CBorder CRectangle::getBorder() const
 
 void CRectangle::setTexture(const std::string &name)
 {
-    this->textureName = name;
     this->texture = CTextureFactory::getInstance()->getTexture(name);
 }
 
 std::string CRectangle::getTexture() const
 {
-    return textureName;
+    return texture.getFileName();
 }
 
 void CRectangle::setGradient(const CGradient &gradient)

@@ -23,6 +23,7 @@
 #include <vector>
 #include "glm/glm.h"
 
+namespace core {
 /**
  * @brief Адаптер для работы с VBO.
  *
@@ -69,5 +70,7 @@ private:
     uint vbo;
 
 }; // class VertexBufferObject
+
+} // namespace core
 
 #endif // VERTEXBUFFEROBJECT_H

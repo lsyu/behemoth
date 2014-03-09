@@ -24,7 +24,7 @@
 #include "core/objects/gui/rectangle.h"
 #include "core/objects/gui/rectangletext.h"
 
-#include "core/manager/resourcemanager.h"
+#include "core/lua/resourcemanager.h"
 
 #include "glm/glm.h"
 

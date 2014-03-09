@@ -17,35 +17,37 @@
  *
  */
 
-#include "vertexarrayobject.h"
+#ifndef TEXTURE_H
+#define TEXTURE_H
 
-#include "gl/gl.h"
-#include "gl/glext.h"
+#include <string>
+#include "glm/glm.h"
 
 namespace core {
 
-CVertexArrayObject::CVertexArrayObject() : vao(0)
-{
-}
+class CTextureFactory;
 
-CVertexArrayObject::~CVertexArrayObject()
+/**
+ * @brief Абстракция текстуры
+ */
+class CTexture
 {
-    glDeleteVertexArrays(1, &vao);
-}
+public:
+    friend class CTextureFactory;
 
-void CVertexArrayObject::genBuffer()
-{
-    glGenVertexArrays(1, &vao);
-}
+    CTexture();
 
-void CVertexArrayObject::bind() const
-{
-    glBindVertexArray(vao);
-}
+    unsigned int getId() const;
+    glm::uvec2 getSize() const;
+    std::string getFileName() const;
 
-void CVertexArrayObject::disable() const
-{
-    glBindVertexArray(0);
-}
+private:
 
-} //namespace core
+    unsigned int id;
+    glm::uvec2 size;
+    std::string fileName;
+};
+
+} // namespace core
+
+#endif // TEXTURE_H

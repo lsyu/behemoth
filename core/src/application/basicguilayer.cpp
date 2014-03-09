@@ -21,7 +21,7 @@
 
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
-#include "core/manager/guimanager.h"
+#include "core/lua/guimanager.h"
 #include "core/objects/gui/basic2dentity.h"
 
 #include "core/events/eventmouseclick.h"

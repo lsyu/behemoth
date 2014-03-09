@@ -25,10 +25,11 @@
 
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
-
-class CShader;
+#include "core/ogl/texture.h"
 
 namespace core {
+
+class CShader;
 
 /**
  * @brief Прямоугольник.
@@ -141,8 +142,7 @@ protected:
     float rC;
     float rD;
     float alpha;
-    uint texture;
-    std::string textureName;
+    CTexture texture;
     CBorderRadius radius;
     CBorder border;
     CRectangleText text;

@@ -25,6 +25,7 @@
 #include <map>
 #include <vector>
 
+#include "texture.h"
 #include "core/objects/gui/textbuffer.h"
 
 #include "glm/glm.h"
@@ -34,12 +35,6 @@ namespace core {
 class CFont;
 
 class __CTextureFactoryImplDel;
-
-struct CSymbolTexture {
-    float width;     /**< относительная длина текстуры */
-    float height;    /**< относительная высота текстуры */
-    uint texture;   /**< идентификатор текстуры */
-};
 
 /**
  * @brief Менеджер загрузки текстур.
@@ -66,15 +61,15 @@ public:
      * @param name название текстуры без расширения, т.е. для "texture.dds" имя текстуры будет "texture".
      * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
      */
-    uint getTexture(const std::string &name);
+    CTexture getTexture(const std::string &name);
     /**
      * @brief Получить текстуру по данным.
      * @param buffer буфер для генерирования текстуры текста.
      * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
      */
-    uint getTexture(const CTextBuffer &buffer) const;
+    CTexture getTexture(const CTextBuffer &buffer) const;
 
-    CSymbolTexture getSymbol(char symbol, const CFont &font);
+    CTexture getSymbol(char symbol, const CFont &font);
 
 private:
     CTextureFactory();
@@ -92,20 +87,20 @@ private:
      * @param textureName имя файла изображения.
      * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
-    uint loadTexture(const std::string &name, const std::string &textureName);
+    CTexture loadTexture(const std::string &name, const std::string &textureName);
 
     /**
      * @brief Загрузка текстуры символа @a symbol.
      * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
-    uint loadSymbol(char symbol);
+    CTexture loadSymbol(char symbol);
 
     //from http://www.g-truc.net/project-0024.html#menu
-    unsigned int createTexture2D(const std::string &filename);
+    CTexture createTexture2D(const std::string &filename);
     
     static CTextureFactory *instance;
-    std::map<std::string, uint> textures;
-    std::map<char, CSymbolTexture> symbols;
+    std::map<std::string, CTexture> textures;
+    std::map<char, CTexture> symbols;
 }; // class TextureFactory
 
 } // namespace Core

@@ -18,7 +18,7 @@
  */
 
 #include "guilayer.h"
-#include "core/manager/guimanager.h"
+#include "core/lua/guimanager.h"
 
 namespace core {
 

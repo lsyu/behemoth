@@ -27,21 +27,21 @@
 namespace core {
 
 CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, float parentHeight,
-    float fontHeight, CRectangleText *parent) :CRectangle(), font(font), symbolTex(nullptr), symbol(symbol),
+    float fontHeight, CRectangleText *parent) :CRectangle(), font(font), symbol(symbol),
     parentWidth(parentWidth), parentHeight(parentHeight), fontHeight(fontHeight), lineNumber(0)
 {
     parent->addChild(this);
-    symbolTex = new CSymbolTexture(CTextureFactory::getInstance()->getSymbol(symbol, *font));
-    texture = symbolTex->texture;
+    texture = CTextureFactory::getInstance()->getSymbol(symbol, *font);
 
     float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
-    width = symbol == '\n' ? 0 : font->getHeight() * symbolTex->width / symbolTex->height * scHeight;
-    height = font->getHeight() * scHeight;
+    float width = static_cast<float>(texture.getSize().x);
+    float height = static_cast<float>(texture.getSize().y);
+    this->width = symbol == '\n' ? 0 : font->getHeight() * width / height * scHeight;
+    this->height = font->getHeight() * scHeight;
 }
 
 CRectangleSymbol::~CRectangleSymbol()
 {
-    delete symbolTex;
 }
 
 void CRectangleSymbol::paint() const

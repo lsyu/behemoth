@@ -27,6 +27,7 @@
 
 #include "glm/glm.h"
 
+namespace core {
 /**
  * @brief Перечисления тип шейдера.
  */
@@ -285,5 +286,7 @@ class ShaderException : public std::runtime_error
 public:
     ShaderException(const std::string &text) : std::runtime_error(text) {}
 }; // class ShaderException
+
+} // namespace core
 
 #endif // SHADER_H

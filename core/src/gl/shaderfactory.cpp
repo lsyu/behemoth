@@ -19,7 +19,7 @@
 
 #include "shaderfactory.h"
 
-#include "core/manager/resourcemanager.h"
+#include "core/lua/resourcemanager.h"
 
 namespace core {
 

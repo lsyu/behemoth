@@ -28,7 +28,7 @@
 #include "core/events/abstractevent.h"
 #include "core/events/eventmouseclick.h"
 
-#include "core/manager/resourcemanager.h"
+#include "core/lua/resourcemanager.h"
 #include "core/objects/gui/basic2dentity.h"
 
 #include <iostream>
