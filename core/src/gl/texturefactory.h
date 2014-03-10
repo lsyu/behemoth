@@ -37,7 +37,7 @@ class CFont;
 class __CTextureFactoryImplDel;
 
 /**
- * @brief Менеджер загрузки текстур.
+ * @brief Фабрика загрузки текстур.
  *
  * Архитектура - singleton. @n
  * Каждая текстура загружается один раз.
@@ -50,9 +50,8 @@ public:
     friend class __CTextureFactoryImplDel;
 
     /**
-     * @brief Получить экземпляр менеджера текстур.
-     * Во время первого обращения загружаются все изображения.
-     * @return экземпляр менеджера текстур.
+     * @brief Получить экземпляр фабрики текстур.
+     * @return экземпляр фабрики текстур.
      */
     static CTextureFactory* getInstance();
 
