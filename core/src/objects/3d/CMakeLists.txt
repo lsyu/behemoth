@@ -6,7 +6,11 @@ set(CORE_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/perspectivecamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/orthocamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/camerafactory.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/basiclight.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/directionlight.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pointlight.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/lightfactory.cpp
 
     
     PARENT_SCOPE
@@ -19,7 +23,12 @@ set(CORE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/perspectivecamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/orthocamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/camerafactory.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/light.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/abstractlight.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/basiclight.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/directionlight.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/pointlight.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/lightfactory.h
     
     PARENT_SCOPE
 )
