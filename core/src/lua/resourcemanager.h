@@ -28,7 +28,6 @@
 
 namespace core {
 
-class __CResourceManagerImplDel;
 class CApplication;
 
 /**
@@ -60,7 +59,6 @@ class CApplication;
 class CResourceManager
 {
 public:
-    friend class __CResourceManagerImplDel; /**< Не вздумай использовать этот класс! */
     friend class CApplication;
 
     /**
@@ -139,6 +137,8 @@ private:
     std::string pathToApplication;
     std::map<std::string, std::string> mapOfParam;
     lua_State *lua;
+
+    friend class __CResourceManagerImplDel;
 }; // class ResourceManager
 
 } // namespace Core

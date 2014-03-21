@@ -143,7 +143,7 @@ string CResourceManager::getCoreConf() const
 
 string CResourceManager::getMeshFolder() const
 {
-    return getResource("meshs");
+    return getResource("meshes");
 }
 
 string CResourceManager::getMaterialFolder() const

@@ -21,8 +21,8 @@
 
 namespace core {
 
-CBasicLight::CBasicLight() : AbstractLight(), ambient(0.0f, 0.0f, 0.0f),
-    diffuse(1.0f, 1.0f, 1.0f), specular(1.0f, 1.0f, 1.0f)
+CBasicLight::CBasicLight() : AbstractLight(), mAmbient(0.0f, 0.0f, 0.0f),
+    mDiffuse(1.0f, 1.0f, 1.0f), mSpecular(1.0f, 1.0f, 1.0f)
 {
 }
 
@@ -32,7 +32,7 @@ CBasicLight::~CBasicLight()
 
 void CBasicLight::setAmbient(const glm::vec3 &ambient)
 {
-    this->ambient = ambient;
+    this->mAmbient = ambient;
 }
 
 void CBasicLight::setAmbient(float r, float g, float b)
@@ -42,13 +42,13 @@ void CBasicLight::setAmbient(float r, float g, float b)
 
 glm::vec3 CBasicLight::getAmbient() const
 {
-    return ambient;
+    return mAmbient;
 }
 
 void CBasicLight::setDiffuse(const glm::vec3 &diffuse)
 {
 
-    this->diffuse = diffuse;
+    this->mDiffuse = diffuse;
 }
 
 void CBasicLight::setDiffuse(float r, float g, float b)
@@ -58,12 +58,12 @@ void CBasicLight::setDiffuse(float r, float g, float b)
 
 glm::vec3 CBasicLight::getDiffuse() const
 {
-    return diffuse;
+    return mDiffuse;
 }
 
 void CBasicLight::setSpecular(const glm::vec3 &specular)
 {
-    this->specular = specular;
+    this->mSpecular = specular;
 }
 
 void CBasicLight::setSpecular(float r, float g, float b)
@@ -73,7 +73,7 @@ void CBasicLight::setSpecular(float r, float g, float b)
 
 glm::vec3 CBasicLight::getSpecular() const
 {
-    return specular;
+    return mSpecular;
 }
 
 } // namespace core

@@ -44,7 +44,7 @@ protected:
     virtual ~CPointLight();
 
 private:
-    glm::vec3 position;     //in world space
+    glm::vec3 mPosition;     //in world space
 }; // class CPointLight
 
 } // namespace core

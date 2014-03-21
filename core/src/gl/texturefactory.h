@@ -34,8 +34,6 @@ namespace core {
 
 class CFont;
 
-class __CTextureFactoryImplDel;
-
 /**
  * @brief Фабрика загрузки текстур.
  *
@@ -47,8 +45,6 @@ class __CTextureFactoryImplDel;
 class CTextureFactory
 {
 public:
-    friend class __CTextureFactoryImplDel;
-
     /**
      * @brief Получить экземпляр фабрики текстур.
      * @return экземпляр фабрики текстур.
@@ -100,6 +96,8 @@ private:
     static CTextureFactory *instance;
     std::map<std::string, CTexture> textures;
     std::map<char, CTexture> symbols;
+
+    friend class __CTextureFactoryImplDel;
 }; // class TextureFactory
 
 } // namespace Core

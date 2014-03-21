@@ -18,6 +18,7 @@
  */
 
 #include "lightfactory.h"
+#include <limits>
 
 namespace core {
 
@@ -40,42 +41,64 @@ CLightFactory *CLightFactory::getInstance()
     return instance;
 }
 
-CPointLight *CLightFactory::getPointLight(const std::string &name) const
+AbstractLight *CLightFactory::getLight(const std::string &name, ELightType type) const
 {
-    std::map<std::pair<std::string, ELightType>, AbstractLight*>::const_iterator it
-            = lights.find(std::pair<std::string, ELightType>(name, ELightType::point));
-    if(it != lights.end())
-        return static_cast<CPointLight*>(it->second);
+    if (type == ELightType::all) {
+        std::map<std::pair<std::string, ELightType>, CPointLight*>::const_iterator it
+                = mLights.find(std::pair<std::string, ELightType>(name, ELightType::point));
+        if(it != mLights.end())
+            return static_cast<CPointLight*>(it->second);
+        it = mLights.find(std::pair<std::string, ELightType>(name, ELightType::direction));
+        if(it != mLights.end())
+            return static_cast<CDirectionLight*>(it->second);
+        return nullptr;
+    }
+
+    std::map<std::pair<std::string, ELightType>, CPointLight*>::const_iterator it
+            = mLights.find(std::pair<std::string, ELightType>(name, type));
+    if(it != mLights.end()) {
+        if (type == ELightType::point)
+            return static_cast<CPointLight*>(it->second);
+        static_cast<CDirectionLight*>(it->second);
+    }
     return nullptr;
 }
 
-CDirectionLight *CLightFactory::getDirectionLight(const std::string &name) const
+AbstractLight *CLightFactory::getNearestLight(const glm::vec3 &point) const
 {
-     std::map<std::pair<std::string, ELightType>, AbstractLight*>::const_iterator it
-             = lights.find(std::pair<std::string, ELightType>(name, ELightType::direction));
-     if(it != lights.end())
-         return static_cast<CDirectionLight*>(it->second);
-     return nullptr;
+    float distance = std::numeric_limits<float>::max();
+    AbstractLight *ret = nullptr;
+    for (auto it = mLights.cbegin(), end = mLights.cend(); it != end; ++it) {
+        float distanceTest = glm::distance(point, it->second->getPosition());
+        if (distanceTest < distance) {
+            distanceTest = distance;
+            ret = &(*it->second);
+        }
+    }
+    return ret;
 }
 
 void CLightFactory::makeLight(const std::string &name, ELightType type)
 {
-    AbstractLight *light = nullptr;
+    if (type == ELightType::all)
+        return;
+
+    CPointLight *light = nullptr;
     if (type == ELightType::direction)
         light = new CDirectionLight;
     else if (type == ELightType::point)
         light = new CPointLight;
     if (light)
-        lights[std::pair<std::string, ELightType>(name, type)] = light;
+        mLights[std::pair<std::string, ELightType>(name, type)] = light;
 }
 
-CLightFactory::CLightFactory() : lights()
+CLightFactory::CLightFactory() : mLights()
 {
 }
 
 CLightFactory::~CLightFactory()
 {
-    for (auto item : lights)
+    for (auto item : mLights)
         delete item.second;
 }
 

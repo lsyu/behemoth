@@ -29,7 +29,7 @@ CBasic2dEntity::CBasic2dEntity() : id(), vPos2(), vUV(), vColor(), vChilds(), pa
 {
 }
 
-CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(id), id(id), vPos2(), vUV(),
+CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(), id(id), vPos2(), vUV(),
     vColor(), vChilds(), parent(nullptr)
 {
 }
@@ -48,14 +48,14 @@ void CBasic2dEntity::setId(const std::string &id)
     this->id = id;
 }
 
-void CBasic2dEntity::setParent(AbstractEntity *parent)
+void CBasic2dEntity::setParent(CBasic2dEntity *parent)
 {
     this->parent = parent;
     if (!parent->getChild(this->id))
         parent->addChild(this);
 }
 
-AbstractEntity *CBasic2dEntity::getParent() const
+CBasic2dEntity *CBasic2dEntity::getParent() const
 {
     return parent;
 }
@@ -65,25 +65,25 @@ bool CBasic2dEntity::isRoot() const
     return parent == nullptr;
 }
 
-void CBasic2dEntity::addChild(AbstractEntity *child)
+void CBasic2dEntity::addChild(CBasic2dEntity *child)
 {
     vChilds.push_back(child);
     child->setParent(this);
 }
 
-AbstractEntity *CBasic2dEntity::getChild(const std::string &id)
+CBasic2dEntity *CBasic2dEntity::getChild(const std::string &id)
 {
-    std::vector<AbstractEntity *>::const_iterator it = std::find_if(vChilds.begin(), vChilds.end(),
-    [&id](AbstractEntity *child) -> bool
+    std::vector<CBasic2dEntity *>::const_iterator it = std::find_if(vChilds.begin(), vChilds.end(),
+    [&id](CBasic2dEntity *child) -> bool
     {
         return child->getId() == id;
     });
     if (it != vChilds.end())
-        return (AbstractEntity *)(&(*it));
+        return (CBasic2dEntity *)(&(*it));
     return nullptr;
 }
 
-std::vector<AbstractEntity *> &CBasic2dEntity::getChilds()
+std::vector<CBasic2dEntity *> &CBasic2dEntity::getChilds()
 {
     return vChilds;
 }

@@ -20,7 +20,7 @@
 #ifndef DIRECTIONLIGHT_H
 #define DIRECTIONLIGHT_H
 
-#include "basiclight.h"
+#include "pointlight.h"
 
 namespace core {
 
@@ -29,15 +29,10 @@ class CLightFactory;
 /**
  * @brief Направленный источнк освещения.
  */
-class CDirectionLight : public CBasicLight
+class CDirectionLight : public CPointLight
 {
 public:
     friend class CLightFactory;
-
-    // AbstractLight interface
-    virtual void setPosition(const glm::vec3 &position) override;
-    virtual void setPosition(float x, float y, float z) override;
-    virtual glm::vec3 getPosition() const override;
 
     /**
      * @brief Установить направление источника света.
@@ -57,8 +52,7 @@ protected:
     virtual ~CDirectionLight();
 
 private:
-    glm::vec3 position;     //in world space
-    glm::vec3 direction;    //in world space
+    glm::vec3 mDirection;    //in world space
 }; // class CDirectionLight
 
 } // namespace core

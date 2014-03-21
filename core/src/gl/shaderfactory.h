@@ -28,8 +28,6 @@
 
 namespace core {
 
-class __CShaderFactoryImplDel;
-
 /**
  * @brief Перечисления тип шейдера.
  */
@@ -44,7 +42,6 @@ enum class EShaderType : bool {
 class CShaderFactory
 {
 public:
-    friend class __CShaderFactoryImplDel;
     /**
      * @brief Получить экземпляр фабрики шейдеров.
      */
@@ -53,6 +50,7 @@ public:
      * @brief Получить шейдер по имени.
      * @param name имя шейдера
      * @note В случае, если шейдер невозможно получить, вернется nullptr.
+     * @note bind/disable выполняются автоматически!
      */
     CShader *getShader(const std::string &name);
 private:
@@ -114,10 +112,17 @@ private:
     * @param shader шейдер или шейдерная программа.
     */
    void handleError(CShader *program, uint shader);
+   /**
+    * @brief При необходимости выполнить disable активного шейдера и bind нового шейдера.
+    */
+   CShader *changeActiveShader(CShader *newShader);
 
     static CShaderFactory *instance;
     std::string prefix;
     std::map< std::string, std::shared_ptr<CShader> > shaders;
+    CShader *activeShader;
+
+    friend class __CShaderFactoryImplDel;
 }; // class ShaderFactory
 
 } // namespace Core

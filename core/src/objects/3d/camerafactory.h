@@ -26,16 +26,12 @@
 
 namespace core {
 
-class __CCameraFactoryImplDel;
-
 /**
  * @brief Фабрика загрузки камер.
  */
 class CCameraFactory
 {
 public:
-    friend class __CCameraFactoryImplDel;
-
     /**
      * @brief Получить экземпляр фабрики камер.
      * @return экземпляр фабрики камер.
@@ -49,6 +45,16 @@ public:
      * @note в случае невозможности создать камеру с заданными параметрами возвращает nullptr.
      */
     AbstractCamera *getCamera(const std::string &name) const;
+
+    /**
+     * @brief Получить активную камеру.
+     * @note В случае, если камера не установлена, вернется nullptr.
+     */
+    AbstractCamera *getActiveCamera() const;
+    /**
+     * @brief Установить активную камеру.
+     */
+    void setActiveCamera(AbstractCamera *activeCamera);
 
     /**
      * @brief Получить камеру с перспективной проекцией.
@@ -82,7 +88,10 @@ private:
     CCameraFactory &operator=(const CCameraFactory &);
 
     static CCameraFactory *instance;
-    std::map<std::string, AbstractCamera*> cameras;
+    std::map<std::string, AbstractCamera*> mCameras;
+    AbstractCamera *mActiveCamera;
+
+    friend class __CCameraFactoryImplDel;
 }; // class CCameraFactory
 
 } // namespace core

@@ -170,7 +170,9 @@ void CApplication::mouse(int button, int state, int x, int y)
     EMouseState s = (state == GLUT_UP ? EMouseState::up : EMouseState::down);
 
     CEventMouseClick e(x, y, btn, s);
-    if (!instance->guiLayer->updateGL(&e))
+    if (instance->guiLayer && !instance->guiLayer->updateGL(&e))
+        glutLeaveMainLoop();
+    else if (instance->sceneLayer && !instance->sceneLayer->updateGL(&e))
         glutLeaveMainLoop();
 }
 
@@ -179,7 +181,10 @@ void CApplication::display()
     using namespace std::chrono;
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-    instance->guiLayer->paintGL();
+    if (instance->sceneLayer)
+        instance->sceneLayer->paintGL();
+    if (instance->guiLayer)
+        instance->guiLayer->paintGL();
     glutSwapBuffers();
 
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -190,7 +195,10 @@ void CApplication::display()
 
 void CApplication::idle()
 {
-    instance->guiLayer->updateGL();
+    if (instance->guiLayer)
+        instance->guiLayer->updateGL();
+    if (instance->sceneLayer)
+        instance->sceneLayer->updateGL();
     glutPostRedisplay();
 }
 
@@ -205,7 +213,10 @@ void CApplication::exec()
         glutMouseFunc(&CApplication::mouse);
         glutDisplayFunc(&CApplication::display);
         glutIdleFunc(&CApplication::idle);
-        instance->guiLayer->prepareGL();
+        if (instance->sceneLayer)
+            instance->sceneLayer->prepareGL();
+        if (instance->guiLayer)
+            instance->guiLayer->prepareGL();
 
         glutMainLoop();
     }
@@ -219,6 +230,11 @@ void CApplication::close()
 void CApplication::setGUILayer(AbstractLayer *guiLayer)
 {
     this->guiLayer = guiLayer;
+}
+
+void CApplication::setScene3DLayer(AbstractLayer *scene3D)
+{
+    this->sceneLayer = scene3D;
 }
 
 } // namespace Core

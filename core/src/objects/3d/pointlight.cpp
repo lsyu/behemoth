@@ -21,7 +21,7 @@
 
 namespace core {
 
-CPointLight::CPointLight() : CBasicLight(), position(0.0f, 0.0f, 0.0f)
+CPointLight::CPointLight() : CBasicLight(), mPosition(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -31,7 +31,7 @@ CPointLight::~CPointLight()
 
 void CPointLight::setPosition(const glm::vec3 &position)
 {
-    this->position = position;
+    this->mPosition = position;
 }
 
 void CPointLight::setPosition(float x, float y, float z)
@@ -41,7 +41,7 @@ void CPointLight::setPosition(float x, float y, float z)
 
 glm::vec3 CPointLight::getPosition() const
 {
-    return position;
+    return mPosition;
 }
 
 } // namespace core

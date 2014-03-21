@@ -32,7 +32,7 @@ GUILayer::~GUILayer()
 
 void GUILayer::prepareGL()
 {
-    CGUIManager::getInstance()->readGui("example.lua");
+    CGUIManager::getInstance()->readGui("example1.lua");
 }
 
 } // namespace Core

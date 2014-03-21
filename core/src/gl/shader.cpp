@@ -25,8 +25,8 @@
 
 namespace core {
 
-CShader::CShader() : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
-    shaderProgram(0)
+CShader::CShader(const std::string &id) : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
+    shaderProgram(0), id(id)
 {
 }
 
@@ -152,7 +152,7 @@ void CShader::setUniform(const std::string &nameOfParam, const glm::mat3 &vec)
 void CShader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
-    glUniformMatrix4fv(location, 1, GL_TRUE, glm::value_ptr(vec));
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(vec));
 }
 
 void CShader::bind() const

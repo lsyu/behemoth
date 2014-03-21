@@ -125,8 +125,6 @@ protected:
      */
     bool contains(const glm::vec2 &point) const;
 
-
-    CShader *shader; // Получаю с фабрики, не надо чистить память
     CVertexArrayObject vao;
     CVertexBufferObject vertex;
     CVertexBufferObject color;

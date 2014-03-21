@@ -36,7 +36,7 @@ private:
 
 CCameraFactory *CCameraFactory::getInstance()
 {
-    if (instance) {
+    if (!instance) {
         instance = new CCameraFactory;
         static __CCameraFactoryImplDel impDel(instance);
     }
@@ -45,29 +45,41 @@ CCameraFactory *CCameraFactory::getInstance()
 
 AbstractCamera *CCameraFactory::getCamera(const std::string &name) const
 {
-    std::map<std::string, AbstractCamera*>::const_iterator it = cameras.find(name);
-    if (it != cameras.end())
+    std::map<std::string, AbstractCamera*>::const_iterator it = mCameras.find(name);
+    if (it != mCameras.end())
         return it->second;
     return nullptr;
 }
 
+AbstractCamera *CCameraFactory::getActiveCamera() const
+{
+    return mActiveCamera;
+}
+
+void CCameraFactory::setActiveCamera(AbstractCamera *activeCamera)
+{
+    mActiveCamera = activeCamera;
+}
+
 void CCameraFactory::makePerspectiveCamera(const std::string &name, float widthOfVieport, float heightOfVieportf, float fov, float nearPlane, float farPlane)
 {
-    cameras[name] = new CPerspectiveCamera(widthOfVieport, heightOfVieportf, fov, nearPlane, farPlane);
+    if (mCameras.find(name) == mCameras.end())
+        mCameras[name] = new CPerspectiveCamera(widthOfVieport, heightOfVieportf, fov, nearPlane, farPlane);
 }
 
 void CCameraFactory::makeOrthoCamera(const std::string &name, float left, float right, float bottom, float top, float near, float far)
 {
-    cameras[name] = new COrthoCamera(left, right, bottom, top, near, far);
+    if (mCameras.find(name) == mCameras.end())
+        mCameras[name] = new COrthoCamera(left, right, bottom, top, near, far);
 }
 
-CCameraFactory::CCameraFactory() : cameras()
+CCameraFactory::CCameraFactory() : mCameras(), mActiveCamera(nullptr)
 {
 }
 
 CCameraFactory::~CCameraFactory()
 {
-    for (auto item: cameras)
+    for (auto item: mCameras)
         delete item.second;
 }
 

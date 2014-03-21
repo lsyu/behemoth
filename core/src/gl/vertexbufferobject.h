@@ -24,6 +24,15 @@
 #include "glm/glm.h"
 
 namespace core {
+
+/**
+ * @brief Перечисления типа массива данных.
+ */
+enum class EArrayType : bool {
+    Data,    /**< Данные */
+    Index    /**< Индексы */
+}; // enum EArrayType
+
 /**
  * @brief Адаптер для работы с VBO.
  *
@@ -38,7 +47,7 @@ public:
      * Перед началом работы с VBO, его нужно сгенерировать!
      * @sa genBuffer
      */
-    CVertexBufferObject();
+    CVertexBufferObject(EArrayType type = EArrayType::Data);
     virtual ~CVertexBufferObject();
     /**
      * @brief Генерирование VBO.
@@ -56,18 +65,17 @@ public:
     /**
      * @brief Заполнить VBO данными.
      */
-    void setData(const std::vector<glm::vec2> *buffer) const;
+    template <typename T>
+    void setData(const std::vector<T> *buffer) const {
+        setData(buffer->data(), buffer->capacity()*sizeof(T));
+    }
     /**
      * @brief Заполнить VBO данными.
      */
-    void setData(const std::vector<glm::vec3> *buffer) const;
-    /**
-     * @brief Заполнить VBO данными.
-     */
-    void setData(const std::vector<glm::vec4> *buffer) const;
-
+    void setData(const void *data, size_t sizeOfData) const;
 private:
-    uint vbo;
+    uint mVBO;
+    EArrayType mType;
 
 }; // class VertexBufferObject
 

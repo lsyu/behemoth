@@ -47,7 +47,7 @@ CShaderFactory *CShaderFactory::getInstance()
 }
 
 CShaderFactory::CShaderFactory() : prefix(core::CResourceManager::getInstance()->getShaderFolder()
-        + core::CResourceManager::getInstance()->getFileSeparator()), shaders()
+    + core::CResourceManager::getInstance()->getFileSeparator()), shaders(), activeShader(nullptr)
 {
 }
 
@@ -60,13 +60,13 @@ CShader *CShaderFactory::getShader(const std::string &name)
     std::map< std::string, std::shared_ptr<CShader> >::const_iterator it
             = shaders.find(name);
     if (it != shaders.end())
-        return it->second.get();
+        return changeActiveShader(it->second.get());
 
-    std::shared_ptr<CShader> shader = std::shared_ptr<CShader>(new CShader);
+    std::shared_ptr<CShader> shader = std::shared_ptr<CShader>(new CShader(name));
     if (!prepareShader(shader.get(), prefix + name + ".vert", prefix + name + ".frag"))
         return nullptr;
     shaders.insert(std::pair< std::string, std::shared_ptr<CShader> >(name, shader));
-    return shader.get();
+    return changeActiveShader(shader.get());
 }
 
 bool CShaderFactory::prepareShader(CShader *shader, const std::string &vertShaderName, const std::string &fragmentShaderName)
@@ -189,6 +189,19 @@ void CShaderFactory::handleError(CShader *program, uint shader)
 
     for (int i = 0, n = infoLog.size(); i < n; ++i)
         std::cout << infoLog[i];
+}
+
+CShader *CShaderFactory::changeActiveShader(CShader *newShader)
+{
+    if (activeShader && activeShader->id != newShader->id) {
+        activeShader->disable();
+        activeShader = newShader;
+        activeShader->bind();
+    } else {
+        activeShader = newShader;
+        activeShader->bind();
+    }
+    return activeShader;
 }
 
 } // namespace Core

@@ -29,15 +29,7 @@
 
 namespace core {
 
-class AbstractEntity;
 class CBasic2dEntity;
-class __CGUIManagerImplDel;
-
-void registerVec2();
-void registerVec3();
-void registerBorder();
-void registerText();
-void registerRectangle();
 
 /**
  * @brief Менеджер работы с Lua.
@@ -61,7 +53,6 @@ void registerRectangle();
 class CGUIManager
 {
 public:
-    friend class __CGUIManagerImplDel; /**< Даже не думайте его использовать:) */
     /**
      * @brief Получить экземпляр менеджера работы с Lua.
      */
@@ -77,33 +68,33 @@ public:
      */
     bool readGui(const std::string &fileName);
 
-    AbstractEntity *getObject(const std::string &id);
-    AbstractEntity *getObject(int num);
+    CBasic2dEntity *getObject(const std::string &id);
+    CBasic2dEntity *getObject(int num);
     CBasic2dEntity *getRootObject();
-    const std::vector< std::shared_ptr<AbstractEntity> >& getObjects() const;
+    const std::vector<std::shared_ptr<CBasic2dEntity> > &getObjects() const;
 
     /**
      * @brief Выполнить onClick из скрипта Lua.
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
-    bool onClick(AbstractEntity *entity);
+    bool onClick(CBasic2dEntity *entity);
     /**
      * @brief Выполнить onPressed из скрипта Lua.
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
-    bool onPressed(AbstractEntity *entity);
+    bool onPressed(CBasic2dEntity *entity);
     /**
      * @brief Выполнить onReleased из скрипта Lua.
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
-    bool onReleased(AbstractEntity *entity);
+    bool onReleased(CBasic2dEntity *entity);
 
 protected:
     /**
      * @brief добавить готовый объект в контейнер на вывод.
      */
     template<class T>
-    void addObject(AbstractEntity *entity);
+    void addObject(CBasic2dEntity *entity);
     /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
      */
@@ -145,7 +136,7 @@ protected:
      * @brief Выполнить действие из скрипта в lua
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
-    bool executeAction(AbstractEntity *entity, const std::string &action);
+    bool executeAction(CBasic2dEntity *entity, const std::string &action);
 
 private:
     CGUIManager();
@@ -155,8 +146,10 @@ private:
 
     static CGUIManager *instance;
     lua_State *lua;
-    std::vector< std::shared_ptr<core::AbstractEntity> > objects; /**< Элементы сцены.(Пока только GUI) */
-};
+    std::vector< std::shared_ptr<core::CBasic2dEntity> > objects; /**< Элементы GUI */
+
+    friend class __CGUIManagerImplDel;
+}; // class CGUIManager
 
 } // namespace Core
 

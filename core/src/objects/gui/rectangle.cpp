@@ -29,7 +29,7 @@
 
 namespace core {
 
-CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), color(), uv(), aspect(),
+CRectangle::CRectangle() : CBasic2dEntity(), vao(), vertex(), color(), uv(), aspect(),
     x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f),
     texture(), radius(), border(), text()
 {
@@ -64,7 +64,7 @@ CRectangle::CRectangle() : CBasic2dEntity(), shader(nullptr), vao(), vertex(), c
     aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
-CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), shader(nullptr), vao(),
+CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), vao(),
     vertex(), color(), uv(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f),
     rC(0.0f), rD(0.0f), alpha(1.0f), texture(), radius(), border(), text()
 {
@@ -135,26 +135,27 @@ void CRectangle::configure()
     vPos2[2] = glm::vec2(x + width, y + height);
     vPos2[3] = glm::vec2(x, y + height);
 
-    shader = CShaderFactory::getInstance()->getShader("gui");
+    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
+    if (shader) {
+        vao.genBuffer();
+        vao.bind();
 
-    vao.genBuffer();
-    vao.bind();
+        vertex.genBuffer();
+        vertex.setData(&vPos2);
+        shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
 
-    vertex.genBuffer();
-    vertex.setData(&vPos2);
-    shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
+        color.genBuffer();
+        color.setData(&vColor);
+        shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
 
-    color.genBuffer();
-    color.setData(&vColor);
-    shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
+        if (texture.getId()) {
+            uv.genBuffer();
+            uv.setData(&vUV);
+            shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
+        }
 
-    if (texture.getId()) {
-        uv.genBuffer();
-        uv.setData(&vUV);
-        shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
+        vao.disable();
     }
-
-    vao.disable();
 
     for (auto child: vChilds)
         child->configure();
@@ -162,38 +163,41 @@ void CRectangle::configure()
 
 void CRectangle::paint() const
 {
-    shader->setUniform("aspect", aspect);
-    shader->setUniform("x", x);
-    shader->setUniform("y", y);
-    shader->setUniform("width", width);
-    shader->setUniform("height", height);
-    shader->setUniform("rA", rA);
-    shader->setUniform("rB", rB);
-    shader->setUniform("rC", rC);
-    shader->setUniform("rD", rD);
-    shader->setUniform("alpha", alpha);
-    shader->setUniform("borderWidth", border.width);
-    shader->setUniform("borderColor", border.color);
+    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
+    if (shader) {
+        shader->setUniform("aspect", aspect);
+        shader->setUniform("x", x);
+        shader->setUniform("y", y);
+        shader->setUniform("width", width);
+        shader->setUniform("height", height);
+        shader->setUniform("rA", rA);
+        shader->setUniform("rB", rB);
+        shader->setUniform("rC", rC);
+        shader->setUniform("rD", rD);
+        shader->setUniform("alpha", alpha);
+        shader->setUniform("borderWidth", border.width);
+        shader->setUniform("borderColor", border.color);
 
-    if (texture.getId()) {
-        shader->setUniform("textureUse", 1);
-        shader->setUniform("texture", 0);
-    } else {
-        shader->setUniform("textureUse", 0);
+        if (texture.getId()) {
+            shader->setUniform("textureUse", 1);
+            shader->setUniform("texture", 0);
+        } else {
+            shader->setUniform("textureUse", 0);
+        }
+
+        if (texture.getId()) {
+            glEnable(GL_TEXTURE_2D);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
+
+        vao.bind();
+        glDrawArrays(GL_QUADS, 0, 4);
+        vao.disable();
+
+        if (texture.getId())
+            glDisable(GL_TEXTURE_2D);
     }
-
-    if (texture.getId()) {
-        glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
-    }
-
-    vao.bind();
-    glDrawArrays(GL_QUADS, 0, 4);
-    vao.disable();
-
-    if (texture.getId())
-        glDisable(GL_TEXTURE_2D);
 
     for (int i = vChilds.size()-1; i >= 0; --i)
         vChilds[i]->paint();

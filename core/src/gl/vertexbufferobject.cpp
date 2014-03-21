@@ -24,50 +24,36 @@
 
 namespace core {
 
-CVertexBufferObject::CVertexBufferObject() : vbo(0)
+CVertexBufferObject::CVertexBufferObject(EArrayType type) : mVBO(0), mType(type)
 {
 }
 
 CVertexBufferObject::~CVertexBufferObject()
 {
-    if (vbo >= 0)
-        glDeleteBuffers(1, &vbo);
+    if (mVBO >= 0)
+        glDeleteBuffers(1, &mVBO);
 }
 
 void CVertexBufferObject::genBuffer()
 {
-    //glGenVertexArrays(1, &vao);
-    //glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &mVBO);
 }
 
 void CVertexBufferObject::bind() const
 {
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(mType == EArrayType::Data ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, mVBO);
 }
 
 void CVertexBufferObject::disable() const
 {
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(mType == EArrayType::Data ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void CVertexBufferObject::setData(const std::vector<glm::vec2> *buffer) const
+void CVertexBufferObject::setData(const void *data, size_t sizeOfData) const
 {
     bind();
-    //! TODO: Подумать насчет STATIC_DRAW!
-    glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec2), &(*buffer)[0], GL_STATIC_DRAW);
-}
-
-void CVertexBufferObject::setData(const std::vector<glm::vec3> *buffer) const
-{
-    bind();
-    glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec3), &(*buffer)[0], GL_STATIC_DRAW);
-}
-
-void CVertexBufferObject::setData(const std::vector<glm::vec4> *buffer) const
-{
-    bind();
-    glBufferData(GL_ARRAY_BUFFER, buffer->size() * sizeof(glm::vec4), &(*buffer)[0], GL_STATIC_DRAW);
+    glBufferData(mType == EArrayType::Data ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER,
+                 sizeOfData, data, GL_STATIC_DRAW);
 }
 
 } // namespace core

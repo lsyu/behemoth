@@ -28,7 +28,6 @@
 
 namespace core {
 
-class CShaderFactory;
 /**
  * @brief Содержит все необходимое для работы с шейдерными программами GLSL 1.2
  */
@@ -41,20 +40,6 @@ public:
      * @brief Очистка ресурсов
      */
     ~CShader();
-
-    /**
-     * @brief Сделать шейдерную программу активной.
-     *
-     * Читай glUseProgram
-     */
-    void bind() const;
-
-    /**
-     * @brief Задизаблить шейдерную программу.
-     *
-     * Читай glUseProgram(0);
-     */
-    void disable() const;
 
     /**
      * @brief Установить атрибут в шейдер.
@@ -145,7 +130,20 @@ public:
     void setUniform(const std::string &nameOfParam, const glm::mat4 &mat);
 
 private:
-    CShader();
+    CShader(const std::string &id);
+    /**
+     * @brief Сделать шейдерную программу активной.
+     *
+     * Читай glUseProgram
+     */
+    void bind() const;
+
+    /**
+     * @brief Задизаблить шейдерную программу.
+     *
+     * Читай glUseProgram(0);
+     */
+    void disable() const;
     /**
      * @brief Найти адрес uniform переменной в шейдере.
      * @param nameOfParam название параметра в шейдере.
@@ -164,6 +162,7 @@ private:
     uint vertexShader;
     uint fragmentShader;
     uint shaderProgram;
+    std::string id;
 }; // class Shader
 
 } // namespace core

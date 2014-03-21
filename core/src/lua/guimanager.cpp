@@ -205,7 +205,7 @@ void CGUIManager::registerRectangle()
 
     r.addProperty({"addChild", [](lua_State *l) {
                        CRectangle * foo = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
-                       AbstractEntity * bar = *static_cast<AbstractEntity **>(lua_touserdata(l, 2));
+                       CBasic2dEntity * bar = *static_cast<CBasic2dEntity **>(lua_touserdata(l, 2));
                        foo->addChild(bar);
                        return 1;
                    }
@@ -219,18 +219,18 @@ void CGUIManager::registerRectangle()
     r.complete(true);
 }
 
-core::AbstractEntity *CGUIManager::getObject(const std::string &id)
+core::CBasic2dEntity *CGUIManager::getObject(const std::string &id)
 {
-    std::vector< std::shared_ptr<core::AbstractEntity> >::iterator it
+    std::vector< std::shared_ptr<core::CBasic2dEntity> >::iterator it
             = std::find_if(objects.begin(), objects.end(),
-            [&id](const std::shared_ptr<core::AbstractEntity> &obj)
+            [&id](const std::shared_ptr<core::CBasic2dEntity> &obj)
             {
                 return obj->getId() == id;
             });
-    return it != objects.end() ? static_cast<core::AbstractEntity*>(&(*it->get())) : nullptr;
+    return it != objects.end() ? static_cast<core::CBasic2dEntity*>(&(*it->get())) : nullptr;
 }
 
-core::AbstractEntity *CGUIManager::getObject(int num)
+core::CBasic2dEntity *CGUIManager::getObject(int num)
 {
     if (num < 0 || num >= static_cast<int>(objects.size()))
         return nullptr;
@@ -242,18 +242,18 @@ CBasic2dEntity *CGUIManager::getRootObject()
     return objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(objects.back().get());
 }
 
-const std::vector< std::shared_ptr<core::AbstractEntity> >& CGUIManager::getObjects() const
+const std::vector< std::shared_ptr<core::CBasic2dEntity> >& CGUIManager::getObjects() const
 {
     return objects;
 }
 
 template<class T>
-void CGUIManager::addObject(AbstractEntity *t)
+void CGUIManager::addObject(CBasic2dEntity *t)
 {
-    objects.push_back(std::shared_ptr<AbstractEntity>(dynamic_cast<T*>(t)));
+    objects.push_back(std::shared_ptr<CBasic2dEntity>(dynamic_cast<T*>(t)));
 }
 
-bool CGUIManager::executeAction(AbstractEntity *entity, const std::string &action)
+bool CGUIManager::executeAction(CBasic2dEntity *entity, const std::string &action)
 {
     lua_getglobal(lua, "ui");
     if (lua_istable(lua, -1))
@@ -277,17 +277,17 @@ bool CGUIManager::executeAction(AbstractEntity *entity, const std::string &actio
     return false;
 }
 
-bool CGUIManager::onClick(AbstractEntity *entity)
+bool CGUIManager::onClick(CBasic2dEntity *entity)
 {
     return executeAction(entity, "onClick");
 }
 
-bool CGUIManager::onPressed(AbstractEntity *entity)
+bool CGUIManager::onPressed(CBasic2dEntity *entity)
 {
     return executeAction(entity, "onPressed");
 }
 
-bool CGUIManager::onReleased(AbstractEntity *entity)
+bool CGUIManager::onReleased(CBasic2dEntity *entity)
 {
     return executeAction(entity, "onReleased");
 }

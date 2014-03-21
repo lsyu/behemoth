@@ -112,14 +112,45 @@ public:
 
     virtual std::string getId() const override;
     void setId(const std::string &id);
+    /**
+     * @brief Установить родителя.
+     */
+    virtual void setParent(CBasic2dEntity *parent);
+    /**
+     * @brief Получить родителя сущности.
+     */
+    virtual CBasic2dEntity *getParent() const;
+    bool isRoot() const;
+    /**
+     * @brief getChild Получить ребенка сущности по его имени.
+     * @note В случае, если ребенка с именем id не найдено, вернется nullptr.
+     */
+    virtual CBasic2dEntity *getChild(const std::string &id) final;
+    /**
+     * @brief getChilds Получить вектор детей сущности.
+     */
+    virtual std::vector<CBasic2dEntity *> &getChilds() final;
 
-    virtual void setParent(AbstractEntity *parent) override;
-    virtual AbstractEntity *getParent() const override;
-    virtual bool isRoot() const override;
-
-    virtual void addChild(AbstractEntity *child) override;
-    virtual AbstractEntity *getChild(const std::string &id) override;
-    virtual std::vector<AbstractEntity *> &getChilds() override;
+    /**
+     * @brief Добавить ребенка сущности.
+     */
+    virtual void addChild(CBasic2dEntity *child);
+    /**
+     * @brief Получить минимальную абсциссу ограничивающей поверхности.
+     */
+    virtual float getXMin() const = 0;
+    /**
+     * @brief Получить максимальную абсциссу ограничивающей поверхности.
+     */
+    virtual float getXMax() const = 0;
+    /**
+     * @brief Получить минимальную оординату ограничивающей поверхности.
+     */
+    virtual float getYMin() const = 0;
+    /**
+     * @brief Получить максимальную оординату ограничивающей поверхности.
+     */
+    virtual float getYMax() const = 0;
 
     /**
      * @brief Обработка клика
@@ -132,8 +163,8 @@ protected:
     std::vector<glm::vec2> vUV;             /**< вектор текстурных координат */
     std::vector<glm::vec3> vColor;          /**< вектор цветов вершин */
 
-    std::vector<AbstractEntity *> vChilds;  /**< вектор детей */
-    AbstractEntity *parent;                 /**< родитель */
+    std::vector<CBasic2dEntity *> vChilds;  /**< вектор детей */
+    CBasic2dEntity *parent;                 /**< родитель */
 
     static std::vector<CBasic2dEntity*> objects4Event;   /**< Объекты, для которых выполнилось
                                                          * действие.

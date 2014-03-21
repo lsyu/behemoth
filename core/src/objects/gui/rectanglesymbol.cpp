@@ -67,31 +67,32 @@ void CRectangleSymbol::configure()
     vPos2[2] = glm::vec2(x + width, y + height);
     vPos2[3] = glm::vec2(x, y + height);
 
-    shader = CShaderFactory::getInstance()->getShader("gui");
+    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
+    if (shader) {
+        vao.genBuffer();
+        vao.bind();
 
-    vao.genBuffer();
-    vao.bind();
+        vertex.genBuffer();
+        vertex.setData(&vPos2);
+        shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
 
-    vertex.genBuffer();
-    vertex.setData(&vPos2);
-    shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
+        color.genBuffer();
+        color.setData(&vColor);
+        shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
 
-    color.genBuffer();
-    color.setData(&vColor);
-    shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
+        uv.genBuffer();
+        uv.setData(&vUV);
+        shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
 
-    uv.genBuffer();
-    uv.setData(&vUV);
-    shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
-
-    vao.disable();
+        vao.disable();
+    }
 }
 
 void CRectangleSymbol::prepare()
 {
-    std::vector<AbstractEntity*> &e = this->parent->getChilds();
+    std::vector<CBasic2dEntity*> &e = this->parent->getChilds();
     bool first = !(e.size()-1);
-    AbstractEntity *parent = first ? this->parent : e[e.size()-2];
+    CBasic2dEntity *parent = first ? this->parent : e[e.size()-2];
     x = first ? parent->getXMin() : parent->getXMax();
     y = first? parent->getYMax() - height : parent->getYMin();
 

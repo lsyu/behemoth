@@ -25,8 +25,6 @@
 
 namespace core {
 
-class CTextureFactory;
-
 /**
  * @brief Абстракция текстуры
  */

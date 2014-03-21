@@ -29,7 +29,7 @@
 namespace core {
 
 
-CBasicGUILayer::CBasicGUILayer() : AbstractLayer(), shader(nullptr)
+CBasicGUILayer::CBasicGUILayer() : AbstractLayer()
 {
 }
 
@@ -68,27 +68,18 @@ bool CBasicGUILayer::updateGL(CEventMouseClick *e)
 void CBasicGUILayer::paintGL()
 {
     glDisable(GL_DEPTH_TEST);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (!shader) {
-        shader = CShaderFactory::getInstance()->getShader("gui");
-    } else {
-        shader->bind();
-        CBasic2dEntity *root = CGUIManager::getInstance()->getRootObject();
-        if (root)
-            root->paint();
-        shader->disable();
-    }
+    CBasic2dEntity *root = CGUIManager::getInstance()->getRootObject();
+    if (root)
+        root->paint();
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
 }
 
-void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(AbstractEntity *))
+void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(CBasic2dEntity *))
 {
     std::vector<CBasic2dEntity*> tmp = CBasic2dEntity::objects4Event;
     while (true) {

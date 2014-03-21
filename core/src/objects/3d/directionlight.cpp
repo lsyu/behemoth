@@ -21,7 +21,7 @@
 
 namespace core {
 
-CDirectionLight::CDirectionLight() : CBasicLight(), position(0.0f, 0.0f, 1.0f), direction(0.0f, 0.0f, -1.0f)
+CDirectionLight::CDirectionLight() : CPointLight(), mDirection(0.0f, 0.0f, -1.0f)
 {
 }
 
@@ -29,24 +29,9 @@ CDirectionLight::~CDirectionLight()
 {
 }
 
-void CDirectionLight::setPosition(const glm::vec3 &position)
-{
-    this->position = position;
-}
-
-void CDirectionLight::setPosition(float x, float y, float z)
-{
-    setPosition(glm::vec3(x, y, z));
-}
-
-glm::vec3 CDirectionLight::getPosition() const
-{
-    return position;
-}
-
 void CDirectionLight::setDirection(const glm::vec3 &direction)
 {
-    this->direction = direction;
+    this->mDirection = direction;
 }
 
 void CDirectionLight::setDirection(float x, float y, float z)
@@ -56,7 +41,7 @@ void CDirectionLight::setDirection(float x, float y, float z)
 
 glm::vec3 CDirectionLight::getDirection() const
 {
-    return direction;
+    return mDirection;
 }
 
 } // namespace core

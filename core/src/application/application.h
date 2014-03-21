@@ -58,7 +58,6 @@ namespace core {
 
 class AbstractEvent;
 class AbstractLayer;
-class __CApplicationImplDel;
 
 /**
  * @brief Глубина цвета.
@@ -82,7 +81,6 @@ class CApplication
 {
 public:
     friend class AbstractLayer;
-    friend class __CApplicationImplDel;
 
     /**
      * @brief Получить экземпляр приложения.
@@ -136,6 +134,11 @@ public:
      * @brief Установить слой GUI.
      */
     void setGUILayer(AbstractLayer *guiLayer);
+
+    /**
+     * @brief Установить слой 3D сцены.
+     */
+    void setScene3DLayer(AbstractLayer *scene3D);
 
     /**
      * @brief Установить заголовок окна.
@@ -239,8 +242,11 @@ private:
     glm::ivec2 displaySize;     /**< Размеры экрана. */
     EColorDepth depth;          /**< Глубина цвета. */
     AbstractLayer *guiLayer;    /**< Слой пользовательского интерфейса. */
+    AbstractLayer *sceneLayer;  /**< Слой трехмерной сцены. */
     int windowId;               /**< Идентификатор окна. */
     float secOfLastFrame;       /**< Время визуализации последнего кадра. */
+
+    friend class __CApplicationImplDel;
 }; // class Application
 
 } // namespace Core

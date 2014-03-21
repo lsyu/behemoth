@@ -26,7 +26,7 @@ namespace core {
 
 class CShader;
 class CGUIManager;
-class AbstractEntity;
+class CBasic2dEntity;
 
 /**
  * @brief Базовый класс слоя пользовательского интерфейса.
@@ -51,8 +51,7 @@ private:
     /**
      * @brief Выполнить действие action
      */
-    void executeAction(bool(CGUIManager::*action)(AbstractEntity *));
-    CShader *shader;
+    void executeAction(bool(CGUIManager::*action)(CBasic2dEntity *));
 }; // class CBasicGUILayer
 
 } // namespace core

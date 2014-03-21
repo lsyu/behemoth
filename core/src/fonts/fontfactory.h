@@ -33,15 +33,12 @@
 
 namespace core {
 
-class __CFontFactoryImplDel;
-
 /**
  * @brief Фабрика получения шрифтов.
  */
 class CFontFactory
 {
 public:
-    friend class __CFontFactoryImplDel;
     /**
      * @brief Получить экземпляр фабрики шрифтов.
      */
@@ -89,6 +86,8 @@ private:
 
     FT_Library library;
     FT_Face face;
+
+    friend class __CFontFactoryImplDel;
 }; // class CFontFactory
 
 } // namespace core

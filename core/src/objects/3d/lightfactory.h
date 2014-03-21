@@ -28,14 +28,13 @@
 
 namespace core {
 
-class __CLightFactoryImplDel;
-
 /**
  * @brief Тип источника освещения
  */
 enum class ELightType: unsigned char {
     point,      /**< Точечный.  */
-    direction  /**< Направленный. */
+    direction,  /**< Направленный. */
+    all         /**< Любой. */
 }; // enum EMouseButton
 
 /**
@@ -44,8 +43,6 @@ enum class ELightType: unsigned char {
 class CLightFactory
 {
 public:
-    friend class __CLightFactoryImplDel;
-
     /**
      * @brief Получить экземпляр фабрики источников освещения.
      * @return экземпляр фабрики источников освещения.
@@ -53,25 +50,28 @@ public:
     static CLightFactory* getInstance();
 
     /**
-     * @brief Получить точечный источник освещения по имени.
+     * @brief Получить источник освещения по имени.
      * @param name имя источника освещения.
+     * @param тип источника освещения.
      * @return источник освещения с заданным именем.
-     * @note в случае невозможности создать источник освещения с заданными параметрами возвращает nullptr.
+     * @note Перед получением источник освещения его нужно создать при помощи @a makeLight.
+     * @note в случае невозможности получить источник освещения с заданными параметрами возвращает nullptr.
      */
-    CPointLight *getPointLight(const std::string &name) const;
+    AbstractLight *getLight(const std::string &name, ELightType type) const;
 
     /**
-     * @brief Получить направленный источник освещения по имени.
-     * @param name имя источника освещения.
-     * @return источник освещения с заданным именем.
-     * @note в случае невозможности создать источник освещения с заданными параметрами возвращает nullptr.
+     * @brief Получить ближайший к заданной точке источник освещения.
+     * @param точка, по отношению к которой ищется источник освещения.
+     * @note в случае невозможности получить источник освещения с заданными параметрами возвращает nullptr.
      */
-    CDirectionLight *getDirectionLight(const std::string &name) const;
+    AbstractLight *getNearestLight(const glm::vec3 &point) const;
 
     /**
      * @brief Создать источник освещения.
-     * @param name имя камеры.
-     * @param type тип камеры.
+     * @param name имя источника освещения.
+     * @param type тип источника освещения.
+     * @note Если источник с заданным именем и типом уже существет, источник освещения не будет создан!
+     * @note Если тип источника освещения равен ELightType::all, , источник освещения не будет создан!
      */
     void makeLight(const std::string &name, ELightType type);
 
@@ -82,7 +82,9 @@ private:
     CLightFactory &operator=(const CLightFactory &);
 
     static CLightFactory *instance;
-    std::map<std::pair<std::string, ELightType>, AbstractLight*> lights;
+    std::map<std::pair<std::string, ELightType>, CPointLight*> mLights;
+
+    friend class __CLightFactoryImplDel;
 }; // class CLightFactory
 
 } // namespace core

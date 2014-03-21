@@ -30,8 +30,6 @@
  */
 namespace core {
 
-class CGUIManager;
-
 /**
  * @brief Абстрактная сущность объекта сцены.
  */
@@ -43,7 +41,6 @@ public:
     friend class CRectangle;
 
     AbstractEntity() {}
-    explicit AbstractEntity(const std::string &id) {}
     virtual ~AbstractEntity() {}
 
     /**
@@ -51,61 +48,9 @@ public:
      */
     virtual void paint() const = 0;
     /**
-     * @brief Установить цвет.
-     */
-    virtual void setColor(const glm::vec3 &color) = 0;
-
-    /**
-     * @brief Получить минимальную абсциссу ограничивающей поверхности.
-     */
-    virtual float getXMin() const = 0;
-    /**
-     * @brief Получить максимальную абсциссу ограничивающей поверхности.
-     */
-    virtual float getXMax() const = 0;
-    /**
-     * @brief Получить минимальную оординату ограничивающей поверхности.
-     */
-    virtual float getYMin() const = 0;
-    /**
-     * @brief Получить максимальную оординату ограничивающей поверхности.
-     */
-    virtual float getYMax() const = 0;
-
-    /**
      * @brief Вернуть идентификатор сущности.
      */
     virtual std::string getId() const = 0;
-
-    /**
-     * @brief Установить родителя.
-     */
-    virtual void setParent(AbstractEntity *parent) = 0;
-
-    /**
-     * @brief Получить родителя сущности.
-     */
-    virtual AbstractEntity* getParent() const = 0;
-    /**
-     * @brief isRoot Является элемент корневым.
-     */
-    virtual bool isRoot() const = 0;
-
-    /**
-     * @brief Добавить ребенка сущности.
-     */
-    virtual void addChild(AbstractEntity *child) = 0;
-
-    /**
-     * @brief getChild Получить ребенка сущности по его имени.
-     * @note В случае, если ребенка с именем id не найдено, вернется nullptr.
-     */
-    virtual AbstractEntity* getChild(const std::string &id) = 0;
-    /**
-     * @brief getChilds Получить вектор детей сущности.
-     */
-    virtual std::vector<AbstractEntity*>& getChilds() = 0;
-
 
 protected:
 
