@@ -27,7 +27,6 @@
 
 namespace core {
 
-class CShader;
 class CRectangleSymbol;
 
 /**
@@ -91,7 +90,6 @@ private:
     CFont font;
     std::vector< std::vector<CRectangleSymbol*> > lines;
     std::multiset<CRectangleSymbol*> symbols;
-    CShader *shader; // Получаю с фабрики, не надо чистить память
     float fontHeight;
     std::string text;
     float x;

@@ -67,7 +67,7 @@ void CRectangleSymbol::configure()
     vPos2[2] = glm::vec2(x + width, y + height);
     vPos2[3] = glm::vec2(x, y + height);
 
-    CShader *shader = CShaderFactory::getInstance()->getShader("gui");
+    CShader *shader = CShaderFactory::getInstance()->getShader("text");
     if (shader) {
         vao.genBuffer();
         vao.bind();
@@ -75,10 +75,6 @@ void CRectangleSymbol::configure()
         vertex.genBuffer();
         vertex.setData(&vPos2);
         shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
-
-        color.genBuffer();
-        color.setData(&vColor);
-        shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
 
         uv.genBuffer();
         uv.setData(&vUV);
