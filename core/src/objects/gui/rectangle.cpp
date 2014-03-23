@@ -142,16 +142,16 @@ void CRectangle::configure()
 
         vertex.genBuffer();
         vertex.setData(&vPos2);
-        shader->setAttribute("position", 2, 0, (const void*)0, GL_FLOAT);
+        shader->setAttribute("position", 2, 0, 0);
 
         color.genBuffer();
         color.setData(&vColor);
-        shader->setAttribute("color", 3, 0, (const void*)0, GL_FLOAT);
+        shader->setAttribute("color",3, 0, 0);
 
         if (texture.getId()) {
             uv.genBuffer();
             uv.setData(&vUV);
-            shader->setAttribute("UV", 2, 0, (const void*)0, GL_FLOAT);
+            shader->setAttribute("UV", 2, 0, 0);
         }
 
         vao.disable();

@@ -49,10 +49,11 @@ public:
     virtual void rotatePositionUpBottom(float angle) override;
     virtual void translate(const glm::vec3 &shift) override;
     virtual void translate(float x, float y, float z) override;
-    virtual glm::vec3 getDirection() const override;
-    virtual glm::mat4 getViewMatrix() const override;
-    virtual glm::mat4 getProjectionMatrix() const override;
-    virtual glm::mat4 getViewProjectionMatrix() const override;
+    virtual glm::vec3 getDirection() const override final;
+    virtual glm::mat4 getViewMatrix() const override final;
+    virtual glm::mat4 getProjectionMatrix() const override final;
+    virtual glm::mat4 getViewProjectionMatrix() const override final;
+    virtual glm::mat3 getNormalMatrix(const glm::mat4 &model) const override final;
 
 protected:
     glm::vec3 eye;              /**< Положение камеры. */

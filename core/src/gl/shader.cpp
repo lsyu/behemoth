@@ -55,42 +55,18 @@ uint CShader::makeAttributeLocation(const std::string &nameOfParam)
     return static_cast<uint>(location);
 }
 
-void CShader::setAttribute(const std::string &nameOfParam, int numOfComponents, int stride,
-        const void *ptr, uint type, bool normalized)
+unsigned int CShader::setAttribute(const std::string &nameOfParam, int numberOfElement, size_t offsetFromBeginToElements, size_t sizeOfStruct)
 {
     uint location = makeAttributeLocation(nameOfParam);
-
+    glVertexAttribPointer(location, numberOfElement, GL_FLOAT, GL_FALSE, sizeOfStruct, reinterpret_cast<void*>(offsetFromBeginToElements));
     glEnableVertexAttribArray(location);
-    glVertexAttribPointer(location, numOfComponents, type, normalized ? GL_TRUE : GL_FALSE,
-            stride, ptr);
+    return location;
 }
 
-void CShader::setAttribute(const std::string &nameOfParam, float value)
+void CShader::setAttribute(unsigned int location, int numberOfElement, size_t offsetFromBeginToElements, size_t sizeOfStruct)
 {
-    uint location = makeAttributeLocation(nameOfParam);
-
-    glVertexAttrib1f(location, value);
-}
-
-void CShader::setAttribute(const std::string &nameOfParam, const glm::vec2 &vec)
-{
-    uint location = makeAttributeLocation(nameOfParam);
-
-    glVertexAttrib2fv(location, &vec[0]);
-}
-
-void CShader::setAttribute(const std::string &nameOfParam, const glm::vec3 &vec)
-{
-    uint location = makeAttributeLocation(nameOfParam);
-
-    glVertexAttrib3fv(location, &vec[0]);
-}
-
-void CShader::setAttribute(const std::string &nameOfParam, const glm::vec4 &vec)
-{
-    uint location = makeAttributeLocation(nameOfParam);
-
-    glVertexAttrib4fv(location, &vec[0]);
+    glVertexAttribPointer(location, numberOfElement, GL_FLOAT, GL_FALSE, sizeOfStruct, reinterpret_cast<void*>(offsetFromBeginToElements));
+    glEnableVertexAttribArray(location);
 }
 
 int CShader::makeUniformLocation(const std::string &nameOfParam)
@@ -140,13 +116,13 @@ void CShader::setUniform(const std::string &nameOfParam, const glm::vec4 &vec)
 void CShader::setUniform(const std::string &nameOfParam, const glm::mat2 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
-    glUniform2fv(location, 2, &vec[0][0]);
+    glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(vec));
 }
 
 void CShader::setUniform(const std::string &nameOfParam, const glm::mat3 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
-    glUniform3fv(location, 3, &vec[0][0]);
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(vec));
 }
 
 void CShader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)

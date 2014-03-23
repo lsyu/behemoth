@@ -35,10 +35,13 @@ class CBasic3dEntity : public AbstractEntity
     friend class CEntityFactory;
     friend class CBasicScene3dLayer; //! TODO: УБРАТЬ!!!
 public:
-    typedef std::vector<glm::vec3> CCoords;
+    struct CVertex {
+        glm::vec3 vertex;
+        glm::vec3 normal;
+        glm::vec2 uv;
+    }; // struct CVertex
+    typedef std::vector<CVertex> CVertices;
     typedef std::vector< std::array<unsigned short int, 3> > CIndexes;
-    typedef std::vector<glm::vec3> CNormals;
-    typedef std::vector<glm::vec2> CUVCoords;
     typedef std::vector<CBasic3dEntity*> CChilds3D;
 
     // AbstractEntity interface
@@ -61,14 +64,12 @@ protected:
     explicit CBasic3dEntity(const std::string &id);
     virtual ~CBasic3dEntity();
 
-    std::string mId;            /**< идентификатор */
-    CChilds3D mChilds;          /**< список детей */
+    std::string mId;            /**< Идентификатор */
+    CChilds3D mChilds;          /**< Список детей */
     CBasic3dEntity *mParent;    /**< Родитель сущности. */
 
-    CCoords mVertixes;  /**< список координат вершин */
-    CUVCoords mUVs;     /**< список текстурных координат */
-    CIndexes mIndexes;  /**< список индексов полигонов */
-    CNormals mNormals;  /**< список нормалей полигонов */
+    CVertices mVertices;/**< список атрибутов вершины */
+    CIndexes mIndexes;  /**< список индексов вершин */
 
     CVertexArrayObject mVAO;
     CVertexBufferObject mVertexVBO;

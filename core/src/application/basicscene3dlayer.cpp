@@ -24,6 +24,7 @@
 
 #include "core/objects/3d/entityfactory.h"
 #include "core/objects/3d/camerafactory.h"
+#include "core/objects/3d/lightfactory.h"
 
 namespace core {
 
@@ -41,6 +42,10 @@ void CBasicScene3dLayer::prepareGL()
     AbstractCamera *cam = CCameraFactory::getInstance()->getCamera("test");
     cam->lookAt(glm::vec3(7, 7, 5), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
     CCameraFactory::getInstance()->setActiveCamera(cam);
+
+    CLightFactory::getInstance()->makeLight("test", ELightType::point);
+    CPointLight *light = CLightFactory::getInstance()->getLight("test", ELightType::point);
+    light->setPosition(7, 7, 5);
 }
 
 bool CBasicScene3dLayer::updateGL()

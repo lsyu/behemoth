@@ -147,6 +147,7 @@ public:
     virtual glm::mat4 getViewMatrix() const = 0;
     virtual glm::mat4 getProjectionMatrix() const = 0;
     virtual glm::mat4 getViewProjectionMatrix() const = 0;
+    virtual glm::mat3 getNormalMatrix(const glm::mat4 &model) const = 0;
 
 protected:
     virtual ~AbstractCamera() {}

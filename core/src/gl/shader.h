@@ -40,43 +40,33 @@ public:
      * @brief Очистка ресурсов
      */
     ~CShader();
-
     /**
-     * @brief Установить атрибут в шейдер.
+     * @brief Установить attribute.
+     *
+     * Например,имеем структуру
+     * @code
+     * struct CVertex {
+     *     glm::vec3 vertex; // 3 of float
+     *     glm::vec3 normal; // 3 of float
+     *     glm::vec2 uv;     // 2 of float
+     * }; // struct CVertex
+     * @endcode
+     * Чтобы установить attribute-переменные, необходимо выполнить:
+     * @code
+     * shader->setAttribute("vertex", 3, 0,  sizeof(CVertex)); // begin of struct
+     * shader->setAttribute("normal", 3, 12, sizeof(CVertex)); // sizeof(glm::vec3)
+     * shader->setAttribute("uv",     2, 24, sizeof(CVertex)); // sizeof(glm::vec3) + sizeof(glm::vec3)
+     * @endcode
+     *
+     * @todo Тип элемента.
      * @param nameOfParam название параметра в шейдере.
-     * @param numOfComponent количество компонентов в данных.
-     * @param stride "разрыв" до следующих данных.
-     * @param ptr смещение до первого элемента.
-     * @param type тип данных.
-     * @param normalized нужно ли норализовать данные.
+     * @param numberOfElement количество элементов заданного типа.
+     * @param offsetFromBeginToElements смещение от начала структуры до элементов заданного типа.
+     * @param sizeOfStruct размер всей структуры.
+     * @return индекс размещения в шейдере.
      */
-    void setAttribute(const std::string &nameOfParam, int numOfComponents, int stride, const void *ptr,
-                      uint type, bool normalized = false);
-
-    /**
-     * @brief Установить значение attribute.
-     * @param nameOfParam название в шейдере.
-     * @param value значение.
-     */
-    void setAttribute(const std::string &nameOfParam, float value);
-    /**
-     * @brief Установить вектор attribute.
-     * @param nameOfParam название параметра в шейдере.
-     * @param vec вектор.
-     */
-    void setAttribute(const std::string &nameOfParam, const glm::vec2 &vec);
-    /**
-     * @brief Установить вектор attribute.
-     * @param nameOfParam название параметра в шейдере.
-     * @param vec вектор.
-     */
-    void setAttribute(const std::string &nameOfParam, const glm::vec3 &vec);
-    /**
-     * @brief Установить вектор attribute.
-     * @param nameOfParam название параметра в шейдере.
-     * @param vec вектор.
-     */
-    void setAttribute(const std::string &nameOfParam, const glm::vec4 &vec);
+    unsigned int setAttribute(const std::string &nameOfParam, int numberOfElement, size_t offsetFromBeginToElements, size_t sizeOfStruct);
+    void setAttribute(unsigned int location, int numberOfElement, size_t offsetFromBeginToElements, size_t sizeOfStruct);
 
     /**
      * @brief Установить значение uniform.

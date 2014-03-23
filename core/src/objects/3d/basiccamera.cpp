@@ -185,4 +185,11 @@ glm::mat4 CBasicCamera::getViewProjectionMatrix() const
     return viewMatrix * projectionMatrix;
 }
 
+glm::mat3 CBasicCamera::getNormalMatrix(const glm::mat4 &model) const
+{
+    glm::mat4 modelViewMatrix = viewMatrix * model;
+    return glm::inverseTranspose(glm::mat3(modelViewMatrix));
+
+}
+
 } // namespace core

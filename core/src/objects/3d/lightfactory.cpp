@@ -34,14 +34,14 @@ private:
 
 CLightFactory *CLightFactory::getInstance()
 {
-    if (instance) {
+    if (!instance) {
         instance = new CLightFactory;
         static __CLightFactoryImplDel impDel(instance);
     }
     return instance;
 }
 
-AbstractLight *CLightFactory::getLight(const std::string &name, ELightType type) const
+CPointLight *CLightFactory::getLight(const std::string &name, ELightType type) const
 {
     if (type == ELightType::all) {
         std::map<std::pair<std::string, ELightType>, CPointLight*>::const_iterator it
@@ -64,10 +64,10 @@ AbstractLight *CLightFactory::getLight(const std::string &name, ELightType type)
     return nullptr;
 }
 
-AbstractLight *CLightFactory::getNearestLight(const glm::vec3 &point) const
+CPointLight *CLightFactory::getNearestLight(const glm::vec3 &point) const
 {
     float distance = std::numeric_limits<float>::max();
-    AbstractLight *ret = nullptr;
+    CPointLight *ret = nullptr;
     for (auto it = mLights.cbegin(), end = mLights.cend(); it != end; ++it) {
         float distanceTest = glm::distance(point, it->second->getPosition());
         if (distanceTest < distance) {

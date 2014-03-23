@@ -57,14 +57,14 @@ public:
      * @note Перед получением источник освещения его нужно создать при помощи @a makeLight.
      * @note в случае невозможности получить источник освещения с заданными параметрами возвращает nullptr.
      */
-    AbstractLight *getLight(const std::string &name, ELightType type) const;
+    CPointLight *getLight(const std::string &name, ELightType type = ELightType::all) const;
 
     /**
      * @brief Получить ближайший к заданной точке источник освещения.
      * @param точка, по отношению к которой ищется источник освещения.
      * @note в случае невозможности получить источник освещения с заданными параметрами возвращает nullptr.
      */
-    AbstractLight *getNearestLight(const glm::vec3 &point) const;
+    CPointLight *getNearestLight(const glm::vec3 &point) const;
 
     /**
      * @brief Создать источник освещения.

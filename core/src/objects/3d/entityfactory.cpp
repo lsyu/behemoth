@@ -62,21 +62,19 @@ CBasic3dEntity *CEntityFactory::loadEntity(const std::string &fileName)
         int32_t polygons;
     } meshHeader;
     struct CPolygon {
-        glm::vec3 normal;
-        int32_t indOfVert[3];
+        unsigned short indOfVert[4]; // 4th - always 0
     };
     file.read(reinterpret_cast<char*>(&meshHeader), sizeof(CHeader));
-    std::vector<glm::vec3> vertices(meshHeader.vertices);
+    CBasic3dEntity::CVertices vertices(meshHeader.vertices);
     std::vector<CPolygon> polygons(meshHeader.polygons);
-    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(glm::vec3) * vertices.size());
+    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(CBasic3dEntity::CVertex) * vertices.size());
     file.read(reinterpret_cast<char*>(polygons.data()), sizeof(CPolygon) * polygons.size());
     file.close();
 
     CBasic3dEntity *entity = new CBasic3dEntity(fileName);
-    entity->mVertixes = vertices;
+    entity->mVertices = vertices;
     for(CPolygon item : polygons) {
         entity->mIndexes.push_back({item.indOfVert[0], item.indOfVert[1], item.indOfVert[2]});
-        entity->mNormals.push_back(item.normal);
     }
 
     mEntities[fileName] = entity;

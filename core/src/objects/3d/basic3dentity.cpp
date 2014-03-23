@@ -21,7 +21,10 @@
 
 #include <algorithm>
 
+#include "glm/ext.h"
+
 #include "core/objects/3d/camerafactory.h"
+#include "core/objects/3d/lightfactory.h"
 
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
@@ -29,7 +32,7 @@
 namespace core {
 
 CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), mId(id), mChilds(), mParent(nullptr),
-    mVertixes(), mUVs(), mIndexes(), mNormals(), mVAO(), mVertexVBO(), mIndexVBO(EArrayType::Index)
+    mVertices(), mIndexes(), mVAO(), mVertexVBO(), mIndexVBO(EArrayType::Index)
 {
 }
 
@@ -41,16 +44,22 @@ CBasic3dEntity::~CBasic3dEntity()
 
 void CBasic3dEntity::configure()
 {
-    mVAO.genBuffer();
-    mVAO.bind();
+    CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
+    if (shader) {
+        mVAO.genBuffer();
+        mVAO.bind();
 
-    mVertexVBO.genBuffer();
-    mVertexVBO.setData(&mVertixes);
+        mVertexVBO.genBuffer();
+        mVertexVBO.setData(&mVertices);
+        mIndexVBO.genBuffer();
+        mIndexVBO.setData(&mIndexes);
 
-    mIndexVBO.genBuffer();
-    mIndexVBO.setData(&mIndexes);
+        shader->setAttribute("vertex", 3, 0, sizeof(CVertex));
+        shader->setAttribute("normal", 3, 12, sizeof(CVertex));
+        shader->setAttribute("uv", 2, 24, sizeof(CVertex));
 
-    mVAO.disable();
+        mVAO.disable();
+    }
 
     for (CBasic3dEntity *obj: mChilds)
         obj->configure();
@@ -59,20 +68,22 @@ void CBasic3dEntity::configure()
 void CBasic3dEntity::paint() const
 {
     static AbstractCamera *cam = CCameraFactory::getInstance()->getActiveCamera();
+    static CPointLight *light = CLightFactory::getInstance()->getLight("test");
+    cam->rotatePosition(1, 0, 0, 1);
     if (cam) {
-        CShader *shader = CShaderFactory::getInstance()->getShader("test"); //! TODO: Вынести в CMaterial
+        CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
         static glm::mat4 model; //! TODO: Вынести в CSceneNode
 
         if (shader) {
             shader->setUniform("modelview_matrix", model * cam->getViewMatrix());
             shader->setUniform("projection_matrix", cam->getProjectionMatrix());
+            shader->setUniform("normal_matrix", cam->getNormalMatrix(model));
+            shader->setUniform("light_position", light->getPosition());
+            shader->setUniform("eye_position", cam->getEye());
 
             // Индексы - unsigned short int по 3 на полигон
             mVAO.bind();
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 0, (void*)0);
             glDrawElements(GL_TRIANGLES, mIndexes.size() * 3, GL_UNSIGNED_SHORT, static_cast<void*>(0));
-            glDisableVertexAttribArray(0);
             mVAO.disable();
         }
 
