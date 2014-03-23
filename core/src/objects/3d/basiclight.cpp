@@ -21,8 +21,8 @@
 
 namespace behemoth {
 
-CBasicLight::CBasicLight() : AbstractLight(), mAmbient(0.0f, 0.0f, 0.0f),
-    mDiffuse(1.0f, 1.0f, 1.0f), mSpecular(1.0f, 1.0f, 1.0f)
+CBasicLight::CBasicLight() : AbstractLight(), m_ambient(0.0f, 0.0f, 0.0f),
+    m_diffuse(1.0f, 1.0f, 1.0f), m_specular(1.0f, 1.0f, 1.0f)
 {
 }
 
@@ -32,7 +32,7 @@ CBasicLight::~CBasicLight()
 
 void CBasicLight::setAmbient(const glm::vec3 &ambient)
 {
-    this->mAmbient = ambient;
+    this->m_ambient = ambient;
 }
 
 void CBasicLight::setAmbient(float r, float g, float b)
@@ -42,13 +42,13 @@ void CBasicLight::setAmbient(float r, float g, float b)
 
 glm::vec3 CBasicLight::getAmbient() const
 {
-    return mAmbient;
+    return m_ambient;
 }
 
 void CBasicLight::setDiffuse(const glm::vec3 &diffuse)
 {
 
-    this->mDiffuse = diffuse;
+    this->m_diffuse = diffuse;
 }
 
 void CBasicLight::setDiffuse(float r, float g, float b)
@@ -58,12 +58,12 @@ void CBasicLight::setDiffuse(float r, float g, float b)
 
 glm::vec3 CBasicLight::getDiffuse() const
 {
-    return mDiffuse;
+    return m_diffuse;
 }
 
 void CBasicLight::setSpecular(const glm::vec3 &specular)
 {
-    this->mSpecular = specular;
+    this->m_specular = specular;
 }
 
 void CBasicLight::setSpecular(float r, float g, float b)
@@ -73,7 +73,7 @@ void CBasicLight::setSpecular(float r, float g, float b)
 
 glm::vec3 CBasicLight::getSpecular() const
 {
-    return mSpecular;
+    return m_specular;
 }
 
 } // namespace behemoth

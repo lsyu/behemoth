@@ -26,24 +26,6 @@
 namespace behemoth {
 
 /**
- * @brief Перечисления выравнивания по вертикали
- */
-enum class EVerticalAlign : unsigned char {
-    Top = 0,    /**< По верхнему краю */
-    Center = 1, /**< По центру */
-    Bottom = 2  /**< По нижнему краю */
-}; // enum EVerticalAlign
-
-/**
- * @brief Перечисления выравнивания по горизонтали
- */
-enum class EHorizontalAlign : unsigned char {
-    Left = 0,   /**< По левому краю */
-    Center = 1, /**< По центру */
-    Right = 2   /**< По правому краю */
-}; // enum EVerticalAlign
-
-/**
  * @brief Шрифт
  *
  * Содержит название шрифта(в каталоге, указанном в файле конфигурации), высоту шрифта,
@@ -64,29 +46,21 @@ public:
     void setHeight(float height);
     float getHeight() const;
 
-    static void setQuantity(int _quantity);
+    static void setQuantity(int quantity);
     static int getQuantity();
-
-    void setVericalAlign(EVerticalAlign vAlign);
-    EVerticalAlign getVerticalAlign() const;
-
-    void setHorizontalAlign(EHorizontalAlign hAlign);
-    EHorizontalAlign getHorizontalAlign() const;
 
     void setColor(const glm::vec3 &color); // TODO: enum of color!
     glm::vec3 getColor() const;
 
 private:
-    static int quantity;        /**< Качество шрифта. @n
-                                  * Настоящая высота шрифта при загрузке(в пикселях).
-                                  */
-    std::string name;           /**< Название шрифта. */
-    float height;               /**< Высота шрифта. @n
-                                  * Отображаемая высота (оттносительная)
-                                  */
-    EVerticalAlign vAlign;      /**< Выравнивание по вертикали */
-    EHorizontalAlign hAlign;    /**< Выравнивание по горизонтали */
-    glm::vec3 color;            /**< Цвет шрифта */
+    static int m_quantity;        /**< Качество шрифта. @n
+                                    * Настоящая высота шрифта при загрузке(в пикселях).
+                                    */
+    std::string m_name;           /**< Название шрифта. */
+    float m_height;               /**< Высота шрифта. @n
+                                    * Отображаемая высота (относительная)
+                                    */
+    glm::vec3 m_color;            /**< Цвет шрифта */
 }; // class CFont
 
 } // namespace behemoth

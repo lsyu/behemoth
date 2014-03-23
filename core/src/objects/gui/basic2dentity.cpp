@@ -23,14 +23,15 @@
 
 namespace behemoth {
 
-std::vector<CBasic2dEntity*> CBasic2dEntity::objects4Event;
+std::vector<CBasic2dEntity*> CBasic2dEntity::m_objects4Event;
 
-CBasic2dEntity::CBasic2dEntity() : id(), vPos2(), vUV(), vColor(), vChilds(), parent(nullptr)
+CBasic2dEntity::CBasic2dEntity() : m_id(), m_childs(), m_parent(nullptr), m_vertices(), vPos2(), vUV(), vColor()
 {
 }
 
-CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(), id(id), vPos2(), vUV(),
-    vColor(), vChilds(), parent(nullptr)
+CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(),
+    m_parent(nullptr), m_vertices(),
+    vPos2(), vUV(), vColor()
 {
 }
 
@@ -38,54 +39,62 @@ CBasic2dEntity::~CBasic2dEntity()
 {
 }
 
+void CBasic2dEntity::paint() const
+{
+}
+
 std::string CBasic2dEntity::getId() const
 {
-    return id;
+    return m_id;
+}
+
+void CBasic2dEntity::configure()
+{
 }
 
 void CBasic2dEntity::setId(const std::string &id)
 {
-    this->id = id;
+    this->m_id = id;
 }
 
 void CBasic2dEntity::setParent(CBasic2dEntity *parent)
 {
-    this->parent = parent;
-    if (!parent->getChild(this->id))
+    this->m_parent = parent;
+    if (!parent->getChild(this->m_id))
         parent->addChild(this);
 }
 
 CBasic2dEntity *CBasic2dEntity::getParent() const
 {
-    return parent;
+    return m_parent;
 }
 
 bool CBasic2dEntity::isRoot() const
 {
-    return parent == nullptr;
+    return m_parent == nullptr;
 }
 
 void CBasic2dEntity::addChild(CBasic2dEntity *child)
 {
-    vChilds.push_back(child);
+    m_childs.push_back(child);
     child->setParent(this);
 }
 
 CBasic2dEntity *CBasic2dEntity::getChild(const std::string &id)
 {
-    std::vector<CBasic2dEntity *>::const_iterator it = std::find_if(vChilds.begin(), vChilds.end(),
+    std::vector<CBasic2dEntity *>::const_iterator it = std::find_if(m_childs.begin(), m_childs.end(),
     [&id](CBasic2dEntity *child) -> bool
     {
         return child->getId() == id;
     });
-    if (it != vChilds.end())
+    if (it != m_childs.end())
         return (CBasic2dEntity *)(&(*it));
     return nullptr;
 }
 
 std::vector<CBasic2dEntity *> &CBasic2dEntity::getChilds()
 {
-    return vChilds;
+    return m_childs;
 }
 
 } // namespace behemoth

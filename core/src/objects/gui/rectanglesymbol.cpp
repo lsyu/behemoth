@@ -27,8 +27,8 @@
 namespace behemoth {
 
 CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, float parentHeight,
-    float fontHeight, CRectangleText *parent) :CRectangle(), font(font), symbol(symbol),
-    parentWidth(parentWidth), parentHeight(parentHeight), fontHeight(fontHeight), lineNumber(0)
+    float fontHeight, CRectangleText *parent) :CRectangle(), m_font(font), m_symbol(symbol),
+    m_parentWidth(parentWidth), parentHeight(parentHeight), m_fontHeight(fontHeight), m_lineNumber(0)
 {
     parent->addChild(this);
     texture = CTextureFactory::getInstance()->getSymbol(symbol, *font);
@@ -57,7 +57,7 @@ void CRectangleSymbol::onClicked(const CEventMouseClick &event)
 
 bool CRectangleSymbol::operator >(CRectangleSymbol *other) const
 {
-    return this->symbol > other->symbol;
+    return this->m_symbol > other->m_symbol;
 }
 
 void CRectangleSymbol::configure()
@@ -86,22 +86,22 @@ void CRectangleSymbol::configure()
 
 void CRectangleSymbol::prepare()
 {
-    std::vector<CBasic2dEntity*> &e = this->parent->getChilds();
+    std::vector<CBasic2dEntity*> &e = this->m_parent->getChilds();
     bool first = !(e.size()-1);
-    CBasic2dEntity *parent = first ? this->parent : e[e.size()-2];
+    CBasic2dEntity *parent = first ? this->m_parent : e[e.size()-2];
     x = first ? parent->getXMin() : parent->getXMax();
     y = first? parent->getYMax() - height : parent->getYMin();
 
     std::vector< std::vector<CRectangleSymbol*> > *vec
-            = &dynamic_cast<CRectangleText*>(this->parent)->lines;
-    if (x >= this->parent->getXMax() || x + width >= this->parent->getXMax() || symbol == '\n') {
-        x = this->parent->getXMin();
+            = &dynamic_cast<CRectangleText*>(this->m_parent)->m_lines;
+    if (x >= this->m_parent->getXMax() || x + width >= this->m_parent->getXMax() || m_symbol == '\n') {
+        x = this->m_parent->getXMin();
         y = parent->getYMin() - height;
         if (vec->back().size())
             vec->push_back(std::vector<CRectangleSymbol*>());
     }
     vec->back().push_back(this);
-    lineNumber = vec->size()-1;
+    m_lineNumber = vec->size()-1;
 }
 
 void CRectangleSymbol::translate(const glm::vec2 &translate)

@@ -255,16 +255,16 @@ private:
 
     static CApplication *instance;
 
-    std::string title;          /**< Заголовок окна. */
-    bool fullScreen;            /**< Полный ли экран. */
-    glm::ivec2 position;        /**< положение верхнего левого угла окна. */
-    glm::ivec2 size;            /**< Размеры окна(Высота, ширина). */
-    glm::ivec2 displaySize;     /**< Размеры экрана. */
-    EColorDepth depth;          /**< Глубина цвета. */
-    AbstractLayer *guiLayer;    /**< Слой пользовательского интерфейса. */
-    AbstractLayer *sceneLayer;  /**< Слой трехмерной сцены. */
-    int windowId;               /**< Идентификатор окна. */
-    float secOfLastFrame;       /**< Время визуализации последнего кадра. */
+    std::string m_title;          /**< Заголовок окна. */
+    bool m_isFullScreen;          /**< Отображать ли окно в полный экран. */
+    glm::ivec2 m_position;        /**< положение верхнего левого угла окна. */
+    glm::ivec2 m_size;            /**< Размеры окна(Высота, ширина). */
+    glm::ivec2 m_displaySize;     /**< Размеры экрана. */
+    EColorDepth m_depth;          /**< Глубина цвета. */
+    AbstractLayer *m_guiLayer;    /**< Слой пользовательского интерфейса. */
+    AbstractLayer *m_sceneLayer;  /**< Слой трехмерной сцены. */
+    int m_windowId;               /**< Идентификатор окна. */
+    float m_secOfLastFrame;       /**< Время визуализации последнего кадра. */
 
     friend class __CApplicationImplDel;
 }; // class Application

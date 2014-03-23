@@ -21,10 +21,9 @@
 
 namespace behemoth {
 
-int CFont::quantity = 50;
+int CFont::m_quantity = 50;
 
-CFont::CFont(const std::string &name, int height) : name(name), height(height),
-    vAlign(EVerticalAlign::Center), hAlign(EHorizontalAlign::Center), color(1, 0, 0)
+CFont::CFont(const std::string &name, int height) : m_name(name), m_height(height), m_color(1, 0, 0)
 {
 }
 
@@ -34,62 +33,42 @@ CFont::~CFont()
 
 void CFont::setName(const std::string &name)
 {
-    this->name = name;
+    this->m_name = name;
 }
 
 std::string CFont::getName() const
 {
-    return name;
+    return m_name;
 }
 
-void CFont::setQuantity(int _quantity)
+void CFont::setQuantity(int quantity)
 {
-    quantity = _quantity;
+    m_quantity = quantity;
 }
 
 int CFont::getQuantity()
 {
-    return quantity;
+    return m_quantity;
 }
 
 void CFont::setHeight(float height)
 {
-    this->height = height;
+    this->m_height = height;
 }
 
 float CFont::getHeight() const
 {
-    return height;
-}
-
-void CFont::setVericalAlign(EVerticalAlign vAlign)
-{
-    this->vAlign = vAlign;
-}
-
-EVerticalAlign CFont::getVerticalAlign() const
-{
-    return vAlign;
-}
-
-void CFont::setHorizontalAlign(EHorizontalAlign hAlign)
-{
-    this->hAlign = hAlign;
-}
-
-EHorizontalAlign CFont::getHorizontalAlign() const
-{
-    return hAlign;
+    return m_height;
 }
 
 void CFont::setColor(const glm::vec3 &color)
 {
-    this->color = color;
+    this->m_color = color;
 }
 
 glm::vec3 CFont::getColor() const
 {
-    return color;
+    return m_color;
 }
 
 } // namespace behemoth

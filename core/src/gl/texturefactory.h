@@ -26,7 +26,6 @@
 #include <vector>
 
 #include "texture.h"
-#include "core/objects/gui/textbuffer.h"
 
 #include "glm/glm.h"
 
@@ -94,8 +93,8 @@ private:
     CTexture createTexture2D(const std::string &filename);
     
     static CTextureFactory *instance;
-    std::map<std::string, CTexture> textures;
-    std::map<char, CTexture> symbols;
+    std::map<std::string, CTexture> m_textures; /**< Контейнер текстур, загруженных из файлов. */
+    std::map<char, CTexture> m_symbols;         /**< Контейнер текстур, сгенерированных для символов. */
 
     friend class __CTextureFactoryImplDel;
 }; // class TextureFactory

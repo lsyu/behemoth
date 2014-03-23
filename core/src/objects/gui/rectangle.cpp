@@ -105,11 +105,11 @@ CRectangle::~CRectangle()
 
 void CRectangle::configure()
 {
-    if (parent) {
-        float scWidth = (parent->getXMax() - parent->getXMin()) / 2.0f;
-        float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
-        float shiftX = (parent->getXMax() + parent->getXMin()) / 2.0f;
-        float shiftY = (parent->getYMax() + parent->getYMin()) / 2.0f;
+    if (m_parent) {
+        float scWidth = (m_parent->getXMax() - m_parent->getXMin()) / 2.0f;
+        float scHeight = (m_parent->getYMax() - m_parent->getYMin()) / 2.0f;
+        float shiftX = (m_parent->getXMax() + m_parent->getXMin()) / 2.0f;
+        float shiftY = (m_parent->getYMax() + m_parent->getYMin()) / 2.0f;
 
         x = x * scWidth + shiftX;
         y = y * scHeight + shiftY;
@@ -157,7 +157,7 @@ void CRectangle::configure()
         vao.disable();
     }
 
-    for (auto child: vChilds)
+    for (auto child: m_childs)
         child->configure();
 }
 
@@ -199,8 +199,8 @@ void CRectangle::paint() const
             glDisable(GL_TEXTURE_2D);
     }
 
-    for (int i = vChilds.size()-1; i >= 0; --i)
-        vChilds[i]->paint();
+    for (int i = m_childs.size()-1; i >= 0; --i)
+        m_childs[i]->paint();
 }
 
 void CRectangle::setColor(const glm::vec3 &color)
@@ -223,9 +223,9 @@ bool CRectangle::contains(const glm::vec2 &point) const
 void CRectangle::onClicked(const CEventMouseClick &event)
 {
     if (contains(event.getCoordinates()))
-        objects4Event.push_back(this);
-    for (int i = vChilds.size()-1; i >= 0; --i)
-        dynamic_cast<CBasic2dEntity*>(vChilds[i])->onClicked(event);
+        m_objects4Event.push_back(this);
+    for (int i = m_childs.size()-1; i >= 0; --i)
+        dynamic_cast<CBasic2dEntity*>(m_childs[i])->onClicked(event);
 }
 
 glm::vec3 CRectangle::getColor() const

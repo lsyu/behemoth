@@ -51,7 +51,7 @@ public:
     void disable() const;
 
 private:
-    unsigned int vao;
+    unsigned int m_vao; /**< идентификатор VAO. */
 }; // class VertexArrayObject
 
 } // namespace behemoth

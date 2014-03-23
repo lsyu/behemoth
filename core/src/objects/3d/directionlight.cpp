@@ -21,7 +21,7 @@
 
 namespace behemoth {
 
-CDirectionLight::CDirectionLight() : CPointLight(), mDirection(0.0f, 0.0f, -1.0f)
+CDirectionLight::CDirectionLight() : CPointLight(), m_direction(0.0f, 0.0f, -1.0f)
 {
 }
 
@@ -31,7 +31,7 @@ CDirectionLight::~CDirectionLight()
 
 void CDirectionLight::setDirection(const glm::vec3 &direction)
 {
-    this->mDirection = direction;
+    this->m_direction = direction;
 }
 
 void CDirectionLight::setDirection(float x, float y, float z)
@@ -41,7 +41,7 @@ void CDirectionLight::setDirection(float x, float y, float z)
 
 glm::vec3 CDirectionLight::getDirection() const
 {
-    return mDirection;
+    return m_direction;
 }
 
 } // namespace behemoth

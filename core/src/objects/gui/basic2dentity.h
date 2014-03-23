@@ -101,40 +101,50 @@ struct CGradient{
  */
 class CBasic2dEntity : public AbstractEntity
 {
-public:
-
     friend class CApplication;
+    friend class CGUIManager;
     friend class CBasicGUILayer;
+    friend class CRectangle;
+public:
+    struct CVertex2D {
+        glm::vec2 vertex;
+        glm::vec2 uv;
+        glm::vec3 color;
+    }; // struct CVertex3D
+    typedef std::vector<CVertex2D> CVertices2D;
+    typedef std::vector<CBasic2dEntity*> CChilds2D;
 
+    // ------------------------------------------------------
+    /**
+     * @todo Конструирование/разрушение объектов - на фабрике!
+     */
     CBasic2dEntity();
     explicit CBasic2dEntity(const std::string &id);
     virtual ~CBasic2dEntity();
+    // -------------------------------------------------------
 
-    virtual std::string getId() const override;
+
+    // AbstractEntity interface
+public:
+    virtual void paint() const override;
+    virtual std::string getId() const override final;
+protected:
+    virtual void configure() override;
+
+public:
     void setId(const std::string &id);
-    /**
-     * @brief Установить родителя.
-     */
-    virtual void setParent(CBasic2dEntity *parent);
-    /**
-     * @brief Получить родителя сущности.
-     */
-    virtual CBasic2dEntity *getParent() const;
+
+    // parent-childs
+public:
     bool isRoot() const;
-    /**
-     * @brief getChild Получить ребенка сущности по его имени.
-     * @note В случае, если ребенка с именем id не найдено, вернется nullptr.
-     */
+    virtual void setParent(CBasic2dEntity *m_parent);
+    virtual CBasic2dEntity *getParent() const;
+    virtual void addChild(CBasic2dEntity *child);
     virtual CBasic2dEntity *getChild(const std::string &id) final;
-    /**
-     * @brief getChilds Получить вектор детей сущности.
-     */
     virtual std::vector<CBasic2dEntity *> &getChilds() final;
 
-    /**
-     * @brief Добавить ребенка сущности.
-     */
-    virtual void addChild(CBasic2dEntity *child);
+    // gui stuff
+public:
     /**
      * @brief Получить минимальную абсциссу ограничивающей поверхности.
      */
@@ -158,17 +168,18 @@ public:
     virtual void onClicked(const CEventMouseClick &event) = 0;
 
 protected:
-    std::string id;                         /**< идентификатор */
-    std::vector<glm::vec2> vPos2;           /**< вектор координат */
-    std::vector<glm::vec2> vUV;             /**< вектор текстурных координат */
-    std::vector<glm::vec3> vColor;          /**< вектор цветов вершин */
+    std::string m_id;                       /**< идентификатор. */
+    CChilds2D m_childs;                     /**< Контейнер детей. */
+    CBasic2dEntity *m_parent;               /**< Родитель. */
 
-    std::vector<CBasic2dEntity *> vChilds;  /**< вектор детей */
-    CBasic2dEntity *parent;                 /**< родитель */
+    CVertices2D m_vertices;                 /**< Контейнер вершин. */
+    std::vector<glm::vec2> vPos2;           /**< вектор координат */ // <-- ПЕРЕДЕЛАТЬ!
+    std::vector<glm::vec2> vUV;             /**< вектор текстурных координат */ // <-- ПЕРЕДЕЛАТЬ!
+    std::vector<glm::vec3> vColor;          /**< вектор цветов вершин */ // <-- ПЕРЕДЕЛАТЬ!
 
-    static std::vector<CBasic2dEntity*> objects4Event;   /**< Объекты, для которых выполнилось
-                                                         * действие.
-                                                         */
+    static std::vector<CBasic2dEntity*> m_objects4Event;   /**< Объекты, для которых выполнилось
+                                                             * действие.
+                                                             */
 }; // class Basic2dEntity
 
 } // namespace behemoth

@@ -52,7 +52,7 @@ protected:
     virtual ~CDirectionLight();
 
 private:
-    glm::vec3 mDirection;    //in world space
+    glm::vec3 m_direction;    //in world space
 }; // class CDirectionLight
 
 } // namespace behemoth

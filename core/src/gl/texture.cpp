@@ -21,25 +21,27 @@
 
 namespace behemoth {
 
-CTexture::CTexture() : id(0), size(), fileName()
+CTexture::CTexture() : m_id(0), m_size(), m_fileName()
 {
 }
 
 unsigned int CTexture::getId() const
 {
-    return id;
+    return m_id;
 }
 
 glm::uvec2 CTexture::getSize() const
 {
-    return size;
+    return m_size;
 }
 
 std::string CTexture::getFileName() const
 {
-    return fileName;
+    return m_fileName;
 }
 
-
+CTextBuffer::CTextBuffer() : buffer(), width(0), height(0), isLoad(false)
+{
+}
 
 } // namespace behemoth

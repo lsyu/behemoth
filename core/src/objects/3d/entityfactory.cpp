@@ -47,13 +47,13 @@ CEntityFactory *CEntityFactory::getInstance()
 
 CBasic3dEntity *CEntityFactory::loadEntity(const std::string &fileName)
 {
-    std::map<std::string, CBasic3dEntity*>::const_iterator it = mEntities.find(fileName);
-    if (it != mEntities.end())
+    std::map<std::string, CBasic3dEntity*>::const_iterator it = m_entities.find(fileName);
+    if (it != m_entities.end())
         return it->second;
 
     using namespace std;
     ifstream file;
-    file.open(prefix + fileName, ios::in | ios::binary);
+    file.open(m_pathToMesh + fileName, ios::in | ios::binary);
     if (!file.good())
         return nullptr;
 
@@ -65,30 +65,30 @@ CBasic3dEntity *CEntityFactory::loadEntity(const std::string &fileName)
         unsigned short indOfVert[4]; // 4th - always 0
     };
     file.read(reinterpret_cast<char*>(&meshHeader), sizeof(CHeader));
-    CBasic3dEntity::CVertices vertices(meshHeader.vertices);
+    CBasic3dEntity::CVertices3D vertices(meshHeader.vertices);
     std::vector<CPolygon> polygons(meshHeader.polygons);
-    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(CBasic3dEntity::CVertex) * vertices.size());
+    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(CBasic3dEntity::CVertex3D) * vertices.size());
     file.read(reinterpret_cast<char*>(polygons.data()), sizeof(CPolygon) * polygons.size());
     file.close();
 
     CBasic3dEntity *entity = new CBasic3dEntity(fileName);
-    entity->mVertices = vertices;
+    entity->m_vertices = vertices;
     for(CPolygon item : polygons) {
-        entity->mIndexes.push_back({item.indOfVert[0], item.indOfVert[1], item.indOfVert[2]});
+        entity->m_indexes.push_back({item.indOfVert[0], item.indOfVert[1], item.indOfVert[2]});
     }
 
-    mEntities[fileName] = entity;
+    m_entities[fileName] = entity;
 
     return entity;
 }
 
-CEntityFactory::CEntityFactory() : mEntities(), prefix(CResourceManager::getInstance()->getMeshFolder())
+CEntityFactory::CEntityFactory() : m_entities(), m_pathToMesh(CResourceManager::getInstance()->getMeshFolder())
 {
 }
 
 CEntityFactory::~CEntityFactory()
 {
-    for (auto item: mEntities)
+    for (auto item: m_entities)
         delete item.second;
 }
 

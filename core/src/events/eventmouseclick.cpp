@@ -23,11 +23,11 @@
 namespace behemoth {
 
 CEventMouseClick::CEventMouseClick(int x, int y, EMouseButton btn, EMouseState state) : AbstractEvent(),
-    x(), y(), btn(btn), state(state)
+    m_x(), m_y(), m_btn(btn), m_state(state)
 {
     glm::vec2 coord = CApplication::getInstance()->getRelativeCoordinate(x, y);
-    this->x = coord.x;
-    this->y = -coord.y;
+    this->m_x = coord.x;
+    this->m_y = -coord.y;
 }
 
 CEventMouseClick::~CEventMouseClick()
@@ -36,27 +36,27 @@ CEventMouseClick::~CEventMouseClick()
 
 glm::vec2 CEventMouseClick::getCoordinates() const
 {
-    return glm::vec2(x, y);
+    return glm::vec2(m_x, m_y);
 }
 
 float CEventMouseClick::getX() const
 {
-    return x;
+    return m_x;
 }
 
 float CEventMouseClick::getY() const
 {
-    return y;
+    return m_y;
 }
 
 EMouseButton CEventMouseClick::getMouseButton() const
 {
-    return btn;
+    return m_btn;
 }
 
 EMouseState CEventMouseClick::getMouseState() const
 {
-    return state;
+    return m_state;
 }
 
 } // namespace behemoth

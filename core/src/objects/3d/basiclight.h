@@ -49,9 +49,9 @@ protected:
     CBasicLight();
     virtual ~CBasicLight();
 private:
-    glm::vec3 mAmbient;  /**< Цвет фонового излучения источника света. */
-    glm::vec3 mDiffuse;  /**< Цвет рассеного излучения источника света. */
-    glm::vec3 mSpecular; /**< Цвет зеркального излучения источника света. */
+    glm::vec3 m_ambient;  /**< Цвет фонового излучения источника света. */
+    glm::vec3 m_diffuse;  /**< Цвет рассеного излучения источника света. */
+    glm::vec3 m_specular; /**< Цвет зеркального излучения источника света. */
 }; // class CBasicLight
 
 } // namespace behemoth

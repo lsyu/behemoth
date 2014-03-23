@@ -45,18 +45,18 @@ CPointLight *CLightFactory::getLight(const std::string &name, ELightType type) c
 {
     if (type == ELightType::all) {
         std::map<std::pair<std::string, ELightType>, CPointLight*>::const_iterator it
-                = mLights.find(std::pair<std::string, ELightType>(name, ELightType::point));
-        if(it != mLights.end())
+                = m_lights.find(std::pair<std::string, ELightType>(name, ELightType::point));
+        if(it != m_lights.end())
             return static_cast<CPointLight*>(it->second);
-        it = mLights.find(std::pair<std::string, ELightType>(name, ELightType::direction));
-        if(it != mLights.end())
+        it = m_lights.find(std::pair<std::string, ELightType>(name, ELightType::direction));
+        if(it != m_lights.end())
             return static_cast<CDirectionLight*>(it->second);
         return nullptr;
     }
 
     std::map<std::pair<std::string, ELightType>, CPointLight*>::const_iterator it
-            = mLights.find(std::pair<std::string, ELightType>(name, type));
-    if(it != mLights.end()) {
+            = m_lights.find(std::pair<std::string, ELightType>(name, type));
+    if(it != m_lights.end()) {
         if (type == ELightType::point)
             return static_cast<CPointLight*>(it->second);
         static_cast<CDirectionLight*>(it->second);
@@ -68,7 +68,7 @@ CPointLight *CLightFactory::getNearestLight(const glm::vec3 &point) const
 {
     float distance = std::numeric_limits<float>::max();
     CPointLight *ret = nullptr;
-    for (auto it = mLights.cbegin(), end = mLights.cend(); it != end; ++it) {
+    for (auto it = m_lights.cbegin(), end = m_lights.cend(); it != end; ++it) {
         float distanceTest = glm::distance(point, it->second->getPosition());
         if (distanceTest < distance) {
             distanceTest = distance;
@@ -89,16 +89,16 @@ void CLightFactory::makeLight(const std::string &name, ELightType type)
     else if (type == ELightType::point)
         light = new CPointLight;
     if (light)
-        mLights[std::pair<std::string, ELightType>(name, type)] = light;
+        m_lights[std::pair<std::string, ELightType>(name, type)] = light;
 }
 
-CLightFactory::CLightFactory() : mLights()
+CLightFactory::CLightFactory() : m_lights()
 {
 }
 
 CLightFactory::~CLightFactory()
 {
-    for (auto item : mLights)
+    for (auto item : m_lights)
         delete item.second;
 }
 

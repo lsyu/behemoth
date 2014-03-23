@@ -29,10 +29,11 @@
 
 namespace behemoth {
 
-CRectangleText::CRectangleText() : CBasic2dEntity(), font("UNKNOWN", 14), lines(), symbols(),
-    fontHeight(0.5f), x(-1.0f), y(-1.0f), width(2.0f), height(2.0f)
+CRectangleText::CRectangleText() : CBasic2dEntity(), m_font("DejaVuSans", 14), m_vAlign(EVerticalAlign::center),
+    m_hAlign(EHorizontalAlign::center), m_lines(), m_symbols(), m_fontHeight(0.5f), m_x(-1.0f), m_y(-1.0f),
+    m_width(2.0f), m_height(2.0f)
 {
-    lines.push_back(std::vector<CRectangleSymbol*>());
+    m_lines.push_back(std::vector<CRectangleSymbol*>());
 }
 
 CRectangleText::~CRectangleText()
@@ -41,13 +42,13 @@ CRectangleText::~CRectangleText()
 
 void CRectangleText::configure()
 {
-    this->font.setHeight(fontHeight);
-    parent = this->parent;
-    x = parent->getXMin();
-    y = parent->getYMin();
-    width = parent->getXMax() - parent->getXMin();
-    height = parent->getYMax() - parent->getYMin();
-    for (char c: text) {
+    this->m_font.setHeight(m_fontHeight);
+    m_parent = this->m_parent;
+    m_x = m_parent->getXMin();
+    m_y = m_parent->getYMin();
+    m_width = m_parent->getXMax() - m_parent->getXMin();
+    m_height = m_parent->getYMax() - m_parent->getYMin();
+    for (char c: m_text) {
         addSymbol(c);
     }
     int curLine = -1;
@@ -56,19 +57,19 @@ void CRectangleText::configure()
         CRectangleSymbol *s = dynamic_cast<CRectangleSymbol*>(i);
         // Каждую линию теста - в соответствии с выравниваем
         if (curLine == -1) {
-            if (font.getVerticalAlign() == EVerticalAlign::Bottom)
-                y = (lines.front().front()->getYMax() - lines.back().front()->getYMin() - height);
-            else if (font.getVerticalAlign() == EVerticalAlign::Center)
-                y = 0.5 * (lines.front().front()->getYMax() - lines.back().front()->getYMin() - height);
-            else if (font.getVerticalAlign() == EVerticalAlign::Top); // ничего не делаем
+            if (m_vAlign == EVerticalAlign::bottom)
+                y = (m_lines.front().front()->getYMax() - m_lines.back().front()->getYMin() - m_height);
+            else if (m_vAlign == EVerticalAlign::center)
+                y = 0.5 * (m_lines.front().front()->getYMax() - m_lines.back().front()->getYMin() - m_height);
+            else if (m_vAlign == EVerticalAlign::top); // ничего не делаем
         }
-        if (curLine != s->lineNumber) {
-            if (font.getHorizontalAlign() == EHorizontalAlign::Left); // ничего не делаем
-            else if (font.getHorizontalAlign() == EHorizontalAlign::Center)
-                x = -0.5 * (lines[s->lineNumber].back()->getXMax() - lines[s->lineNumber].front()->getXMin() - width);
-            else if (font.getHorizontalAlign() == EHorizontalAlign::Right)
-                x = -(lines[s->lineNumber].back()->getXMax() - lines[s->lineNumber].front()->getXMin() - width);
-            curLine = s->lineNumber;
+        if (curLine != s->m_lineNumber) {
+            if (m_hAlign == EHorizontalAlign::left); // ничего не делаем
+            else if (m_hAlign == EHorizontalAlign::center)
+                x = -0.5 * (m_lines[s->m_lineNumber].back()->getXMax() - m_lines[s->m_lineNumber].front()->getXMin() - m_width);
+            else if (m_hAlign == EHorizontalAlign::right)
+                x = -(m_lines[s->m_lineNumber].back()->getXMax() - m_lines[s->m_lineNumber].front()->getXMin() - m_width);
+            curLine = s->m_lineNumber;
         }
         s->translate(glm::vec2(x, y));
         s->configure();
@@ -81,9 +82,9 @@ void CRectangleText::paint() const
     shader->setUniform("texture", 0);
 
     CRectangleSymbol *prev = nullptr;
-    for (std::multiset<CRectangleSymbol*>::iterator it = symbols.cbegin(), end = symbols.cend();
+    for (std::multiset<CRectangleSymbol*>::iterator it = m_symbols.cbegin(), end = m_symbols.cend();
          it != end; ++it) {
-        if (!prev || prev->symbol != (*it)->symbol) {
+        if (!prev || prev->m_symbol != (*it)->m_symbol) {
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, (*it)->texture.getId());
@@ -99,57 +100,57 @@ void CRectangleText::onClicked(const CEventMouseClick &/*event*/)
 
 void CRectangleText::setFont(const CFont &font)
 {
-    this->font = font;
+    this->m_font = font;
 }
 
 void CRectangleText::setFont(const std::string &name)
 {
-    this->font.setName(name);
+    this->m_font.setName(name);
 }
 
 std::string CRectangleText::getFontName() const
 {
-    return font.getName();
+    return m_font.getName();
 }
 
 void CRectangleText::setFont(float height)
 {
-    this->fontHeight = height;
+    this->m_fontHeight = height;
 
-    if (fontHeight > 1.0f)
-        fontHeight -= (int)fontHeight;
+    if (m_fontHeight > 1.0f)
+        m_fontHeight -= (int)m_fontHeight;
     // TODO: подумать, на что домножать, когда межстрочный интервал появится!
-    fontHeight *= (2.0f/3.0f) * 2.0f;
+    m_fontHeight *= (2.0f/3.0f) * 2.0f;
 }
 
 float CRectangleText::getFontHeight() const
 {
-    return font.getHeight();
+    return m_font.getHeight();
 }
 
 void CRectangleText::setFontQuantity(int quantity)
 {
-    this->font.setQuantity(quantity);
+    this->m_font.setQuantity(quantity);
 }
 
 void CRectangleText::setFontAlign(EVerticalAlign vAlign)
 {
-    this->font.setVericalAlign(vAlign);
+    m_vAlign = vAlign;
 }
 
 EVerticalAlign CRectangleText::getVerticalAlign() const
 {
-    return font.getVerticalAlign();
+    return m_vAlign;
 }
 
 void CRectangleText::setVerticalAlign(const std::string &align)
 {
     if (align == "center")
-        setFontAlign(EVerticalAlign::Center);
+        setFontAlign(EVerticalAlign::center);
     else if (align == "top")
-        setFontAlign(EVerticalAlign::Top);
+        setFontAlign(EVerticalAlign::top);
     else if (align == "bottom")
-        setFontAlign(EVerticalAlign::Bottom);
+        setFontAlign(EVerticalAlign::bottom);
     //else
     // TODO: Обработка ситуации неправильного ввода
 }
@@ -157,11 +158,11 @@ void CRectangleText::setVerticalAlign(const std::string &align)
 std::string CRectangleText::getVericalAlignStr() const
 {
     switch (getVerticalAlign()) {
-    case EVerticalAlign::Center:
+    case EVerticalAlign::center:
         return "center";
-    case EVerticalAlign::Top:
+    case EVerticalAlign::top:
         return "top";
-    case EVerticalAlign::Bottom:
+    case EVerticalAlign::bottom:
         return "bottom";
     default:
         return "undefined";
@@ -170,22 +171,22 @@ std::string CRectangleText::getVericalAlignStr() const
 
 void CRectangleText::setFontAlign(EHorizontalAlign hAlign)
 {
-    this->font.setHorizontalAlign(hAlign);
+    m_hAlign = hAlign;
 }
 
 EHorizontalAlign CRectangleText::getHorizontalAlign() const
 {
-    return font.getHorizontalAlign();
+    return m_hAlign;
 }
 
 void CRectangleText::setHorizontalAlign(const std::string &align)
 {
     if (align == "center")
-        setFontAlign(EHorizontalAlign::Center);
+        setFontAlign(EHorizontalAlign::center);
     else if (align == "left")
-        setFontAlign(EHorizontalAlign::Left);
+        setFontAlign(EHorizontalAlign::left);
     else if (align == "right")
-        setFontAlign(EHorizontalAlign::Right);
+        setFontAlign(EHorizontalAlign::right);
     //else
     // TODO: Обработка ситуации неправильного ввода
 }
@@ -193,11 +194,11 @@ void CRectangleText::setHorizontalAlign(const std::string &align)
 std::string CRectangleText::getHorizontalAlignStr() const
 {
     switch (getHorizontalAlign()) {
-    case EHorizontalAlign::Center:
+    case EHorizontalAlign::center:
         return "center";
-    case EHorizontalAlign::Left:
+    case EHorizontalAlign::left:
         return "left";
-    case EHorizontalAlign::Right:
+    case EHorizontalAlign::right:
         return "right";
     default:
         return "undefined";
@@ -206,18 +207,18 @@ std::string CRectangleText::getHorizontalAlignStr() const
 
 void CRectangleText::setText(const std::string &text)
 {
-    this->text = text;
+    this->m_text = text;
 }
 
 std::string CRectangleText::getText() const
 {
-    return text;
+    return m_text;
 }
 
 void CRectangleText::addSymbol(char symbol)
 {
-    CRectangleSymbol *s = new CRectangleSymbol(symbol, &font, width, height, fontHeight, this);
-    symbols.insert(s);
+    CRectangleSymbol *s = new CRectangleSymbol(symbol, &m_font, m_width, m_height, m_fontHeight, this);
+    m_symbols.insert(s);
     s->prepare();
 }
 

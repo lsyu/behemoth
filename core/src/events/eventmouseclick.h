@@ -61,10 +61,10 @@ public:
 
 
 private:
-    float x;            /**< Абсцисса точки клика. В относительныйх величинах [-1..1] */
-    float y;            /**< Оордината точки клика. В относительныйх величинах [-1..1] */
-    EMouseButton btn;   /**< Кнопка */
-    EMouseState state;  /**< Состояние */
+    float m_x;            /**< Абсцисса точки клика. В относительныйх величинах [-1..1] */
+    float m_y;            /**< Оордината точки клика. В относительныйх величинах [-1..1] */
+    EMouseButton m_btn;   /**< Кнопка */
+    EMouseState m_state;  /**< Состояние */
 }; // class CEventMouseClick
 
 } // namespace behemoth

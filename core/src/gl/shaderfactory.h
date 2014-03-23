@@ -37,7 +37,7 @@ enum class EShaderType : bool {
 }; // enum ShaderType
 
 /**
- * @brief Фабрика получения шейдеров
+ * @brief Фабрика получения шейдеров.
  */
 class CShaderFactory
 {
@@ -118,9 +118,9 @@ private:
    CShader *changeActiveShader(CShader *newShader);
 
     static CShaderFactory *instance;
-    std::string prefix;
-    std::map< std::string, std::shared_ptr<CShader> > shaders;
-    CShader *activeShader;
+    std::string m_prefix;                                       /**< Путь до шейдера. */
+    std::map< std::string, std::shared_ptr<CShader> > m_shaders;/**< Контейнер шейдеров. */
+    CShader *m_activeShader;                                    /**< Активный шейдер. */
 
     friend class __CShaderFactoryImplDel;
 }; // class ShaderFactory

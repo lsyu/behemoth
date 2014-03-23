@@ -38,8 +38,8 @@ class CRectangleSymbol : public CRectangle
 public:
     friend class CRectangleText;
 
-    CRectangleSymbol(char symbol, CFont *font, float parentWidth, float parentHeight, float fontHeight,
-                     CRectangleText *parent);
+    CRectangleSymbol(char symbol, CFont *m_font, float m_parentWidth, float parentHeight, float m_fontHeight,
+                     CRectangleText *m_parent);
     virtual ~CRectangleSymbol();
 
     virtual void paint() const override;
@@ -53,12 +53,12 @@ protected:
     void translate(const glm::vec2 &translate);
 
 private:
-    CFont *font;
-    char symbol;
-    float parentWidth;
-    float parentHeight;
-    float fontHeight;
-    int lineNumber;
+    CFont *m_font;      /**< Шрифт данного символа. */
+    char m_symbol;      /**< Символ. */
+    float m_parentWidth;/**< Длина текста. */
+    float parentHeight; /**< Высота текста. */
+    float m_fontHeight; /**< Высота шрифта. */
+    int m_lineNumber;   /**< Номер линии текста, в которой располагается символ. */
 }; // class CRectangleSymbol
 
 } // namespace behemoth

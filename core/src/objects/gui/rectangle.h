@@ -43,7 +43,7 @@ public:
     /**
      * @brief Прямоугольник красного цвета с вершинами в точках (-1, -1) (-1, 1) (1, 1) (1, -1).
      */
-    explicit CRectangle(const std::string &id);
+    explicit CRectangle(const std::string &m_id);
 
     virtual ~CRectangle();
 

@@ -24,23 +24,23 @@
 
 namespace behemoth {
 
-CBasicCamera::CBasicCamera() : AbstractCamera(), eye(0.0f, 0.0f, 1.0f), center(0.0f, 0.0f, 0.0f),
-    up(0.0f, 1.0f, 0.0f), viewMatrix(), projectionMatrix()
+CBasicCamera::CBasicCamera() : AbstractCamera(), m_eye(0.0f, 0.0f, 1.0f), m_center(0.0f, 0.0f, 0.0f),
+    m_up(0.0f, 1.0f, 0.0f), m_viewMatrix(), m_projectionMatrix()
 {
 }
 
 void CBasicCamera::lookAt(const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up)
 {
-    this->eye = eye;
-    this->center = center;
-    this->up = up;
-    viewMatrix = glm::lookAt(eye, center, up);
+    this->m_eye = eye;
+    this->m_center = center;
+    this->m_up = up;
+    m_viewMatrix = glm::lookAt(eye, center, up);
 }
 
 void CBasicCamera::setEye(const glm::vec3 &eye)
 {
-    this->eye = eye;
-    lookAt(eye, center, up);
+    this->m_eye = eye;
+    lookAt(eye, m_center, m_up);
 }
 
 void CBasicCamera::setEye(float x, float y, float z)
@@ -50,13 +50,13 @@ void CBasicCamera::setEye(float x, float y, float z)
 
 glm::vec3 CBasicCamera::getEye() const
 {
-    return eye;
+    return m_eye;
 }
 
 void CBasicCamera::setCenter(const glm::vec3 &center)
 {
-    this->center = center;
-    lookAt(eye, center, up);
+    this->m_center = center;
+    lookAt(m_eye, center, m_up);
 }
 
 void CBasicCamera::setCenter(float x, float y, float z)
@@ -66,13 +66,13 @@ void CBasicCamera::setCenter(float x, float y, float z)
 
 glm::vec3 CBasicCamera::getCenter() const
 {
-    return center;
+    return m_center;
 }
 
 void CBasicCamera::setUp(const glm::vec3 &up)
 {
-    this->up = up;
-    lookAt(eye, center, up);
+    this->m_up = up;
+    lookAt(m_eye, m_center, up);
 }
 
 void CBasicCamera::setUp(float x, float y, float z)
@@ -82,18 +82,18 @@ void CBasicCamera::setUp(float x, float y, float z)
 
 glm::vec3 CBasicCamera::getUp() const
 {
-    return up;
+    return m_up;
 }
 
 void CBasicCamera::rotateView(float angle, float x, float y, float z)
 {
     if (x == 0 && y == 0 && z == 0) {
-        x = up.x;
-        y = up.y;
-        z = up.z;
+        x = m_up.x;
+        y = m_up.y;
+        z = m_up.z;
     }
-    center -= eye;
-    glm::vec3 view = center;
+    m_center -= m_eye;
+    glm::vec3 view = m_center;
 
     float SinA = glm::sin<float>(glm::pi<float>() * angle / 180.0f);
     float CosA = glm::cos<float>(glm::pi<float>() * angle / 180.0f);
@@ -109,25 +109,25 @@ void CBasicCamera::rotateView(float angle, float x, float y, float z)
             + ((1 - CosA) * y * z + x * SinA) * view.y
             + (CosA + (1 - CosA) * z * z) * view.z;
 
-    center = eye + arc;
-    lookAt(eye, center, up);
+    m_center = m_eye + arc;
+    lookAt(m_eye, m_center, m_up);
 }
 
 void CBasicCamera::rotateViewUpBottom(float angle)
 {
-    glm::vec3 axisOfRotation = glm::normalize<float>( glm::cross<float>(center - eye, up) );
+    glm::vec3 axisOfRotation = glm::normalize<float>( glm::cross<float>(m_center - m_eye, m_up) );
     rotateView(angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
 }
 
 void CBasicCamera::rotatePosition(float angle, float x, float y, float z)
 {
     if (x == 0 && y == 0 && z == 0) {
-        x = up.x;
-        y = up.y;
-        z = up.z;
+        x = m_up.x;
+        y = m_up.y;
+        z = m_up.z;
     }
-    eye -= center;
-    glm::vec3 view = eye;
+    m_eye -= m_center;
+    glm::vec3 view = m_eye;
 
     float SinA = glm::sin<float>(glm::pi<float>() * angle / 180.0f);
     float CosA = glm::cos<float>(glm::pi<float>() * angle / 180.0f);
@@ -143,21 +143,21 @@ void CBasicCamera::rotatePosition(float angle, float x, float y, float z)
             + ((1 - CosA) * y * z + x * SinA) * view.y
             + (CosA + (1 - CosA) * z * z) * view.z;
 
-    eye = center + arc;
-    lookAt(eye, center, up);
+    m_eye = m_center + arc;
+    lookAt(m_eye, m_center, m_up);
 }
 
 void CBasicCamera::rotatePositionUpBottom(float angle)
 {
-    glm::vec3 axisOfRotation = glm::normalize<float>( glm::cross<float>(center - eye, up) );
+    glm::vec3 axisOfRotation = glm::normalize<float>( glm::cross<float>(m_center - m_eye, m_up) );
     rotatePosition(angle, axisOfRotation.x, axisOfRotation.y, axisOfRotation.z);
 }
 
 void CBasicCamera::translate(const glm::vec3 &shift)
 {
-    eye += shift;
-    center += shift;
-    lookAt(eye, center, up);
+    m_eye += shift;
+    m_center += shift;
+    lookAt(m_eye, m_center, m_up);
 }
 
 void CBasicCamera::translate(float x, float y, float z)
@@ -167,27 +167,27 @@ void CBasicCamera::translate(float x, float y, float z)
 
 glm::vec3 CBasicCamera::getDirection() const
 {
-    return glm::normalize(center - eye);
+    return glm::normalize(m_center - m_eye);
 }
 
 glm::mat4 CBasicCamera::getViewMatrix() const
 {
-    return viewMatrix;
+    return m_viewMatrix;
 }
 
 glm::mat4 CBasicCamera::getProjectionMatrix() const
 {
-    return projectionMatrix;
+    return m_projectionMatrix;
 }
 
 glm::mat4 CBasicCamera::getViewProjectionMatrix() const
 {
-    return viewMatrix * projectionMatrix;
+    return m_viewMatrix * m_projectionMatrix;
 }
 
 glm::mat3 CBasicCamera::getNormalMatrix(const glm::mat4 &model) const
 {
-    glm::mat4 modelViewMatrix = viewMatrix * model;
+    glm::mat4 modelViewMatrix = m_viewMatrix * model;
     return glm::inverseTranspose(glm::mat3(modelViewMatrix));
 
 }

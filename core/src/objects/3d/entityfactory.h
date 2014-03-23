@@ -49,8 +49,8 @@ private:
     ~CEntityFactory();
 
     static CEntityFactory *instance;
-    std::map<std::string, CBasic3dEntity*> mEntities;
-    std::string prefix;
+    std::map<std::string, CBasic3dEntity*> m_entities;  /**< Контейнер сущностей. */
+    std::string m_pathToMesh;                           /**< Путь до ресурсов с mesh'ами. */
 
     friend class __CEntityFactoryImplDel;
 }; // class CEntityFactory

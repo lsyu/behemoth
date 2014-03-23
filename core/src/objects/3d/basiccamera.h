@@ -56,12 +56,12 @@ public:
     virtual glm::mat3 getNormalMatrix(const glm::mat4 &model) const override final;
 
 protected:
-    glm::vec3 eye;              /**< Положение камеры. */
-    glm::vec3 center;           /**< Точка, куда смотрит камера. */
-    glm::vec3 up;               /**< "Верх" камеры. */
+    glm::vec3 m_eye;              /**< Положение камеры. */
+    glm::vec3 m_center;           /**< Точка, куда смотрит камера. */
+    glm::vec3 m_up;               /**< "Верх" камеры. */
 
-    glm::mat4 viewMatrix;       /**< Матрица вида. */
-    glm::mat4 projectionMatrix; /**< Матрица проекции. */
+    glm::mat4 m_viewMatrix;       /**< Матрица вида. */
+    glm::mat4 m_projectionMatrix; /**< Матрица проекции. */
 }; // class CBasicCamera
 
 } // namespace behemoth

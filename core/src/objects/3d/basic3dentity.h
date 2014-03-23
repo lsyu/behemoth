@@ -35,19 +35,19 @@ class CBasic3dEntity : public AbstractEntity
     friend class CEntityFactory;
     friend class CBasicScene3dLayer; //! TODO: УБРАТЬ!!!
 public:
-    struct CVertex {
+    struct CVertex3D {
         glm::vec3 vertex;
         glm::vec3 normal;
         glm::vec2 uv;
-    }; // struct CVertex
-    typedef std::vector<CVertex> CVertices;
+    }; // struct CVertex3D
+    typedef std::vector<CVertex3D> CVertices3D;
     typedef std::vector< std::array<unsigned short int, 3> > CIndexes;
     typedef std::vector<CBasic3dEntity*> CChilds3D;
 
     // AbstractEntity interface
 public:
     virtual void paint() const override;
-    virtual std::string getId() const override;
+    virtual std::string getId() const override final;
 protected:
     virtual void configure() override;
 
@@ -64,16 +64,16 @@ protected:
     explicit CBasic3dEntity(const std::string &id);
     virtual ~CBasic3dEntity();
 
-    std::string mId;            /**< Идентификатор */
-    CChilds3D mChilds;          /**< Список детей */
-    CBasic3dEntity *mParent;    /**< Родитель сущности. */
+    std::string m_id;            /**< Идентификатор */
+    CChilds3D m_childs;          /**< Список детей */
+    CBasic3dEntity *m_parent;    /**< Родитель сущности. */
 
-    CVertices mVertices;/**< список атрибутов вершины */
-    CIndexes mIndexes;  /**< список индексов вершин */
+    CVertices3D m_vertices;/**< список атрибутов вершины. */
+    CIndexes m_indexes;  /**< список индексов вершин. */
 
-    CVertexArrayObject mVAO;
-    CVertexBufferObject mVertexVBO;
-    CVertexBufferObject mIndexVBO;
+    CVertexArrayObject m_vao;
+    CVertexBufferObject m_vertexVBO;
+    CVertexBufferObject m_indexVBO;
 }; // class CBasic3dEntity
 
 } // namespace behemoth

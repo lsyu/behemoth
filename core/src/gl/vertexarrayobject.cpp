@@ -24,23 +24,23 @@
 
 namespace behemoth {
 
-CVertexArrayObject::CVertexArrayObject() : vao(0)
+CVertexArrayObject::CVertexArrayObject() : m_vao(0)
 {
 }
 
 CVertexArrayObject::~CVertexArrayObject()
 {
-    glDeleteVertexArrays(1, &vao);
+    glDeleteVertexArrays(1, &m_vao);
 }
 
 void CVertexArrayObject::genBuffer()
 {
-    glGenVertexArrays(1, &vao);
+    glGenVertexArrays(1, &m_vao);
 }
 
 void CVertexArrayObject::bind() const
 {
-    glBindVertexArray(vao);
+    glBindVertexArray(m_vao);
 }
 
 void CVertexArrayObject::disable() const

@@ -145,8 +145,8 @@ private:
     CGUIManager &operator=(const CGUIManager&);
 
     static CGUIManager *instance;
-    lua_State *lua;
-    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> > objects; /**< Элементы GUI */
+    lua_State *m_lua;                                                   /**< стек lua. */
+    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> > m_objects; /**< Элементы GUI */
 
     friend class __CGUIManagerImplDel;
 }; // class CGUIManager

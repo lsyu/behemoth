@@ -25,32 +25,32 @@
 
 namespace behemoth {
 
-CShader::CShader(const std::string &id) : cacheAttribute(), cacheUniform(), vertexShader(0), fragmentShader(0),
-    shaderProgram(0), id(id)
+CShader::CShader(const std::string &id) : m_cacheAttribute(), m_cacheUniform(), m_vertexShader(0), m_fragmentShader(0),
+    m_shaderProgram(0), m_id(id)
 {
 }
 
 CShader::~CShader()
 {
-    cacheAttribute.clear();
-    cacheUniform.clear();
-    if (shaderProgram)
-        glDeleteProgram(shaderProgram);
-    if (vertexShader)
-        glDeleteShader(vertexShader);
-    if (fragmentShader)
-        glDeleteShader(fragmentShader);
+    m_cacheAttribute.clear();
+    m_cacheUniform.clear();
+    if (m_shaderProgram)
+        glDeleteProgram(m_shaderProgram);
+    if (m_vertexShader)
+        glDeleteShader(m_vertexShader);
+    if (m_fragmentShader)
+        glDeleteShader(m_fragmentShader);
 }
 
 uint CShader::makeAttributeLocation(const std::string &nameOfParam)
 {
     int location;
-    if (cacheAttribute.find(nameOfParam) != cacheAttribute.end()) {
-        location = cacheAttribute[nameOfParam];
+    if (m_cacheAttribute.find(nameOfParam) != m_cacheAttribute.end()) {
+        location = m_cacheAttribute[nameOfParam];
     } else {
-        location = glGetAttribLocation(shaderProgram, nameOfParam.c_str());
+        location = glGetAttribLocation(m_shaderProgram, nameOfParam.c_str());
         if (location != -1)
-            cacheAttribute[nameOfParam] = location;
+            m_cacheAttribute[nameOfParam] = location;
     }
     return static_cast<uint>(location);
 }
@@ -72,12 +72,12 @@ void CShader::setAttribute(unsigned int location, int numberOfElement, size_t of
 int CShader::makeUniformLocation(const std::string &nameOfParam)
 {
     int location;
-    if (cacheUniform.find(nameOfParam) != cacheUniform.end()) {
-        location = cacheUniform[nameOfParam];
+    if (m_cacheUniform.find(nameOfParam) != m_cacheUniform.end()) {
+        location = m_cacheUniform[nameOfParam];
     } else {
-        location = glGetUniformLocation(shaderProgram, nameOfParam.c_str());
+        location = glGetUniformLocation(m_shaderProgram, nameOfParam.c_str());
         if (location != -1)
-            cacheUniform[nameOfParam] = location;
+            m_cacheUniform[nameOfParam] = location;
     }
     return location;
 }
@@ -133,7 +133,7 @@ void CShader::setUniform(const std::string &nameOfParam, const glm::mat4 &vec)
 
 void CShader::bind() const
 {
-    glUseProgram(shaderProgram);
+    glUseProgram(m_shaderProgram);
 }
 
 void CShader::disable() const

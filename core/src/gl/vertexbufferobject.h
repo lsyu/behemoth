@@ -74,8 +74,8 @@ public:
      */
     void setData(const void *data, size_t sizeOfData) const;
 private:
-    uint mVBO;
-    EArrayType mType;
+    uint m_vbo;         /**< Идентификатор vbo. */
+    EArrayType m_type;  /**< тип vbo. */
 
 }; // class VertexBufferObject
 

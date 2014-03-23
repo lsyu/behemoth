@@ -82,7 +82,7 @@ private:
     CLightFactory &operator=(const CLightFactory &);
 
     static CLightFactory *instance;
-    std::map<std::pair<std::string, ELightType>, CPointLight*> mLights;
+    std::map<std::pair<std::string, ELightType>, CPointLight*> m_lights;
 
     friend class __CLightFactoryImplDel;
 }; // class CLightFactory

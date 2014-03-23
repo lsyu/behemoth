@@ -48,17 +48,17 @@ CResourceManager* CResourceManager::getInstance()
 
 void CResourceManager::initialize(int &/*argc*/, char *argv[])
 {
-    pathToApplication = std::string(argv[0]);
-    size_t len = pathToApplication.find_last_of(getFileSeparator());
-    pathToApplication = pathToApplication.substr(0, len) + getFileSeparator();
-    luaL_dostring(lua, "conf = {}");
+    m_pathToApplication = std::string(argv[0]);
+    size_t len = m_pathToApplication.find_last_of(getFileSeparator());
+    m_pathToApplication = m_pathToApplication.substr(0, len) + getFileSeparator();
+    luaL_dostring(m_lua, "conf = {}");
     registrationFolder();
     readConfFile();
 }
 
 void CResourceManager::registrationFolder()
 {
-    CLuaWrapper<CResourceManager> f(lua, "Folders");
+    CLuaWrapper<CResourceManager> f(m_lua, "Folders");
     f.setNameSpace("conf");
     f.addProperty({"new", [](lua_State *l)
     {
@@ -75,7 +75,7 @@ void CResourceManager::registrationFolder()
         CResourceManager * foo = *static_cast<CResourceManager **>(luaL_checkudata(l, 1, "luaL_Folders"));
         const char *resName = luaL_checkstring(l, 2);
         const char *folder = luaL_checkstring(l, 3);
-        foo->mapOfParam[resName] = folder;
+        foo->m_paths[resName] = folder;
         return 1;
     }});
     f.complete(false);
@@ -83,12 +83,12 @@ void CResourceManager::registrationFolder()
 
 void CResourceManager::readConfFile()
 {
-    string confFile = pathToApplication + "core.conf";
+    string confFile = m_pathToApplication + "core.conf";
     ifstream file(confFile.c_str());
     bool exists = file.good();
     file.close();
     if (exists) {
-        luaL_dostring(lua,
+        luaL_dostring(m_lua,
                       "function conf:folders(data)\n"
                       "  local config = Folders.new()\n"
                       "  for k, v in pairs(data) do\n"
@@ -96,15 +96,15 @@ void CResourceManager::readConfFile()
                       "  end\n"
                       "  return config\n"
                       "end");
-        luaL_dofile(lua, confFile.c_str());
-        lua_close(lua);
+        luaL_dofile(m_lua, confFile.c_str());
+        lua_close(m_lua);
     }
 }
 
-CResourceManager::CResourceManager() : pathToApplication(), mapOfParam(std::map<std::string, std::string>()),
-        lua(luaL_newstate())
+CResourceManager::CResourceManager() : m_pathToApplication(), m_paths(std::map<std::string, std::string>()),
+        m_lua(luaL_newstate())
 {
-    if (lua) {
+    if (m_lua) {
         const luaL_Reg lualibs[] =
         {
             { "base", luaopen_base },
@@ -116,8 +116,8 @@ CResourceManager::CResourceManager() : pathToApplication(), mapOfParam(std::map<
         const luaL_Reg *lib = lualibs;
         for(; lib->func != NULL; lib++)
         {
-            lib->func(lua);
-            lua_settop(lua, 0);
+            lib->func(m_lua);
+            lua_settop(m_lua, 0);
         }
     }
 }
@@ -126,13 +126,13 @@ CResourceManager::~CResourceManager() {}
 
 string CResourceManager::getPatchToApplication() const
 {
-    return pathToApplication + getFileSeparator();
+    return m_pathToApplication + getFileSeparator();
 }
 
 string CResourceManager::getResource(const string &name) const
 {
-    if (mapOfParam.find(name) != mapOfParam.end())
-        return getPatchToApplication() + mapOfParam.at(name) + getFileSeparator();
+    if (m_paths.find(name) != m_paths.end())
+        return getPatchToApplication() + m_paths.at(name) + getFileSeparator();
     return getPatchToApplication() + "res" + getFileSeparator() + name + getFileSeparator();
 }
 

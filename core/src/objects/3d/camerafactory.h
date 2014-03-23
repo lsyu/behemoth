@@ -88,8 +88,8 @@ private:
     CCameraFactory &operator=(const CCameraFactory &);
 
     static CCameraFactory *instance;
-    std::map<std::string, AbstractCamera*> mCameras;
-    AbstractCamera *mActiveCamera;
+    std::map<std::string, AbstractCamera*> m_cameras;   /**< Контейнер камер. */
+    AbstractCamera *m_activeCamera;                     /**< Активная камера. */
 
     friend class __CCameraFactoryImplDel;
 }; // class CCameraFactory

@@ -30,11 +30,27 @@ namespace behemoth {
 class CRectangleSymbol;
 
 /**
+ * @brief Перечисления выравнивания по вертикали
+ */
+enum class EVerticalAlign : unsigned char {
+    top = 0,    /**< По верхнему краю */
+    center = 1, /**< По центру */
+    bottom = 2  /**< По нижнему краю */
+}; // enum EVerticalAlign
+
+/**
+ * @brief Перечисления выравнивания по горизонтали
+ */
+enum class EHorizontalAlign : unsigned char {
+    left = 0,   /**< По левому краю */
+    center = 1, /**< По центру */
+    right = 2   /**< По правому краю */
+}; // enum EVerticalAlign
+
+/**
  * @brief Область текста.
  *
  * Текст составляется из объектов CRectangleSymbol.
- * @n
- *
  */
 class CRectangleText : public CBasic2dEntity
 {
@@ -48,10 +64,10 @@ public:
     virtual void onClicked(const CEventMouseClick &event) override;
 
     virtual void setColor(const glm::vec3 &/*color*/) {}
-    virtual float getXMin() const override {return x;}
-    virtual float getXMax() const override {return x+width;}
-    virtual float getYMin() const override {return y;}
-    virtual float getYMax() const override {return y+height;}
+    virtual float getXMin() const override {return m_x;}
+    virtual float getXMax() const override {return m_x+m_width;}
+    virtual float getYMin() const override {return m_y;}
+    virtual float getYMax() const override {return m_y+m_height;}
 
     /**
      * @brief Установить цвет шрифта для отображения.
@@ -87,15 +103,17 @@ private:
      */
     void addSymbol(char symbol);
 
-    CFont font;
-    std::vector< std::vector<CRectangleSymbol*> > lines;
-    std::multiset<CRectangleSymbol*> symbols;
-    float fontHeight;
-    std::string text;
-    float x;
-    float y;
-    float width;
-    float height;
+    CFont m_font;                                           /**< Шрифт данного текста. */
+    EVerticalAlign m_vAlign;                                /**< Выравнивание по вертикали. */
+    EHorizontalAlign m_hAlign;                              /**< Выравнивание по горизонтали. */
+    std::vector< std::vector<CRectangleSymbol*> > m_lines;  /**< Сформированные линии текста. */
+    std::multiset<CRectangleSymbol*> m_symbols;             /**< Отсортированная последовательность символов. */
+    float m_fontHeight;                                     /**< Высота шрифта. */
+    std::string m_text;                                     /**< Текст для вывода на экран. */
+    float m_x;                                              /**< Абсцисса левого нижнего угла прямоугольника текста. */
+    float m_y;                                              /**< Оордината левого нижнего угла прямоугольника текста. */
+    float m_width;                                          /**< Длинна выводимого прямоугольника текста. */
+    float m_height;                                         /**< Высота выводимого прямоугольника текста. */
 }; // class CRectangleFont
 
 } // namespace behemoth

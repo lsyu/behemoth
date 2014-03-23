@@ -45,9 +45,9 @@ CFontFactory *CFontFactory::getInstance()
     return instance;
 }
 
-CFontFactory::CFontFactory() : symbols(), currentFont()
+CFontFactory::CFontFactory() : m_symbols(), m_currentFont()
 {
-    FT_Error error = FT_Init_FreeType(&library);
+    FT_Error error = FT_Init_FreeType(&m_library);
     if (error) {
         // TODO: Подумать над обработкой!
     }
@@ -55,19 +55,19 @@ CFontFactory::CFontFactory() : symbols(), currentFont()
 
 CFontFactory::~CFontFactory()
 {
-    FT_Done_FreeType(library);
+    FT_Done_FreeType(m_library);
 }
 
 CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
 {
     std::map<char, Symbol>::iterator symbol
-            = symbols.find(c);
-    if (symbol != symbols.end())
+            = m_symbols.find(c);
+    if (symbol != m_symbols.end())
         return symbol->second;
 
     // TODO: Обработка ошибок!
-    FT_Load_Char(face, c, FT_LOAD_RENDER);
-    FT_GlyphSlot g = face->glyph;
+    FT_Load_Char(m_face, c, FT_LOAD_RENDER);
+    FT_GlyphSlot g = m_face->glyph;
     Symbol ret;
     ret.width = g->advance.x >> 6;
     ret.height = CFont::getQuantity();
@@ -114,27 +114,27 @@ CFontFactory::Symbol CFontFactory::getSymbol(char c, const CFont &font)
 
     ret.height += ret.height * 0.5;
 
-    symbols[c] = ret;
+    m_symbols[c] = ret;
     return ret;
 }
 
 CTextBuffer CFontFactory::getTextBuffer(const std::string &text, const CFont &font,
                                         int parentWidth, int parentHeight)
 {
-    if (currentFont != font.getName()) {
-        FT_New_Face(library, (CResourceManager::getInstance()->getFontFolder()
+    if (m_currentFont != font.getName()) {
+        FT_New_Face(m_library, (CResourceManager::getInstance()->getFontFolder()
                 + CResourceManager::getInstance()->getFileSeparator()
                 + font.getName() + std::string(".ttf")).c_str(),
-                0, &face);
+                0, &m_face);
     }
 
-    FT_Set_Char_Size( face, /* handle to face object */
+    FT_Set_Char_Size( m_face, /* handle to face object */
             0, /* char_width in 1/64th of points */
             16*64, /* char_height in 1/64th of points */
             parentWidth, /* horizontal device resolution */
             parentHeight); /* vertical device resolution */
 
-    FT_Set_Pixel_Sizes( face, /* handle to face object */
+    FT_Set_Pixel_Sizes( m_face, /* handle to face object */
             0, /* pixel_width */
             font.getHeight()); /* pixel_height */
 
@@ -157,9 +157,9 @@ CTextBuffer CFontFactory::getTextBuffer(const std::string &text, const CFont &fo
     int retHeight = font.getHeight();
     int retWidth = wTotal;
 
-    if (currentFont != font.getName()) {
-        FT_Done_Face(face);
-        currentFont = font.getName();
+    if (m_currentFont != font.getName()) {
+        FT_Done_Face(m_face);
+        m_currentFont = font.getName();
     }
 
     CTextBuffer ret;
@@ -176,29 +176,29 @@ CTextBuffer CFontFactory::getTextBuffer(const std::string &text, const CFont &fo
 CTextBuffer CFontFactory::getTextBuffer(char symbol, const CFont &font)
 {
     bool inithere = false;
-    if (currentFont != font.getName()) {
-        FT_New_Face(library, (CResourceManager::getInstance()->getFontFolder()
+    if (m_currentFont != font.getName()) {
+        FT_New_Face(m_library, (CResourceManager::getInstance()->getFontFolder()
                 + CResourceManager::getInstance()->getFileSeparator()
                 + font.getName() + std::string(".ttf")).c_str(),
-                0, &face);
+                0, &m_face);
         inithere = true;
     }
     glm::ivec2 size = CApplication::getInstance()->getSize();
-    FT_Set_Char_Size( face, /* handle to face object */
+    FT_Set_Char_Size( m_face, /* handle to face object */
             0, /* char_width in 1/64th of points */
             16*64, /* char_height in 1/64th of points */
             size.x, /* horizontal device resolution */
             size.y); /* vertical device resolution */
 
-    FT_Set_Pixel_Sizes( face, /* handle to face object */
+    FT_Set_Pixel_Sizes( m_face, /* handle to face object */
             0, /* pixel_width */
             CFont::getQuantity()); /* pixel_height */
 
     Symbol s = getSymbol(symbol, font);
 
-    if (currentFont != font.getName() && !inithere) {
-        FT_Done_Face(face);
-        currentFont = font.getName();
+    if (m_currentFont != font.getName() && !inithere) {
+        FT_Done_Face(m_face);
+        m_currentFont = font.getName();
     }
 
     CTextBuffer ret;

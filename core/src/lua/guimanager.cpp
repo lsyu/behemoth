@@ -53,7 +53,7 @@ CGUIManager *CGUIManager::getInstance()
     return instance;
 }
 
-CGUIManager::CGUIManager() : lua(nullptr), objects()
+CGUIManager::CGUIManager() : m_lua(nullptr), m_objects()
 {
 }
 
@@ -63,13 +63,13 @@ CGUIManager::~CGUIManager()
 
 bool CGUIManager::readGui(const std::string &fileName)
 {
-    if (!lua)
+    if (!m_lua)
         init();
     std::string scriptPath = CResourceManager::getInstance()->getGUIFolder() + fileName;
-    bool ret = !luaL_dofile(lua, scriptPath.c_str());
+    bool ret = !luaL_dofile(m_lua, scriptPath.c_str());
     if(!ret) {
         // TODO: Залогировать!
-        std::string log(lua_tostring(lua, -1));
+        std::string log(lua_tostring(m_lua, -1));
         std::cout << log;
     }
     close();
@@ -78,8 +78,8 @@ bool CGUIManager::readGui(const std::string &fileName)
 
 void CGUIManager::init()
 {
-    lua = luaL_newstate();
-    if (lua) {
+    m_lua = luaL_newstate();
+    if (m_lua) {
         const luaL_Reg lualibs[] =
         {
             { "base", luaopen_base },
@@ -91,8 +91,8 @@ void CGUIManager::init()
         const luaL_Reg *lib = lualibs;
         for(; lib->func != NULL; lib++)
         {
-            lib->func(lua);
-            lua_settop(lua, 0);
+            lib->func(m_lua);
+            lua_settop(m_lua, 0);
         }
         registerUI();
     }
@@ -100,16 +100,16 @@ void CGUIManager::init()
 
 void CGUIManager::close()
 {
-    if (lua) {
-        if (!objects.empty())
-            objects.back()->configure();
+    if (m_lua) {
+        if (!m_objects.empty())
+            m_objects.back()->configure();
     }
 }
 
 void CGUIManager::registerUI()
 {
-    luaL_dostring(lua, "ui = {}");
-    luaL_dostring(lua, "glm = {}");
+    luaL_dostring(m_lua, "ui = {}");
+    luaL_dostring(m_lua, "glm = {}");
     registerVec2();
     registerVec3();
     registerBorder();
@@ -120,7 +120,7 @@ void CGUIManager::registerUI()
 
 void CGUIManager::registerVec2()
 {
-    CLuaWrapper<glm::vec2> v(lua, "vec2");
+    CLuaWrapper<glm::vec2> v(m_lua, "vec2");
     v.setNameSpace("glm");
     v.addConstructor<float, float>();
     v.AddProperty(float)("x", &glm::vec2::x);
@@ -131,7 +131,7 @@ void CGUIManager::registerVec2()
 
 void CGUIManager::registerVec3()
 {
-    CLuaWrapper<glm::vec3> v(lua, "vec3");
+    CLuaWrapper<glm::vec3> v(m_lua, "vec3");
     v.setNameSpace("glm");
     v.addConstructor<float, float, float>();
     v.AddProperty(float)("x", &glm::vec3::x);
@@ -143,7 +143,7 @@ void CGUIManager::registerVec3()
 
 void CGUIManager::registerBorder()
 {
-    CLuaWrapper<CBorderRadius> r(lua, "radius");
+    CLuaWrapper<CBorderRadius> r(m_lua, "radius");
     r.addConstructor();
     r.AddProperty(float)("radius", &CBorderRadius::getRadius, &CBorderRadius::setRadius);
     r.AddProperty(float)("bottomLeft", &CBorderRadius::getBottomLeft, &CBorderRadius::setBottomLeft);
@@ -153,7 +153,7 @@ void CGUIManager::registerBorder()
     r.addDestructor();
     r.complete(true);
 
-    CLuaWrapper<CBorder> b(lua, "border");
+    CLuaWrapper<CBorder> b(m_lua, "border");
     b.addConstructor();
     b.AddProperty(float)("width", &CBorder::width);
     b.AddProperty(glm::vec3)("color", &CBorder::color);
@@ -163,7 +163,7 @@ void CGUIManager::registerBorder()
 
 void CGUIManager::registerGradient()
 {
-    CLuaWrapper<CGradient> g(lua, "gradient");
+    CLuaWrapper<CGradient> g(m_lua, "gradient");
     g.addConstructor();
     g.AddProperty(glm::vec3)("bottomLeft", &CGradient::bottomLeft);
     g.AddProperty(glm::vec3)("topLeft", &CGradient::topLeft);
@@ -175,7 +175,7 @@ void CGUIManager::registerGradient()
 
 void CGUIManager::registerText()
 {
-    CLuaWrapper<CRectangleText> t(lua, "text");
+    CLuaWrapper<CRectangleText> t(m_lua, "text");
     t.addConstructor();
     t.AddProperty(std::string)("text", &CRectangleText::getText, &CRectangleText::setText);
     t.AddProperty(std::string)("font", &CRectangleText::getFontName, &CRectangleText::setFont);
@@ -187,7 +187,7 @@ void CGUIManager::registerText()
 
 void CGUIManager::registerRectangle()
 {
-    CLuaWrapper<CRectangle> r(lua, "rectangle");
+    CLuaWrapper<CRectangle> r(m_lua, "rectangle");
     r.addConstructor<std::string>();
     r.AddProperty(std::string)("id", &CRectangle::getId, &CRectangle::setId);
     r.AddProperty(float)("x", &CRectangle::getXMin, &CRectangle::setX);
@@ -222,56 +222,56 @@ void CGUIManager::registerRectangle()
 behemoth::CBasic2dEntity *CGUIManager::getObject(const std::string &id)
 {
     std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >::iterator it
-            = std::find_if(objects.begin(), objects.end(),
+            = std::find_if(m_objects.begin(), m_objects.end(),
             [&id](const std::shared_ptr<behemoth::CBasic2dEntity> &obj)
             {
                 return obj->getId() == id;
             });
-    return it != objects.end() ? static_cast<behemoth::CBasic2dEntity*>(&(*it->get())) : nullptr;
+    return it != m_objects.end() ? static_cast<behemoth::CBasic2dEntity*>(&(*it->get())) : nullptr;
 }
 
 behemoth::CBasic2dEntity *CGUIManager::getObject(int num)
 {
-    if (num < 0 || num >= static_cast<int>(objects.size()))
+    if (num < 0 || num >= static_cast<int>(m_objects.size()))
         return nullptr;
-    return objects[num].get();
+    return m_objects[num].get();
 }
 
 CBasic2dEntity *CGUIManager::getRootObject()
 {
-    return objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(objects.back().get());
+    return m_objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(m_objects.back().get());
 }
 
 const std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >& CGUIManager::getObjects() const
 {
-    return objects;
+    return m_objects;
 }
 
 template<class T>
 void CGUIManager::addObject(CBasic2dEntity *t)
 {
-    objects.push_back(std::shared_ptr<CBasic2dEntity>(dynamic_cast<T*>(t)));
+    m_objects.push_back(std::shared_ptr<CBasic2dEntity>(dynamic_cast<T*>(t)));
 }
 
 bool CGUIManager::executeAction(CBasic2dEntity *entity, const std::string &action)
 {
-    lua_getglobal(lua, "ui");
-    if (lua_istable(lua, -1))
+    lua_getglobal(m_lua, "ui");
+    if (lua_istable(m_lua, -1))
     {
-        lua_getfield(lua, -1, entity->getId().c_str());
-        if (lua_istable(lua, -1)) {
-            lua_getfield(lua, -1, action.c_str());
-            if (!lua_isfunction(lua, -1)) {
-                lua_pop(lua, 3);
+        lua_getfield(m_lua, -1, entity->getId().c_str());
+        if (lua_istable(m_lua, -1)) {
+            lua_getfield(m_lua, -1, action.c_str());
+            if (!lua_isfunction(m_lua, -1)) {
+                lua_pop(m_lua, 3);
                 return false;
             }
-            lua_getfield(lua, -3, entity->getId().c_str());
-            if (lua_pcall(lua, 1, 0, 0)) {
-                lua_pop(lua, 2);
+            lua_getfield(m_lua, -3, entity->getId().c_str());
+            if (lua_pcall(m_lua, 1, 0, 0)) {
+                lua_pop(m_lua, 2);
                 return false;
             }
         }
-        lua_pop(lua, 2);
+        lua_pop(m_lua, 2);
         return true;
     }
     return false;

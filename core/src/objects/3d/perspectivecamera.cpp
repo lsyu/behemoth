@@ -29,8 +29,8 @@ CPerspectiveCamera::CPerspectiveCamera(float widthOfVieport, float heightOfViepo
     if(heightOfVieport == 0.0f)
         heightOfVieport = 1.0f;
     float aspectRatio =  widthOfVieport /  heightOfVieport;
-    projectionMatrix = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-    viewMatrix = glm::lookAt(eye, center, up);
+    m_projectionMatrix = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
+    m_viewMatrix = glm::lookAt(m_eye, m_center, m_up);
 }
 
 } // namespace behemoth

@@ -120,7 +120,7 @@ public:
     void setUniform(const std::string &nameOfParam, const glm::mat4 &mat);
 
 private:
-    CShader(const std::string &id);
+    CShader(const std::string &m_id);
     /**
      * @brief Сделать шейдерную программу активной.
      *
@@ -147,12 +147,12 @@ private:
      */
     uint makeAttributeLocation(const std::string &nameOfParam);
 
-    std::map<std::string, int> cacheAttribute;
-    std::map<std::string, int> cacheUniform;
-    uint vertexShader;
-    uint fragmentShader;
-    uint shaderProgram;
-    std::string id;
+    std::map<std::string, int> m_cacheAttribute;    /**< Кэш идентификаторов attribute. */
+    std::map<std::string, int> m_cacheUniform;      /**< Кэш идентификаторов uniform. */
+    uint m_vertexShader;                            /**< Идентификатор вершинного шейдера. */
+    uint m_fragmentShader;                          /**< Идентификатор фрагментного шейдера. */
+    uint m_shaderProgram;                           /**< Идентификатор шейдерной программы. */
+    std::string m_id;                               /**< Строковый идентификатор шейдера. */
 }; // class Shader
 
 } // namespace behemoth

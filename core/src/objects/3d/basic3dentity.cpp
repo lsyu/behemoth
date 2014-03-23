@@ -31,14 +31,14 @@
 
 namespace behemoth {
 
-CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), mId(id), mChilds(), mParent(nullptr),
-    mVertices(), mIndexes(), mVAO(), mVertexVBO(), mIndexVBO(EArrayType::Index)
+CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(), m_parent(nullptr),
+    m_vertices(), m_indexes(), m_vao(), m_vertexVBO(), m_indexVBO(EArrayType::Index)
 {
 }
 
 CBasic3dEntity::~CBasic3dEntity()
 {
-    for(CBasic3dEntity *item: mChilds)
+    for(CBasic3dEntity *item: m_childs)
         delete item;
 }
 
@@ -46,22 +46,22 @@ void CBasic3dEntity::configure()
 {
     CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
     if (shader) {
-        mVAO.genBuffer();
-        mVAO.bind();
+        m_vao.genBuffer();
+        m_vao.bind();
 
-        mVertexVBO.genBuffer();
-        mVertexVBO.setData(&mVertices);
-        mIndexVBO.genBuffer();
-        mIndexVBO.setData(&mIndexes);
+        m_vertexVBO.genBuffer();
+        m_vertexVBO.setData(&m_vertices);
+        m_indexVBO.genBuffer();
+        m_indexVBO.setData(&m_indexes);
 
-        shader->setAttribute("vertex", 3, 0, sizeof(CVertex));
-        shader->setAttribute("normal", 3, 12, sizeof(CVertex));
-        shader->setAttribute("uv", 2, 24, sizeof(CVertex));
+        shader->setAttribute("vertex", 3, 0, sizeof(CVertex3D));
+        shader->setAttribute("normal", 3, 12, sizeof(CVertex3D));
+        shader->setAttribute("uv", 2, 24, sizeof(CVertex3D));
 
-        mVAO.disable();
+        m_vao.disable();
     }
 
-    for (CBasic3dEntity *obj: mChilds)
+    for (CBasic3dEntity *obj: m_childs)
         obj->configure();
 }
 
@@ -82,56 +82,56 @@ void CBasic3dEntity::paint() const
             shader->setUniform("eye_position", cam->getEye());
 
             // Индексы - unsigned short int по 3 на полигон
-            mVAO.bind();
-            glDrawElements(GL_TRIANGLES, mIndexes.size() * 3, GL_UNSIGNED_SHORT, static_cast<void*>(0));
-            mVAO.disable();
+            m_vao.bind();
+            glDrawElements(GL_TRIANGLES, m_indexes.size() * 3, GL_UNSIGNED_SHORT, static_cast<void*>(0));
+            m_vao.disable();
         }
 
-        for (CBasic3dEntity *obj: mChilds)
+        for (CBasic3dEntity *obj: m_childs)
             obj->paint();
     }
 }
 
 std::string CBasic3dEntity::getId() const
 {
-    return mId;
+    return m_id;
 }
 
 void CBasic3dEntity::setParent(CBasic3dEntity *parent)
 {
-    mParent = parent;
+    m_parent = parent;
 }
 
 CBasic3dEntity *CBasic3dEntity::getParent() const
 {
-    return mParent;
+    return m_parent;
 }
 
 bool CBasic3dEntity::isRoot() const
 {
-    return mParent == nullptr;
+    return m_parent == nullptr;
 }
 
 void CBasic3dEntity::addChild(CBasic3dEntity *child)
 {
-    mChilds.push_back(child);
+    m_childs.push_back(child);
 }
 
 CBasic3dEntity *CBasic3dEntity::getChild(const std::string &id)
 {
-    CChilds3D::const_iterator it = std::find_if(mChilds.begin(), mChilds.end(),
+    CChilds3D::const_iterator it = std::find_if(m_childs.begin(), m_childs.end(),
     [&id](CBasic3dEntity *child) -> bool
     {
         return child->getId() == id;
     });
-    if (it != mChilds.end())
+    if (it != m_childs.end())
         return (CBasic3dEntity *)(&(*it));
     return nullptr;
 }
 
 std::vector<CBasic3dEntity *> &CBasic3dEntity::getChilds()
 {
-    return mChilds;
+    return m_childs;
 }
 
 } // namespace behemoth

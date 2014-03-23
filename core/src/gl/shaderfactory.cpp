@@ -46,8 +46,8 @@ CShaderFactory *CShaderFactory::getInstance()
     return instance;
 }
 
-CShaderFactory::CShaderFactory() : prefix(behemoth::CResourceManager::getInstance()->getShaderFolder()
-    + behemoth::CResourceManager::getInstance()->getFileSeparator()), shaders(), activeShader(nullptr)
+CShaderFactory::CShaderFactory() : m_prefix(behemoth::CResourceManager::getInstance()->getShaderFolder()
+    + behemoth::CResourceManager::getInstance()->getFileSeparator()), m_shaders(), m_activeShader(nullptr)
 {
 }
 
@@ -58,22 +58,22 @@ CShaderFactory::~CShaderFactory()
 CShader *CShaderFactory::getShader(const std::string &name)
 {
     std::map< std::string, std::shared_ptr<CShader> >::const_iterator it
-            = shaders.find(name);
-    if (it != shaders.end())
+            = m_shaders.find(name);
+    if (it != m_shaders.end())
         return changeActiveShader(it->second.get());
 
     std::shared_ptr<CShader> shader = std::shared_ptr<CShader>(new CShader(name));
-    if (!prepareShader(shader.get(), prefix + name + ".vert", prefix + name + ".frag"))
+    if (!prepareShader(shader.get(), m_prefix + name + ".vert", m_prefix + name + ".frag"))
         return nullptr;
-    shaders.insert(std::pair< std::string, std::shared_ptr<CShader> >(name, shader));
+    m_shaders.insert(std::pair< std::string, std::shared_ptr<CShader> >(name, shader));
     return changeActiveShader(shader.get());
 }
 
 bool CShaderFactory::prepareShader(CShader *shader, const std::string &vertShaderName, const std::string &fragmentShaderName)
 {
-    shader->shaderProgram = glCreateProgram();
+    shader->m_shaderProgram = glCreateProgram();
 
-    if (!shader->shaderProgram)
+    if (!shader->m_shaderProgram)
         return false;
 
     std::string vs((std::istreambuf_iterator<char>(*(std::auto_ptr<std::ifstream>(
@@ -88,40 +88,40 @@ bool CShaderFactory::prepareShader(CShader *shader, const std::string &vertShade
     if (!makeShader(shader, EShaderType::FragmentShader, fs.c_str(), &size))
         return false;
 
-    glLinkProgram(shader->shaderProgram);
+    glLinkProgram(shader->m_shaderProgram);
 
     if (!checkLinkStatus(shader))
         return false;
 
-    glValidateProgram(shader->shaderProgram);
+    glValidateProgram(shader->m_shaderProgram);
     return checkValidateStatus(shader);
 }
 
 bool CShaderFactory::makeShader(CShader *shader, EShaderType type, const char *source, int *sizes)
 {
     if (type == EShaderType::VertexShader) {
-        shader->vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        shader->m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-        if (!shader->vertexShader)
+        if (!shader->m_vertexShader)
             return false;
 
-        glShaderSource(shader->vertexShader, 1, &source, sizes);
-        glCompileShader(shader->vertexShader);
+        glShaderSource(shader->m_vertexShader, 1, &source, sizes);
+        glCompileShader(shader->m_vertexShader);
 
-        if (!checkCompileShaderStatus(shader, shader->vertexShader))
+        if (!checkCompileShaderStatus(shader, shader->m_vertexShader))
             return false;
 
         appendShader(shader, EShaderType::VertexShader);
     } else if (type == EShaderType::FragmentShader) {
-        shader->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        shader->m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-        if (!shader->fragmentShader)
+        if (!shader->m_fragmentShader)
             return false;
 
-        glShaderSource(shader->fragmentShader, 1, &source, sizes);
-        glCompileShader(shader->fragmentShader);
+        glShaderSource(shader->m_fragmentShader, 1, &source, sizes);
+        glCompileShader(shader->m_fragmentShader);
 
-        if (!checkCompileShaderStatus(shader, shader->fragmentShader))
+        if (!checkCompileShaderStatus(shader, shader->m_fragmentShader))
             return false;
 
         appendShader(shader, EShaderType::FragmentShader);
@@ -132,9 +132,9 @@ bool CShaderFactory::makeShader(CShader *shader, EShaderType type, const char *s
 void CShaderFactory::appendShader(CShader *shader, EShaderType type)
 {
     if (type == EShaderType::VertexShader)
-        glAttachShader(shader->shaderProgram, shader->vertexShader);
+        glAttachShader(shader->m_shaderProgram, shader->m_vertexShader);
     else if (type == EShaderType::FragmentShader)
-        glAttachShader(shader->shaderProgram, shader->fragmentShader);
+        glAttachShader(shader->m_shaderProgram, shader->m_fragmentShader);
 }
 
 bool CShaderFactory::checkCompileShaderStatus(CShader *program, uint shader)
@@ -151,9 +151,9 @@ bool CShaderFactory::checkCompileShaderStatus(CShader *program, uint shader)
 bool CShaderFactory::checkLinkStatus(CShader *shader)
 {
     int status;
-    glGetProgramiv(shader->shaderProgram, GL_LINK_STATUS, &status);
+    glGetProgramiv(shader->m_shaderProgram, GL_LINK_STATUS, &status);
     if(status == GL_FALSE) {
-        handleError(shader, shader->shaderProgram);
+        handleError(shader, shader->m_shaderProgram);
         return false;
     }
     return true;
@@ -162,9 +162,9 @@ bool CShaderFactory::checkLinkStatus(CShader *shader)
 bool CShaderFactory::checkValidateStatus(CShader *shader)
 {
     int status;
-    glGetProgramiv(shader->shaderProgram, GL_VALIDATE_STATUS, &status);
+    glGetProgramiv(shader->m_shaderProgram, GL_VALIDATE_STATUS, &status);
     if(status == GL_FALSE) {
-        handleError(shader, shader->shaderProgram);
+        handleError(shader, shader->m_shaderProgram);
         return false;
     }
     return true;
@@ -180,12 +180,12 @@ void CShaderFactory::handleError(CShader *program, uint shader)
     std::vector<char> infoLog(maxLength);
     glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-    glDeleteProgram(program->shaderProgram);
-    program->shaderProgram = 0;
-    glDeleteShader(program->vertexShader);
-    program->vertexShader = 0;
-    glDeleteShader(program->fragmentShader);
-    program->fragmentShader = 0;
+    glDeleteProgram(program->m_shaderProgram);
+    program->m_shaderProgram = 0;
+    glDeleteShader(program->m_vertexShader);
+    program->m_vertexShader = 0;
+    glDeleteShader(program->m_fragmentShader);
+    program->m_fragmentShader = 0;
 
     for (int i = 0, n = infoLog.size(); i < n; ++i)
         std::cout << infoLog[i];
@@ -193,15 +193,15 @@ void CShaderFactory::handleError(CShader *program, uint shader)
 
 CShader *CShaderFactory::changeActiveShader(CShader *newShader)
 {
-    if (activeShader && activeShader->id != newShader->id) {
-        activeShader->disable();
-        activeShader = newShader;
-        activeShader->bind();
+    if (m_activeShader && m_activeShader->m_id != newShader->m_id) {
+        m_activeShader->disable();
+        m_activeShader = newShader;
+        m_activeShader->bind();
     } else {
-        activeShader = newShader;
-        activeShader->bind();
+        m_activeShader = newShader;
+        m_activeShader->bind();
     }
-    return activeShader;
+    return m_activeShader;
 }
 
 } // namespace behemoth

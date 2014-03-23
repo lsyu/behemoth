@@ -48,13 +48,13 @@ bool CBasicGUILayer::updateGL(CEventMouseClick *e)
     EMouseState state = e->getMouseState();
     CBasic2dEntity *object = CGUIManager::getInstance()->getRootObject();
     object->onClicked(*e);
-    if (!CBasic2dEntity::objects4Event.empty()) {
+    if (!CBasic2dEntity::m_objects4Event.empty()) {
         if (state == EMouseState::down) {
-            entityDown = CBasic2dEntity::objects4Event.back();
+            entityDown = CBasic2dEntity::m_objects4Event.back();
             entityUp = nullptr;
             executeAction(&CGUIManager::onPressed);
         } else {
-            entityUp = CBasic2dEntity::objects4Event.back();
+            entityUp = CBasic2dEntity::m_objects4Event.back();
             executeAction(&CGUIManager::onReleased);
         }
         if (entityUp && entityDown && entityDown->getId() == entityUp->getId()) {
@@ -81,15 +81,15 @@ void CBasicGUILayer::paintGL()
 
 void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(CBasic2dEntity *))
 {
-    std::vector<CBasic2dEntity*> tmp = CBasic2dEntity::objects4Event;
+    std::vector<CBasic2dEntity*> tmp = CBasic2dEntity::m_objects4Event;
     while (true) {
-        if ((CGUIManager::getInstance()->*action)(CBasic2dEntity::objects4Event.back()))
+        if ((CGUIManager::getInstance()->*action)(CBasic2dEntity::m_objects4Event.back()))
             break;
-        CBasic2dEntity::objects4Event.pop_back();
-        if (CBasic2dEntity::objects4Event.empty())
+        CBasic2dEntity::m_objects4Event.pop_back();
+        if (CBasic2dEntity::m_objects4Event.empty())
             break;
     }
-    CBasic2dEntity::objects4Event = tmp;
+    CBasic2dEntity::m_objects4Event = tmp;
 }
 
 

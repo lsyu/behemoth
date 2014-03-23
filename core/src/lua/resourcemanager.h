@@ -134,9 +134,9 @@ private:
 
     static CResourceManager *instance;
 
-    std::string pathToApplication;
-    std::map<std::string, std::string> mapOfParam;
-    lua_State *lua;
+    std::string m_pathToApplication;                /**< Путь до директории с приложением. */
+    std::map<std::string, std::string> m_paths;     /**< Контейнер, содержащий пути до различных ресурсов. */
+    lua_State *m_lua;                               /**< Стек lua. */
 
     friend class __CResourceManagerImplDel;
 }; // class ResourceManager

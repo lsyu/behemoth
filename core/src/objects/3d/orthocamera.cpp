@@ -26,8 +26,8 @@ namespace behemoth {
 COrthoCamera::COrthoCamera(float left, float right, float bottom, float top, float near, float far)
     : CBasicCamera()
 {
-    projectionMatrix = glm::ortho(left, right, bottom, top, near, far);
-    viewMatrix = glm::lookAt(eye, center, up);
+    m_projectionMatrix = glm::ortho(left, right, bottom, top, near, far);
+    m_viewMatrix = glm::lookAt(m_eye, m_center, m_up);
 }
 
 } // namespace behemoth

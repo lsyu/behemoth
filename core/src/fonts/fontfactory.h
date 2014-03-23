@@ -21,7 +21,7 @@
 #define FONTFACTORY_H
 
 #include "core/fonts/font.h"
-#include "core/objects/gui/textbuffer.h"
+#include "core/ogl/texture.h"
 
 #include <ft2build.h>
 #include <freetype/freetype.h>
@@ -74,6 +74,7 @@ private:
 
     /**
      * @brief Получить символ c.
+     * @todo Получение русских символов!
      * @param c символ.
      * @param font шрифт.
      */
@@ -81,11 +82,11 @@ private:
 
     static CFontFactory *instance;
 
-    std::map<char, Symbol > symbols;
-    std::string currentFont;
+    std::map<char, Symbol > m_symbols;
+    std::string m_currentFont;
 
-    FT_Library library;
-    FT_Face face;
+    FT_Library m_library;
+    FT_Face m_face;
 
     friend class __CFontFactoryImplDel;
 }; // class CFontFactory

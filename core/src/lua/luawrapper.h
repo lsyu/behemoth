@@ -230,17 +230,17 @@ template <typename T>
 class CLuaWrapper
 {
 public:
-    CLuaWrapper(lua_State *lua, const std::string &name) : lua(lua), nameOfGlobal(name),
-        nameOfMetaTable(std::string("luaL_") + name), nsp("ui"), cntArgConstr(), sync(false),
-        addChild(false), lReg(), lRegMemHelper(), properties()  {
+    CLuaWrapper(lua_State *lua, const std::string &name) : m_lua(lua), m_nameOfGlobal(name),
+        m_nameOfMetaTable(std::string("luaL_") + name), m_nsp("ui"), m_cntArgConstr(), m_isSync(false),
+        m_isAddChild(false), m_lReg(), m_lRegMemHelper(), m_properties()  {
     }
 
     /**
      * @brief Сгенерировать конструктор класса
      */
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
-        cntArgConstr = 0;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = m_nameOfMetaTable;
+        m_cntArgConstr = 0;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 T **userData = newUserData<T>(l);
@@ -250,7 +250,7 @@ public:
                 return 1;
             }
         };
-        lReg.push_back(constructor);
+        m_lReg.push_back(constructor);
     }
 
     /**
@@ -258,8 +258,8 @@ public:
      */
     template <typename Arg>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
-        cntArgConstr = 1;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = m_nameOfMetaTable;
+        m_cntArgConstr = 1;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg arg = __CLuaWrapper::checkType<Arg>(l, 1);
@@ -270,7 +270,7 @@ public:
                 return 1;
             }
         };
-        lReg.push_back(constructor);
+        m_lReg.push_back(constructor);
     }
 
     /**
@@ -278,8 +278,8 @@ public:
      */
     template <typename Arg1, typename Arg2>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
-        cntArgConstr = 2;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = m_nameOfMetaTable;
+        m_cntArgConstr = 2;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg1 arg1 = __CLuaWrapper::checkType<Arg1>(l, 1);
@@ -291,7 +291,7 @@ public:
                 return 1;
             }
         };
-        lReg.push_back(constructor);
+        m_lReg.push_back(constructor);
     }
 
     /**
@@ -299,8 +299,8 @@ public:
      */
     template <typename Arg1, typename Arg2, typename Arg3>
     void addConstructor() {
-        __CLuaWrapper::types[std::type_index(typeid(T))] = nameOfMetaTable;
-        cntArgConstr = 3;
+        __CLuaWrapper::types[std::type_index(typeid(T))] = m_nameOfMetaTable;
+        m_cntArgConstr = 3;
         luaL_Reg constructor = {
             "new", [](lua_State *l) {
                 Arg1 arg1 = __CLuaWrapper::checkType<Arg1>(l, 1);
@@ -313,7 +313,7 @@ public:
                 return 1;
             }
         };
-        lReg.push_back(constructor);
+        m_lReg.push_back(constructor);
     }
 
     /**
@@ -321,20 +321,20 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(const Arg&)) {
-        properties.push_back(std::pair<std::string, bool>(name,
+        m_properties.push_back(std::pair<std::string, bool>(name,
                 __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
-        lRegMemHelper.push_back(std::string("get") + name);
+        m_lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
-            lRegMemHelper.back().c_str(),
+            m_lRegMemHelper.back().c_str(),
              __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const, id >(getter)
         };
-        lRegMemHelper.push_back(std::string("set") + name);
+        m_lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
-           lRegMemHelper.back().c_str(),
+           m_lRegMemHelper.back().c_str(),
             __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(const Arg&), id > (setter)
         };
-        lReg.push_back(get);
-        lReg.push_back(set);
+        m_lReg.push_back(get);
+        m_lReg.push_back(set);
     }
 
     /**
@@ -342,20 +342,20 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)() const, void(T::*setter)(Arg)) {
-        properties.push_back(std::pair<std::string, bool>(name,
+        m_properties.push_back(std::pair<std::string, bool>(name,
                 __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
-        lRegMemHelper.push_back(std::string("get") + name);
+        m_lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
-            lRegMemHelper.back().c_str(),
+            m_lRegMemHelper.back().c_str(),
              __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)() const, id>(getter)
         };
-        lRegMemHelper.push_back(std::string("set") + name);
+        m_lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
-           lRegMemHelper.back().c_str(),
+           m_lRegMemHelper.back().c_str(),
             __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg), id > (setter)
         };
-        lReg.push_back(get);
-        lReg.push_back(set);
+        m_lReg.push_back(get);
+        m_lReg.push_back(set);
     }
 
     /**
@@ -363,20 +363,20 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg(T::*getter)(), void(T::*setter)(Arg)) {
-        properties.push_back(std::pair<std::string, bool>(name,
+        m_properties.push_back(std::pair<std::string, bool>(name,
                 __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
-        lRegMemHelper.push_back(std::string("get") + name);
+        m_lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
-            lRegMemHelper.back().c_str(),
+            m_lRegMemHelper.back().c_str(),
              __CLuaWrapper::getterAdapterInC<T, Arg, Arg(T::*)(), id >(getter)
         };
-        lRegMemHelper.push_back(std::string("set") + name);
+        m_lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
-           lRegMemHelper.back().c_str(),
+           m_lRegMemHelper.back().c_str(),
             __CLuaWrapper::setterAdapterInC<T, Arg, void(T::*)(Arg), id > (setter)
         };
-        lReg.push_back(get);
-        lReg.push_back(set);
+        m_lReg.push_back(get);
+        m_lReg.push_back(set);
     }
 
     /**
@@ -384,20 +384,20 @@ public:
      */
     template <typename Arg, int id>
     void addProperty(const std::string &name, Arg T::*member) {
-        properties.push_back(std::pair<std::string, bool>(name,
+        m_properties.push_back(std::pair<std::string, bool>(name,
                 __CLuaWrapper::types.find(std::type_index(typeid(Arg))) == __CLuaWrapper::types.end()));
-        lRegMemHelper.push_back(std::string("get") + name);
+        m_lRegMemHelper.push_back(std::string("get") + name);
         luaL_Reg get = {
-            lRegMemHelper.back().c_str(),
+            m_lRegMemHelper.back().c_str(),
              __CLuaWrapper::getMemberAdapterInC<T, Arg, Arg T::*, id >(member)
         };
-        lRegMemHelper.push_back(std::string("set") + name);
+        m_lRegMemHelper.push_back(std::string("set") + name);
         luaL_Reg set = {
-           lRegMemHelper.back().c_str(),
+           m_lRegMemHelper.back().c_str(),
             __CLuaWrapper::setMemberAdapterInC<T, Arg, Arg T::*, id > (member)
         };
-        lReg.push_back(get);
-        lReg.push_back(set);
+        m_lReg.push_back(get);
+        m_lReg.push_back(set);
     }
 
     /**
@@ -405,10 +405,10 @@ public:
      */
     void addProperty(const luaL_Reg &member) {
         if (std::string(member.name) == "sync")
-            sync = true;
+            m_isSync = true;
         if (std::string(member.name) == "addChild")
-            addChild = true;
-        lReg.push_back(member);
+            m_isAddChild = true;
+        m_lReg.push_back(member);
     }
 
     /**
@@ -422,7 +422,7 @@ public:
                 return 0;
             }
         };
-        lReg.push_back(constructor);
+        m_lReg.push_back(constructor);
     }
 
     /**
@@ -441,25 +441,25 @@ public:
      */
     void complete(bool generateDeclarativeStuff = false) {
         generateString4Declarative(generateDeclarativeStuff);
-        bool ret = !luaL_dostring(lua, doStr.c_str());
+        bool ret = !luaL_dostring(m_lua, m_doStr.c_str());
         if (!ret) {
-            std::string log(lua_tostring(lua, -1));
+            std::string log(lua_tostring(m_lua, -1));
             std::cout << log;
         }
 
-        lReg.push_back({NULL, NULL});
-        luaL_newmetatable(lua, nameOfMetaTable.c_str());
-        luaL_setfuncs(lua, &lReg[0], 0);
-        lua_pushvalue(lua, -1);
-        lua_setfield(lua, -1, "__index");
-        lua_setglobal(lua, nameOfGlobal.c_str());
+        m_lReg.push_back({NULL, NULL});
+        luaL_newmetatable(m_lua, m_nameOfMetaTable.c_str());
+        luaL_setfuncs(m_lua, &m_lReg[0], 0);
+        lua_pushvalue(m_lua, -1);
+        lua_setfield(m_lua, -1, "__index");
+        lua_setglobal(m_lua, m_nameOfGlobal.c_str());
     }
 
     /**
      * @brief Установить область имен для данного объекта
      */
     void setNameSpace(const std::string &nsp) {
-        this->nsp = nsp;
+        this->m_nsp = nsp;
     }
 
 protected:
@@ -477,100 +477,100 @@ private:
      */
     void generateString4Declarative(bool generateDeclarativeStuff) {
         std::string argsConstr = "";
-        for (int i = 0; i < cntArgConstr; ++i) {
-            argsConstr += "arg" + std::to_string(i) + (i == cntArgConstr-1 ? "" : ", ");
+        for (int i = 0; i < m_cntArgConstr; ++i) {
+            argsConstr += "arg" + std::to_string(i) + (i == m_cntArgConstr-1 ? "" : ", ");
         }
 
-        doStr = "function " + nsp + ":" + nameOfGlobal + "(" + (argsConstr.empty() ? "data" : argsConstr) + ")\n";
-        doStr += "  local r = " + nameOfGlobal + ".new(" +argsConstr + ")\n";
+        m_doStr = "function " + m_nsp + ":" + m_nameOfGlobal + "(" + (argsConstr.empty() ? "data" : argsConstr) + ")\n";
+        m_doStr += "  local r = " + m_nameOfGlobal + ".new(" +argsConstr + ")\n";
 
         if (generateDeclarativeStuff) {
-            if (cntArgConstr)
-                doStr += "  return function(data)\n";
-            doStr += "  local ret = {}\n";
-            doStr += "  for k, v in pairs(data) do\n";
-            doStr += "    if k == \"" + properties[0].first + "\" then\n";
-            doStr += "      r:set" + properties[0].first + (properties[0].second ? "(v)\n" : "(v.obj)\n");
-            for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif k == \"" + properties[i].first + "\" then\n";
-                doStr += "      r:set" + properties[i].first + (properties[i].second ? "(v)\n" : "(v.obj)\n");
+            if (m_cntArgConstr)
+                m_doStr += "  return function(data)\n";
+            m_doStr += "  local ret = {}\n";
+            m_doStr += "  for k, v in pairs(data) do\n";
+            m_doStr += "    if k == \"" + m_properties[0].first + "\" then\n";
+            m_doStr += "      r:set" + m_properties[0].first + (m_properties[0].second ? "(v)\n" : "(v.obj)\n");
+            for (int i = 1, n = m_properties.size(); i < n; ++i) {
+                m_doStr += "    elseif k == \"" + m_properties[i].first + "\" then\n";
+                m_doStr += "      r:set" + m_properties[i].first + (m_properties[i].second ? "(v)\n" : "(v.obj)\n");
             }
-            doStr += "    elseif k == \"onClick\" then\n      ret.onClick = v\n";
-            doStr += "    elseif k == \"onPressed\" then\n      ret.onPressed = v\n";
-            doStr += "    elseif k == \"onReleased\" then\n      ret.onReleased = v\n";
+            m_doStr += "    elseif k == \"onClick\" then\n      ret.onClick = v\n";
+            m_doStr += "    elseif k == \"onPressed\" then\n      ret.onPressed = v\n";
+            m_doStr += "    elseif k == \"onReleased\" then\n      ret.onReleased = v\n";
 
-            if (addChild)
-                doStr += "    else\n      r:addChild(v.obj)\n";
-            doStr += "    end\n";
-            doStr += "ret[k..\"_meta\"]=v\n";
-            doStr +="  end\n";
+            if (m_isAddChild)
+                m_doStr += "    else\n      r:addChild(v.obj)\n";
+            m_doStr += "    end\n";
+            m_doStr += "ret[k..\"_meta\"]=v\n";
+            m_doStr +="  end\n";
 
-            doStr += "  local mt = {}\n";
-            doStr += "  mt.__index = function(self, key)\n";
-            doStr += "    if key == \"" + properties[0].first + "\" then\n";
-            doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[0].first + "()\n";
-            for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
-                doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[i].first + "()\n";
+            m_doStr += "  local mt = {}\n";
+            m_doStr += "  mt.__index = function(self, key)\n";
+            m_doStr += "    if key == \"" + m_properties[0].first + "\" then\n";
+            m_doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[0].first + "()\n";
+            for (int i = 1, n = m_properties.size(); i < n; ++i) {
+                m_doStr += "    elseif key == \"" + m_properties[i].first + "\" then\n";
+                m_doStr += "      return self[key..\"_meta\"]\n";//.obj:get" + properties[i].first + "()\n";
             }
-            doStr += "    else\n      return rawget(self, key)\n    end\n  end\n";
+            m_doStr += "    else\n      return rawget(self, key)\n    end\n  end\n";
 
-            doStr += "  mt.__newindex = function(self, key, value)\n";
-            doStr += "    if key == \"" + properties[0].first + "\" then\n";
-            doStr += "      self.obj:set" + properties[0].first + (properties[0].second ? "(value)\n" : "(value.obj)\n");
-            doStr += "      self[key..\"_meta\"] = value\n";
-            for (int i = 1, n = properties.size(); i < n; ++i) {
-                doStr += "    elseif key == \"" + properties[i].first + "\" then\n";
-                doStr += "      self.obj:set" + properties[i].first + (properties[i].second ? "(value)\n" : "(value.obj)\n");
-                doStr += "      self[key..\"_meta\"] = value\n";
+            m_doStr += "  mt.__newindex = function(self, key, value)\n";
+            m_doStr += "    if key == \"" + m_properties[0].first + "\" then\n";
+            m_doStr += "      self.obj:set" + m_properties[0].first + (m_properties[0].second ? "(value)\n" : "(value.obj)\n");
+            m_doStr += "      self[key..\"_meta\"] = value\n";
+            for (int i = 1, n = m_properties.size(); i < n; ++i) {
+                m_doStr += "    elseif key == \"" + m_properties[i].first + "\" then\n";
+                m_doStr += "      self.obj:set" + m_properties[i].first + (m_properties[i].second ? "(value)\n" : "(value.obj)\n");
+                m_doStr += "      self[key..\"_meta\"] = value\n";
             }
-            doStr += "    end\n  end\n";
+            m_doStr += "    end\n  end\n";
 
-            if (sync)
-                doStr += "  r:sync()\n";
-            doStr += "  ret.obj = r\n";
-            doStr += "  setmetatable(ret, mt)\n";
+            if (m_isSync)
+                m_doStr += "  r:sync()\n";
+            m_doStr += "  ret.obj = r\n";
+            m_doStr += "  setmetatable(ret, mt)\n";
 
             bool containId = false;
-            for(auto it: properties) {
+            for(auto it: m_properties) {
                 if (it.first == "id") {
                     containId = true;
                     break;
                 }
             }
             if (containId)
-                doStr += "  ui[arg0] = ret\n"; //TODO: придумать, как передать явно!
+                m_doStr += "  ui[arg0] = ret\n"; //TODO: придумать, как передать явно!
 
-            doStr += "  return ret\n";
-            if (cntArgConstr)
-                doStr += "  end\nend\n";
+            m_doStr += "  return ret\n";
+            if (m_cntArgConstr)
+                m_doStr += "  end\nend\n";
             else
-                doStr += "  end\n";
+                m_doStr += "  end\n";
         } else {
-            doStr += "  ret = {}\n";
-            doStr += "  ret.obj = r\n";
-            doStr += "  return ret\n";
-            doStr += "  end\n";
+            m_doStr += "  ret = {}\n";
+            m_doStr += "  ret.obj = r\n";
+            m_doStr += "  return ret\n";
+            m_doStr += "  end\n";
         }
 
 
 //        std::cout << doStr;
     }
 
-    lua_State *lua;
-    std::string nameOfGlobal;
-    std::string nameOfMetaTable;
-    std::string nsp;
-    static std::string doStr;
-    int cntArgConstr;
-    bool sync;
-    bool addChild;
-    std::vector<luaL_Reg> lReg;
-    std::vector<std::string> lRegMemHelper; // для корректного хранения строк в luaL_Reg
-    std::vector< std::pair<std::string, bool> > properties;
+    lua_State *m_lua;                           /**< Стек lua. */
+    std::string m_nameOfGlobal;                 /**< Название класса в lua. */
+    std::string m_nameOfMetaTable;              /**< Название метатаблицы в lua. */
+    std::string m_nsp;                          /**< Название пространства имен в lua.*/
+    static std::string m_doStr;                 /**< Строка для формирования декларативной части. */
+    int m_cntArgConstr;                         /**< Количество элементов в конструкторе. */
+    bool m_isSync;                              /**< Генерировать ли код для синхронизации с С++ - частью. */
+    bool m_isAddChild;                          /**< Генерировать ли код для добавления детей. */
+    std::vector<luaL_Reg> m_lReg;               /**< Контейнер lua-функций. */
+    std::vector<std::string> m_lRegMemHelper;   /**< Для корректного хранения строк в luaL_Reg. */
+    std::vector< std::pair<std::string, bool> > m_properties;   /**< Был ли уже загружен класс. в */
 };
 
 template <typename T>
-std::string CLuaWrapper<T>::doStr;
+std::string CLuaWrapper<T>::m_doStr;
 
 #endif // LUAWRAPPER_H

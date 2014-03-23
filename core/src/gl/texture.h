@@ -21,12 +21,14 @@
 #define TEXTURE_H
 
 #include <string>
+#include <vector>
+
 #include "glm/glm.h"
 
 namespace behemoth {
 
 /**
- * @brief Абстракция текстуры
+ * @brief Абстракция текстуры.
  */
 class CTexture
 {
@@ -40,11 +42,22 @@ public:
     std::string getFileName() const;
 
 private:
+    unsigned int m_id;      /**< Идентификатор загруженной текстуры. */
+    glm::uvec2 m_size;      /**< Размер текстуры. */
+    std::string m_fileName; /**< Название файла, из которого загружена текстура. */
+}; // class CTexture
 
-    unsigned int id;
-    glm::uvec2 size;
-    std::string fileName;
-};
+/**
+ * @brief Структура, содержащая буфер текста для рендера и вспомогательную информацию
+ */
+class CTextBuffer {
+public:
+    CTextBuffer();
+    std::vector<unsigned char> buffer;  /**< Буффер текста */
+    unsigned int width;                 /**< Длина текста */
+    unsigned int height;                /**< Высота текста */
+    bool isLoad;                        /**< Успешно ли загружен текст */
+}; // struct CBuffer
 
 } // namespace behemoth
 
