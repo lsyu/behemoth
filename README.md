@@ -87,7 +87,7 @@ ui:rectangle "modal"
 };
 ```
 
-Загрузить этот код на c++ можно [вот так](https://github.com/lsyu/gui/blob/master/behemoth/src/layers/guilayer.cpp). Подробнее - [тут](https://github.com/lsyu/gui/blob/master/behemoth/src/)
+Загрузить этот код на c++ можно [вот так](examples/src/layers/guilayer.cpp). Подробнее - [тут](examples/src/)
 
 Пример сборки:
 ``` bash
