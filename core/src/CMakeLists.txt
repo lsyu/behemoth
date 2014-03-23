@@ -17,8 +17,8 @@ add_subdirectory(glm/glm)
 add_subdirectory(gli/gli)
 add_subdirectory(lua)
 
-add_library(engine_core SHARED ${CORE_SRCS} ${CORE_HEADERS})
-target_link_libraries(engine_core
+add_library(behemoth SHARED ${CORE_SRCS} ${CORE_HEADERS})
+target_link_libraries(behemoth
     ${FREEGLUT_LIBS}
     ${LUA_LIBS}
     ${FREETYPE_LIBS}

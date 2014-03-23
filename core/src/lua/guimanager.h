@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 
 #include "lua/lua.h"
 
-namespace core {
+namespace behemoth {
 
 class CBasic2dEntity;
 
@@ -116,19 +116,19 @@ protected:
      */
     void registerVec3();
     /**
-     * @brief регистрация core::CBorder
+     * @brief регистрация behemoth::CBorder
      */
     void registerBorder();
     /**
-     * @brief регистрация core::CGradient
+     * @brief регистрация behemoth::CGradient
      */
     void registerGradient();
     /**
-     * @brief Регистрация core::RectangleText.
+     * @brief Регистрация behemoth::RectangleText.
      */
     void registerText();
     /**
-     * @brief Регистрация core::Rectangle.
+     * @brief Регистрация behemoth::Rectangle.
      */
     void registerRectangle();
 
@@ -146,11 +146,11 @@ private:
 
     static CGUIManager *instance;
     lua_State *lua;
-    std::vector< std::shared_ptr<core::CBasic2dEntity> > objects; /**< Элементы GUI */
+    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> > objects; /**< Элементы GUI */
 
     friend class __CGUIManagerImplDel;
 }; // class CGUIManager
 
-} // namespace Core
+} // namespace behemoth
 
 #endif // GUIMANAGER_H

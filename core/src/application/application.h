@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
  */
 
 /**
- * @mainpage Документация проекта пока что безымянного движка.
+ * @mainpage Документация проекта behemoth.
  *
- * @section WTOC Содержание
+ * @section What Содержание
  * - @ref Description
  * - @ref License
  * @n
@@ -28,17 +28,37 @@
  * @n
  *
  * @section Description Описание
+ * behemoth - графический движок с декларативным описанием элементов, основанном на lua,
+ * предназначенный для разработки пользовательского интерфейса и трехмерных сцен различной сложности,
+ * написанный на C++. @n
+ * Использует API OpenGL для рендерига. @n
+ * Url проекта: https://github.com/lsyu/behemoth
+ *
  * Данный проект базируется на нескольких очень классных проектах:
- * - glm - матрицы
- * - gli - изображения
- * - freeglut - инициализация контекста OpenGL, создание окна, перефирийные устройства.
- * - lua - скрипты
+ * - glm - библиотека линейной алгебры для opengl (http://glm.g-truc.net/0.9.5/index.html)
+ * - gli - библиотека работы с изображениями в формате *.dds (http://www.g-truc.net/project-0024.html)
+ * - freeglut - открытая альтернатива OpenGL Utility Toolkit (GLUT) (http://freeglut.sourceforge.net/)
+ * - freetype - библиотека для растеризации шрифтов и операций над ними (http://www.freetype.org/freetype2/)
+ * - lua - втраиваемый интерпритируемый язык программирования (http://www.lua.org/)
  * @n
  * @n
  * @n
  *
  * @section License Лицензия
- * Если честно, я хз! Я Везде пока что втыкаю GPL.
+ * Перевод текста лицензии: @n
+ * Это свободная программа: вы можете перераспространять ее и/или изменять
+ * ее на условиях Стандартной общественной лицензии GNU в том виде, в каком
+ * она была опубликована Фондом свободного программного обеспечения; либо
+ * версии 3 лицензии, либо (по вашему выбору) любой более поздней версии.
+ *
+ * Эта программа распространяется в надежде, что она будет полезной,
+ * но БЕЗО ВСЯКИХ ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА
+ * или ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ. Подробнее см. в Стандартной
+ * общественной лицензии GNU.
+ *
+ * Вы должны были получить копию Стандартной общественной лицензии GNU
+ * вместе с этой программой. Если это не так, см.
+ * <http://www.gnu.org/licenses/>.
  * @n
  * @n
  * @n
@@ -54,7 +74,7 @@
 
 #include "glm/glm.h"
 
-namespace core {
+namespace behemoth {
 
 class AbstractEvent;
 class AbstractLayer;
@@ -105,7 +125,7 @@ public:
      * #include "core/defaultscene.h"
      * int main(int argc, char *argv[])
      * {
-     *     using namespace core;
+     *     using namespace behemoth;
      *     CApplication *app = CApplication::getInstance();
      *     app->initialize(argc, argv);
      *     app->setWindowTitle("Test");
@@ -249,6 +269,6 @@ private:
     friend class __CApplicationImplDel;
 }; // class Application
 
-} // namespace Core
+} // namespace behemoth
 
 #endif /*APPLICATION_H*/

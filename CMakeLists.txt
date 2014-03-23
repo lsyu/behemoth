@@ -7,6 +7,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_definitions(-Wall -pedantic -std=c++11)
 
 add_subdirectory(core)
-add_subdirectory(labs4physics)
+add_subdirectory(examples)
 
 file(COPY res DESTINATION  ${CMAKE_BINARY_DIR}/bin)

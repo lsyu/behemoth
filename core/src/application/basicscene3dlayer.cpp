@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
 
-namespace core {
+namespace behemoth {
 
 CBasicScene3dLayer::CBasicScene3dLayer() : AbstractLayer()
 {
@@ -70,4 +70,4 @@ void CBasicScene3dLayer::paintGL()
         obj->paint();
 }
 
-} // namespace core
+} // namespace behemoth

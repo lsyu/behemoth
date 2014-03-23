@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 #include "basiclight.h"
 
-namespace core {
+namespace behemoth {
 
 CBasicLight::CBasicLight() : AbstractLight(), mAmbient(0.0f, 0.0f, 0.0f),
     mDiffuse(1.0f, 1.0f, 1.0f), mSpecular(1.0f, 1.0f, 1.0f)
@@ -76,4 +76,4 @@ glm::vec3 CBasicLight::getSpecular() const
     return mSpecular;
 }
 
-} // namespace core
+} // namespace behemoth

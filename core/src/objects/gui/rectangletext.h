@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #include <vector>
 #include <set>
 
-namespace core {
+namespace behemoth {
 
 class CRectangleSymbol;
 
@@ -63,11 +63,11 @@ public:
     void setFont(float height);
     float getFontHeight() const;
     void setFontQuantity(int quantity);
-    void setFontAlign(core::EVerticalAlign vAlign);
+    void setFontAlign(behemoth::EVerticalAlign vAlign);
     EVerticalAlign getVerticalAlign() const;
     void setVerticalAlign(const std::string &vAlign);
     std::string getVericalAlignStr() const;
-    void setFontAlign(core::EHorizontalAlign hAlign);
+    void setFontAlign(behemoth::EHorizontalAlign hAlign);
     EHorizontalAlign getHorizontalAlign() const;
     void setHorizontalAlign(const std::string &hAlign);
     std::string getHorizontalAlignStr() const;
@@ -98,6 +98,6 @@ private:
     float height;
 }; // class CRectangleFont
 
-} // namespace core
+} // namespace behemoth
 
 #endif // RECTANGLETEXT_H

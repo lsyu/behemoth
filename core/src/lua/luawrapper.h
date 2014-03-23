@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,9 +34,8 @@
 #define AddProperty(classname) \
     addProperty<classname, __LINE__>
 
-/**
- * @brief вспомогательное пространство имен. Не используйте его.
- */
+
+ // Вспомогательное пространство имен. Не используйте его!
 namespace __CLuaWrapper {
 static std::map<std::type_index, std::string> types;
 
@@ -211,6 +210,7 @@ lua_CFunction setMemberAdapterInC(Member m)
 } // setterAdapterInC
 
 } // namespace __CLuaWrapper
+// ^^^ Вспомогательное пространство имен. Не используйте его! ^^^
 
 
 /**

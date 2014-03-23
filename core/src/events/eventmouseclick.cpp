@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #include "eventmouseclick.h"
 #include "core/application/application.h"
 
-namespace core {
+namespace behemoth {
 
 CEventMouseClick::CEventMouseClick(int x, int y, EMouseButton btn, EMouseState state) : AbstractEvent(),
     x(), y(), btn(btn), state(state)
@@ -59,4 +59,4 @@ EMouseState CEventMouseClick::getMouseState() const
     return state;
 }
 
-} // namespace core
+} // namespace behemoth

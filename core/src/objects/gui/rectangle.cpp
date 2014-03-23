@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-namespace core {
+namespace behemoth {
 
 CRectangle::CRectangle() : CBasic2dEntity(), vao(), vertex(), color(), uv(), aspect(),
     x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f),
@@ -361,4 +361,4 @@ CRectangleText CRectangle::getText() const
     return text;
 }
 
-} // namespace Core
+} // namespace behemoth

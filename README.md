@@ -1,10 +1,10 @@
-Declarative gui using lua, c++ and opengl.
+behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
 
-Заготовка для графического движка с декларативным описанием интерфейса.
+behemoth - заготовка для графического движка с декларативным описанием элементов.
 Спасибо проектам glm, gli, freeglut, lua, freetype.
 
 
-Пример реализации messagebox'а в конечном итоге выглядит так:
+Например, messagebox выглядит так:
  ![test](res/pictures/gui_messagebox_example.png "example of messagebox")
 
 
@@ -87,12 +87,12 @@ ui:rectangle "modal"
 };
 ```
 
-Загрузить этот код на c++ можно [вот так](https://github.com/lsyu/gui/blob/master/labs4physics/src/layers/guilayer.cpp). Подробнее - [тут](https://github.com/lsyu/gui/blob/master/labs4physics/src/)
+Загрузить этот код на c++ можно [вот так](https://github.com/lsyu/gui/blob/master/behemoth/src/layers/guilayer.cpp). Подробнее - [тут](https://github.com/lsyu/gui/blob/master/behemoth/src/)
 
 Пример сборки:
 ``` bash
-git clone https://github.com/lsyu/gui.git
-cd gui
+git clone https://github.com/lsyu/behemoth.git
+cd behemoth
 git submodule init
 git submodule update
 mkdir build

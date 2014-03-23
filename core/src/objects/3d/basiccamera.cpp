@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/ext.hpp"
 
-namespace core {
+namespace behemoth {
 
 CBasicCamera::CBasicCamera() : AbstractCamera(), eye(0.0f, 0.0f, 1.0f), center(0.0f, 0.0f, 0.0f),
     up(0.0f, 1.0f, 0.0f), viewMatrix(), projectionMatrix()
@@ -192,4 +192,4 @@ glm::mat3 CBasicCamera::getNormalMatrix(const glm::mat4 &model) const
 
 }
 
-} // namespace core
+} // namespace behemoth

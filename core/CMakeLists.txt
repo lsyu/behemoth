@@ -1,6 +1,6 @@
 #engine_core
 
-project(engine_core)
+project(behemoth)
 cmake_minimum_required(VERSION 2.8.0)
 
 add_definitions(-DGL_GLEXT_PROTOTYPES)

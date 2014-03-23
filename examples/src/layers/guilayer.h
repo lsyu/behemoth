@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 #define GUILAYER_H
 
 #include "core/application/basicguilayer.h"
-
+#include "string"
 #include "glm/glm.h"
 
-namespace core {
+namespace behemoth {
 
 /**
  * @brief Сцена по-умолчанию.
@@ -32,12 +32,14 @@ namespace core {
 class GUILayer : public CBasicGUILayer
 {
 public:
-    GUILayer();
+    explicit GUILayer(const std::string fileName);
     virtual ~GUILayer();
 
     virtual void prepareGL() override;
+private:
+    std::string mFileName;
 }; // class GUILayer
 
-} // namespace Core
+} // namespace behemoth
 
 #endif // GUILAYER_H

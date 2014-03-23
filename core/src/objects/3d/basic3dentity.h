@@ -1,5 +1,5 @@
 ﻿/*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #include "core/ogl/vertexarrayobject.h"
 #include <array>
 
-namespace core {
+namespace behemoth {
 
 /**
  * @brief Базовая сущность трехмерного объекта
@@ -76,6 +76,6 @@ protected:
     CVertexBufferObject mIndexVBO;
 }; // class CBasic3dEntity
 
-} // namespace core
+} // namespace behemoth
 
 #endif // BASIC3DENTITY_H

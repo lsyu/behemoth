@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 #include "basiccamera.h"
 
-namespace core {
+namespace behemoth {
 
 /**
  * @brief Камера с перспективной проекцией.
@@ -43,6 +43,6 @@ public:
     CPerspectiveCamera(float widthOfVieport, float heightOfVieport, float fov = 45.0f, float nearPlane = 1.0f, float farPlane = 100.0f);
 }; // class CPerspectiveCamera
 
-} // namespace core
+} // namespace behemoth
 
 #endif // PERSPECTIVECAMERA_H

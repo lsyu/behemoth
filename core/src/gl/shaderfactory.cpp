@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace core {
+namespace behemoth {
 
 CShaderFactory *CShaderFactory::instance = nullptr;
 
@@ -46,8 +46,8 @@ CShaderFactory *CShaderFactory::getInstance()
     return instance;
 }
 
-CShaderFactory::CShaderFactory() : prefix(core::CResourceManager::getInstance()->getShaderFolder()
-    + core::CResourceManager::getInstance()->getFileSeparator()), shaders(), activeShader(nullptr)
+CShaderFactory::CShaderFactory() : prefix(behemoth::CResourceManager::getInstance()->getShaderFolder()
+    + behemoth::CResourceManager::getInstance()->getFileSeparator()), shaders(), activeShader(nullptr)
 {
 }
 
@@ -204,4 +204,4 @@ CShader *CShaderFactory::changeActiveShader(CShader *newShader)
     return activeShader;
 }
 
-} // namespace Core
+} // namespace behemoth

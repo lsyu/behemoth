@@ -1,5 +1,5 @@
 /*
- * Labs4Physics - visualisation of physics process
+ * behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
  * Copyright (C) 2013  Leyko Sergey powt81lsyu@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace core {
+namespace behemoth {
 
 CGUIManager *CGUIManager::instance = nullptr;
 
@@ -219,18 +219,18 @@ void CGUIManager::registerRectangle()
     r.complete(true);
 }
 
-core::CBasic2dEntity *CGUIManager::getObject(const std::string &id)
+behemoth::CBasic2dEntity *CGUIManager::getObject(const std::string &id)
 {
-    std::vector< std::shared_ptr<core::CBasic2dEntity> >::iterator it
+    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >::iterator it
             = std::find_if(objects.begin(), objects.end(),
-            [&id](const std::shared_ptr<core::CBasic2dEntity> &obj)
+            [&id](const std::shared_ptr<behemoth::CBasic2dEntity> &obj)
             {
                 return obj->getId() == id;
             });
-    return it != objects.end() ? static_cast<core::CBasic2dEntity*>(&(*it->get())) : nullptr;
+    return it != objects.end() ? static_cast<behemoth::CBasic2dEntity*>(&(*it->get())) : nullptr;
 }
 
-core::CBasic2dEntity *CGUIManager::getObject(int num)
+behemoth::CBasic2dEntity *CGUIManager::getObject(int num)
 {
     if (num < 0 || num >= static_cast<int>(objects.size()))
         return nullptr;
@@ -242,7 +242,7 @@ CBasic2dEntity *CGUIManager::getRootObject()
     return objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(objects.back().get());
 }
 
-const std::vector< std::shared_ptr<core::CBasic2dEntity> >& CGUIManager::getObjects() const
+const std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >& CGUIManager::getObjects() const
 {
     return objects;
 }
@@ -292,6 +292,6 @@ bool CGUIManager::onReleased(CBasic2dEntity *entity)
     return executeAction(entity, "onReleased");
 }
 
-} // namespace Core
+} // namespace behemoth
 
 
