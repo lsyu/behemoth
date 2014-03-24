@@ -18,9 +18,8 @@
  */
 
 #include "shader.h"
-
+#include <iostream>
 #include "core/ogl/ogl.h"
-
 #include "glm/gtc/type_ptr.hpp"
 
 namespace behemoth {
@@ -51,6 +50,8 @@ uint CShader::makeAttributeLocation(const std::string &nameOfParam)
         location = glGetAttribLocation(m_shaderProgram, nameOfParam.c_str());
         if (location != -1)
             m_cacheAttribute[nameOfParam] = location;
+        else
+            std::cout << nameOfParam << " not found!\n";
     }
     return static_cast<uint>(location);
 }
@@ -97,12 +98,11 @@ void CShader::setUniform(const std::string &nameOfParam, float value)
 void CShader::setUniform(const std::string &nameOfParam, const glm::vec2 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
-    glUniform1fv(location, 2, &vec[0]);
+    glUniform2f(location, vec.x, vec.y);
 }
 
 void CShader::setUniform(const std::string &nameOfParam, const glm::vec3 &vec)
 {
-    // TODO: Так работает :)
     int location = makeUniformLocation(nameOfParam);
     glUniform3f(location, vec.x, vec.y, vec.z);
 }
@@ -110,7 +110,7 @@ void CShader::setUniform(const std::string &nameOfParam, const glm::vec3 &vec)
 void CShader::setUniform(const std::string &nameOfParam, const glm::vec4 &vec)
 {
     int location = makeUniformLocation(nameOfParam);
-    glUniform1fv(location, 4, &vec[0]);
+    glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
 }
 
 void CShader::setUniform(const std::string &nameOfParam, const glm::mat2 &vec)

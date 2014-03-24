@@ -23,6 +23,7 @@
 #include "core/objects/abstractentity.h"
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
+
 #include <array>
 
 namespace behemoth {
@@ -33,7 +34,6 @@ namespace behemoth {
 class CBasic3dEntity : public AbstractEntity
 {
     friend class CEntityFactory;
-    friend class CBasicScene3dLayer; //! TODO: УБРАТЬ!!!
 public:
     struct CVertex3D {
         glm::vec3 vertex;
@@ -48,7 +48,6 @@ public:
 public:
     virtual void paint() const override;
     virtual std::string getId() const override final;
-protected:
     virtual void configure() override;
 
     // parent-childs
@@ -68,8 +67,8 @@ protected:
     CChilds3D m_childs;          /**< Список детей */
     CBasic3dEntity *m_parent;    /**< Родитель сущности. */
 
-    CVertices3D m_vertices;/**< список атрибутов вершины. */
-    CIndexes m_indexes;  /**< список индексов вершин. */
+    CVertices3D m_vertices; /**< список атрибутов вершины. */
+    CIndexes m_indexes;     /**< список индексов вершин. */
 
     CVertexArrayObject m_vao;
     CVertexBufferObject m_vertexVBO;

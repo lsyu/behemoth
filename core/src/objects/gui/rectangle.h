@@ -39,24 +39,27 @@ class CShader;
 class CRectangle : public CBasic2dEntity
 {
 public:
+    // todo: factory! ---------------
     CRectangle();
-    /**
-     * @brief Прямоугольник красного цвета с вершинами в точках (-1, -1) (-1, 1) (1, 1) (1, -1).
-     */
     explicit CRectangle(const std::string &m_id);
-
     virtual ~CRectangle();
+    // -------------------------------
 
+    // AbstractEntity interface
+public:
     virtual void paint() const override;
-    virtual void setColor(const glm::vec3 &color);
-    glm::vec3 getColor() const;
+    virtual void configure() override;
+    // CBasic2dEntity interface
+public:
     virtual float getXMin() const override;
     virtual float getXMax() const override;
     virtual float getYMin() const override;
     virtual float getYMax() const override;
-
     virtual void onClicked(const CEventMouseClick &event) override;
 
+public:
+    void setColor(const glm::vec3 &color);
+    glm::vec3 getColor() const;
     /**
      * @brief Установить координату X левого нижнего угла прямоугольника.
      * @note Плоскость монитора ограничивается интервалом [-1, 1].
@@ -118,32 +121,18 @@ public:
     CRectangleText getText() const;
 
 protected:
-    virtual void configure() override;
-
     /**
      * @brief Содержит ли фигура точку point
      */
     bool contains(const glm::vec2 &point) const;
 
-    CVertexArrayObject vao;
-    CVertexBufferObject vertex;
-    CVertexBufferObject color;
-    CVertexBufferObject uv;
-
-    float aspect;
-    float x;
-    float y;
-    float width;
-    float height;
-    float rA;
-    float rB;
-    float rC;
-    float rD;
-    float alpha;
-    CTexture texture;
-    CBorderRadius radius;
-    CBorder border;
-    CRectangleText text;
+    float m_aspect;         /**< Соотношение сторон окна. */
+    float m_alpha;          /**< Прозрачность. */
+    glm::vec4 m_size;       /**< Рамеры: (x, y, width, height) */
+    CBorder m_border;       /**< Грань прямоугольника. */
+    CBorderRadius m_radius; /**< Радиус сторон прямоугольника. */
+    CTexture m_texture;     /**< Текстура. */
+    CRectangleText m_text;  /**< Текст. */
 }; //class Rectangle
 
 } // namespace behemoth

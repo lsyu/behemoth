@@ -36,13 +36,6 @@ namespace behemoth {
 class AbstractEntity
 {
 public:
-
-    friend class CGUIManager;
-    friend class CRectangle;
-
-    AbstractEntity() {}
-    virtual ~AbstractEntity() {}
-
     /**
      * @brief Нарисовать сущность.
      */
@@ -51,13 +44,14 @@ public:
      * @brief Вернуть идентификатор сущности.
      */
     virtual std::string getId() const = 0;
-
-protected:
-
     /**
      * @brief Конфигурирование сущности после загрузки данных.
      */
     virtual void configure() = 0;
+
+protected:
+    AbstractEntity() {}
+    virtual ~AbstractEntity() {}
 }; // class AbstractEntity
 
 } // namespace behemoth

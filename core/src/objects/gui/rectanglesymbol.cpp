@@ -31,13 +31,13 @@ CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, 
     m_parentWidth(parentWidth), parentHeight(parentHeight), m_fontHeight(fontHeight), m_lineNumber(0)
 {
     parent->addChild(this);
-    texture = CTextureFactory::getInstance()->getSymbol(symbol, *font);
+    m_texture = CTextureFactory::getInstance()->getSymbol(symbol, *font);
 
     float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
-    float width = static_cast<float>(texture.getSize().x);
-    float height = static_cast<float>(texture.getSize().y);
-    this->width = symbol == '\n' ? 0 : font->getHeight() * width / height * scHeight;
-    this->height = font->getHeight() * scHeight;
+    float width = static_cast<float>(m_texture.getSize().x);
+    float height = static_cast<float>(m_texture.getSize().y);
+    m_size.z = symbol == '\n' ? 0 : font->getHeight() * width / height * scHeight;
+    m_size.w = font->getHeight() * scHeight;
 }
 
 CRectangleSymbol::~CRectangleSymbol()
@@ -46,9 +46,9 @@ CRectangleSymbol::~CRectangleSymbol()
 
 void CRectangleSymbol::paint() const
 {
-    vao.bind();
+    m_vao.bind();
     glDrawArrays(GL_QUADS, 0, 4);
-    vao.disable();
+    m_vao.disable();
 }
 
 void CRectangleSymbol::onClicked(const CEventMouseClick &event)
@@ -62,25 +62,29 @@ bool CRectangleSymbol::operator >(CRectangleSymbol *other) const
 
 void CRectangleSymbol::configure()
 {
-    vPos2[0] = glm::vec2(x, y);
-    vPos2[1] = glm::vec2(x + width, y);
-    vPos2[2] = glm::vec2(x + width, y + height);
-    vPos2[3] = glm::vec2(x, y + height);
+    m_vertices[0].vertex = glm::vec2(m_size.x, m_size.y);
+    m_vertices[1].vertex = glm::vec2(m_size.x + m_size.z, m_size.y);
+    m_vertices[2].vertex = glm::vec2(m_size.x + m_size.z, m_size.y + m_size.w);
+    m_vertices[3].vertex = glm::vec2(m_size.x, m_size.y + m_size.w);
+
+    m_vertices[0].uv =  glm::vec2(0.0f, 1.0f - 0.0f);
+    m_vertices[1].uv =  glm::vec2(1.0f, 1.0f - 0.0f);
+    m_vertices[2].uv =  glm::vec2(1.0f, 1.0f - 1.0f);
+    m_vertices[3].uv =  glm::vec2(0.0f, 1.0f - 1.0f);
 
     CShader *shader = CShaderFactory::getInstance()->getShader("text");
     if (shader) {
-        vao.genBuffer();
-        vao.bind();
+        m_vao.genBuffer();
+        m_vao.bind();
 
-        vertex.genBuffer();
-        vertex.setData(&vPos2);
-        shader->setAttribute("position", 2, 0, 0);
+        m_vertexVBO.genBuffer();
+        m_vertexVBO.setData(&m_vertices);
 
-        uv.genBuffer();
-        uv.setData(&vUV);
-        shader->setAttribute("UV", 2, 0, 0);
+        shader->setAttribute("a_position", 2, 0, sizeof(CVertex2D));
+        shader->setAttribute("a_uv", 2, 8, sizeof(CVertex2D));
+//        shader->setAttribute("a_color", 3, 16, sizeof(CVertex2D));
 
-        vao.disable();
+        m_vao.disable();
     }
 }
 
@@ -89,14 +93,14 @@ void CRectangleSymbol::prepare()
     std::vector<CBasic2dEntity*> &e = this->m_parent->getChilds();
     bool first = !(e.size()-1);
     CBasic2dEntity *parent = first ? this->m_parent : e[e.size()-2];
-    x = first ? parent->getXMin() : parent->getXMax();
-    y = first? parent->getYMax() - height : parent->getYMin();
+    m_size.x = first ? parent->getXMin() : parent->getXMax();
+    m_size.y = first? parent->getYMax() - m_size.w : parent->getYMin();
 
     std::vector< std::vector<CRectangleSymbol*> > *vec
             = &dynamic_cast<CRectangleText*>(this->m_parent)->m_lines;
-    if (x >= this->m_parent->getXMax() || x + width >= this->m_parent->getXMax() || m_symbol == '\n') {
-        x = this->m_parent->getXMin();
-        y = parent->getYMin() - height;
+    if (m_size.x >= this->m_parent->getXMax() || m_size.x + m_size.z >= this->m_parent->getXMax() || m_symbol == '\n') {
+        m_size.x = this->m_parent->getXMin();
+        m_size.y = parent->getYMin() - m_size.w;
         if (vec->back().size())
             vec->push_back(std::vector<CRectangleSymbol*>());
     }
@@ -106,8 +110,8 @@ void CRectangleSymbol::prepare()
 
 void CRectangleSymbol::translate(const glm::vec2 &translate)
 {
-    x += translate.x;
-    y += translate.y;
+    m_size.x += translate.x;
+    m_size.y += translate.y;
 }
 
 } // namespace behemoth

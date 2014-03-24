@@ -229,6 +229,10 @@ public:
      * @brief Конвертирование координат из абсолютных в относительные в пр-ве изображения.
      */
     static glm::vec2 getRelativeCoordinate(int x, int y);
+    /**
+     * @brief Получить соотношение сторон.
+     */
+    float getAspectRatio() const;
 
 private:
     CApplication();

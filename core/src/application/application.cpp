@@ -151,6 +151,11 @@ glm::vec2 CApplication::getRelativeCoordinate(int _x, int _y)
     return glm::vec2(x, y);
 }
 
+float CApplication::getAspectRatio() const
+{
+    return m_size.y != 0 ? static_cast<float>(m_size.x) / static_cast<float>(m_size.y) : 1.0f;
+}
+
 
 void CApplication::key(unsigned char key, int x, int y )
 {
@@ -190,7 +195,7 @@ void CApplication::display()
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<float> time_span = duration_cast< duration<double> >(t2 - t1);
     instance->m_secOfLastFrame = time_span.count();
-//    std::cout << 1.0f / instance->secOfLastFrame << "\n";
+//    std::cout << 1.0f / instance->m_secOfLastFrame << "\n";
 }
 
 void CApplication::idle()

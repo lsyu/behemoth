@@ -87,7 +87,7 @@ void CRectangleText::paint() const
         if (!prev || prev->m_symbol != (*it)->m_symbol) {
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, (*it)->texture.getId());
+            glBindTexture(GL_TEXTURE_2D, (*it)->m_texture.getId());
         }
         (*it)->paint();
         prev = *it;

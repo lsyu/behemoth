@@ -1,23 +1,14 @@
 #version 120
 uniform float aspect; // width / height (screen)
-uniform float x; // geometry of rectangle
-uniform float y;
-uniform float width;
-uniform float height;
-uniform float rA; // radiuses of rectangle
-uniform float rB;
-uniform float rC;
-uniform float rD;
-uniform float borderWidth;
 uniform float alpha;
-uniform vec3 borderColor;
-
-uniform int textureUse; // 0 - color, 1 - texture
+uniform vec4 size; // x - x, y - y, z - width, w - height
+uniform vec4 radius; // x - bl, y - tl, z - tr, w - br
+uniform vec4 border; // w(alpha) - width of border, rgb - color
 uniform sampler2D texture;
 
-varying vec4 fragmentColor;
-varying vec2 pos;
-varying vec2 uv;
+varying vec2 v_position;
+varying vec4 v_color;
+varying vec2 v_uv;
 
 vec2 correct(vec2 coord)
 {
@@ -33,14 +24,13 @@ float distFromPointToLine(vec2 point, vec2 lineA, vec2 lineB)
 // return 0 - outside, 1 - is border, 2 - inside
 int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, float rC, float rD)
 {
-    // примерно тоже, что и при заливке (isInRoundedRectangle)
     vec2 pos1 = correct(point);
 
-    vec2 c1 = correct(vec2(x, y))+rA;
-    vec2 c2 = correct(vec2(x, y + height));
+    vec2 c1 = correct(vec2(size.x, size.y))+rA;
+    vec2 c2 = correct(vec2(size.x, size.y + size.w));
     c2 = vec2(c2.x+rB, c2.y-rB);
-    vec2 c3 = correct(vec2(x + width, y + height))-rC;
-    vec2 c4 = correct(vec2(x+width, y));
+    vec2 c3 = correct(vec2(size.x + size.z, size.y + size.w))-rC;
+    vec2 c4 = correct(vec2(size.x+size.z, size.y));
     c4 = vec2(c4.x-rD, c4.y+rD);
 
     vec2 A1 = vec2(c1.x - rA, c1.y);
@@ -59,7 +49,7 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
     float A2D2 = distFromPointToLine(pos1, A2, D2);
 
     if (A1B1 <= rA && A2D2 <= rA) {
-        // Нижний левый угол
+        // bottom left
         dist = distance(pos1, c1) - rA;
         if (dist <= 0.0f)
             return dist + widthOfBorder > 0.0f ? 1 : 2;
@@ -67,7 +57,7 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
             return 0;
     }
     if (A1B1 <= rB && B2C2 <= rB) {
-        // Верхний правый угол
+        // top right
         dist = distance(pos1, c2) - rB;
         if (dist < 0.0f)
             return dist + widthOfBorder > 0.0f ? 1 : 2;
@@ -75,7 +65,7 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
             return 0;
     }
     if (B2C2 <= rC && C1D1 <= rC) {
-        // Верхний левый угол
+        // top left
         dist = distance(pos1, c3) - rC;
         if (dist < 0.0f)
             return dist + widthOfBorder > 0.0f ? 1 : 2;
@@ -83,26 +73,26 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
             return 0;
     }
     if (C1D1 <= rD && A2D2 <= rD) {
-        // Нижний левый угол
+        // bottom left
         dist = distance(pos1, c4) - rD;
         if (dist < 0.0f)
             return dist + widthOfBorder > 0.0f ? 1 : 2;
         else
             return 0;
     }
-    //Лево
+    // left
     dist = A1B1 - widthOfBorder;
     if (dist < 0.0f)
         return 1;
-    //Верх
+    // top
     dist = B2C2 - widthOfBorder;
     if (dist < 0.0f)
         return 1;
-    //Право
+    // right
     dist = C1D1 - widthOfBorder;
     if (dist < 0.0f)
         return 1;
-    //Низ
+    // bottom
     dist = A2D2 - widthOfBorder;
     if (dist < 0.0f)
         return 1;
@@ -113,15 +103,16 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
 void main(void)
 {
     vec4 outColor;
-    if (textureUse == 1)
-        outColor = texture2D(texture, uv);
+    if (v_uv.x >= 0.0 && v_uv.y >= 0.0)
+        outColor = texture2D(texture, v_uv);
     else
-        outColor = vec4(fragmentColor.rgb, alpha);
-    int param = genRoundedRectangle(pos, borderWidth, rA, rB, rC, rD);
+        outColor = vec4(v_color.rgb, alpha);
+    int param = genRoundedRectangle(v_position, border.w, radius.x, radius.y, radius.z, radius.w);
     if (param == 0)
         outColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     else if (param == 1)
-        outColor = vec4(borderColor, 1.0f);
+        outColor = vec4(border.rgb, 1.0f);
 
     gl_FragColor = outColor;
 }
+

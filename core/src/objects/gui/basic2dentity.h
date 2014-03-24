@@ -21,6 +21,8 @@
 #define BASIC2DENTITY_H
 
 #include "core/objects/abstractentity.h"
+#include "core/ogl/vertexbufferobject.h"
+#include "core/ogl/vertexarrayobject.h"
 
 namespace behemoth {
 
@@ -54,6 +56,19 @@ struct CBorderRadius {
     void setBottomRight(float bottomRight) { this->bottomRight = validateValue(bottomRight); }
     float getBottomRight() const { return bottomRight == 0 ? r : bottomRight; }
 
+    glm::vec4 toVec4() const {
+        return glm::vec4(getBottomLeft(), getTopLeft(), getTopRight(), getBottomRight());
+    }
+
+    CBorderRadius &operator*(float value) {
+        r = validateValue(r*value);
+        bottomLeft = validateValue(bottomLeft*value);
+        topLeft = validateValue(topLeft*value);
+        topRight = validateValue(topRight*value);
+        bottomRight = validateValue(bottomRight*value);
+        return *this;
+    }
+
 private:
     // from 0 to 1
     float validateValue(float val)
@@ -77,6 +92,10 @@ private:
 struct CBorder {
     CBorder() : width(0), color(0.0f, 0.0f, 0.0f) {}
     CBorder(const CBorder &other) : width(other.width), color(other.color) {}
+
+    glm::vec4 toVec4() const {
+        return glm::vec4(color, width);
+    }
 
     float width;            /**< размер */
     glm::vec3 color;        /**< цвет */
@@ -102,9 +121,7 @@ struct CGradient{
 class CBasic2dEntity : public AbstractEntity
 {
     friend class CApplication;
-    friend class CGUIManager;
     friend class CBasicGUILayer;
-    friend class CRectangle;
 public:
     struct CVertex2D {
         glm::vec2 vertex;
@@ -128,7 +145,6 @@ public:
 public:
     virtual void paint() const override;
     virtual std::string getId() const override final;
-protected:
     virtual void configure() override;
 
 public:
@@ -173,9 +189,9 @@ protected:
     CBasic2dEntity *m_parent;               /**< Родитель. */
 
     CVertices2D m_vertices;                 /**< Контейнер вершин. */
-    std::vector<glm::vec2> vPos2;           /**< вектор координат */ // <-- ПЕРЕДЕЛАТЬ!
-    std::vector<glm::vec2> vUV;             /**< вектор текстурных координат */ // <-- ПЕРЕДЕЛАТЬ!
-    std::vector<glm::vec3> vColor;          /**< вектор цветов вершин */ // <-- ПЕРЕДЕЛАТЬ!
+
+    CVertexArrayObject m_vao;
+    CVertexBufferObject m_vertexVBO;
 
     static std::vector<CBasic2dEntity*> m_objects4Event;   /**< Объекты, для которых выполнилось
                                                              * действие.

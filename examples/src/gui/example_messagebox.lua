@@ -6,20 +6,15 @@ ui:rectangle "root"
   y = -1.0;
   width = 2.0;
   height = 2.0;
-  gradient = ui:gradient
-  {
-    bottomLeft = glm:vec3(0.1, 0.1, 0.1);
-    topLeft = glm:vec3(0.3, 0.3, 0.3);
-    topRight= glm:vec3(0.6, 0.6, 0.6);
-    bottomRight = glm:vec3(0.9, 0.9, 0.9);
-  };
+  texture = "test";
+ 
 
   ui:rectangle "modal"
   {
-    x = -0.5;
-    y = -0.5;
-    width = 1.0;
-    height = 1.0;
+    x = -0.4;
+    y = -0.4;
+    width = 0.8;
+    height = 0.8;
 
     color = glm:vec3(0.6, 0.6, 0.6);
 
@@ -47,7 +42,7 @@ ui:rectangle "root"
       {
         alignVerical = "center";
         alignHorizontal = "center";
-        text = "'Hello world' from lua! :)\nMessageBox example...";
+        text = "Hello world! :)";
         height = 0.2;
         font = "DejaVuSans";
       };
@@ -60,7 +55,13 @@ ui:rectangle "root"
       width = 1.8;
       height = 0.35;
 
-      color = glm:vec3(0.4, 0.4, 0.4);
+      gradient = ui:gradient
+      {
+        bottomLeft = glm:vec3(0.1, 0.1, 0.1);
+        topLeft = glm:vec3(0.6, 0.6, 0.6);
+        topRight= glm:vec3(0.6, 0.6, 0.6);
+        bottomRight = glm:vec3(0.1, 0.1, 0.1);
+      };
 
       border = ui:border
       {
@@ -77,7 +78,7 @@ ui:rectangle "root"
       {
         alignVerical = "center";
         alignHorizontal = "center";
-        text = "Exit";
+        text = "Button";
         height = 1;
         font = "DejaVuSans";
       };

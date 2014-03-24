@@ -29,74 +29,21 @@
 
 namespace behemoth {
 
-CRectangle::CRectangle() : CBasic2dEntity(), vao(), vertex(), color(), uv(), aspect(),
-    x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f), rC(0.0f), rD(0.0f), alpha(1.0f),
-    texture(), radius(), border(), text()
+CRectangle::CRectangle() : CRectangle("")
 {
-    vPos2.reserve(4);
-    vColor.reserve(4);
-    vUV.reserve(4);
-
-    vPos2 = {
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f)
-    };
-
-    vColor = {
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f)
-    };
-
-    // Перевернутое
-    vUV = {
-        glm::vec2(0.0f, 1.0f - 0.0f),
-        glm::vec2(1.0f, 1.0f - 0.0f),
-        glm::vec2(1.0f, 1.0f - 1.0f),
-        glm::vec2(0.0f, 1.0f - 1.0f)
-    };
-
-    rA = rB = rC = rD = 0.0f;
-    glm::ivec2 size = CApplication::getInstance()->getSize();
-    aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
 }
 
-CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id), vao(),
-    vertex(), color(), uv(), aspect(), x(-1), y(-1), width(1), height(1), rA(0.0f), rB(0.0f),
-    rC(0.0f), rD(0.0f), alpha(1.0f), texture(), radius(), border(), text()
+CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id),
+    m_aspect(CApplication::getInstance()->getAspectRatio()), m_alpha(1.0f),
+    m_size(glm::vec4(-1, -1, 2, 2)), m_border(), m_radius(), m_texture(), m_text()
 {
-    vPos2.reserve(4);
-    vColor.reserve(4);
-    vUV.reserve(4);
-
-    vPos2 = {
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f)
-    };
-
-    vColor = {
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f)
-    };
-
-    // Перевернутое
-    vUV = {
-        glm::vec2(0.0f, 1.0f - 0.0f),
-        glm::vec2(1.0f, 1.0f - 0.0f),
-        glm::vec2(1.0f, 1.0f - 1.0f),
-        glm::vec2(0.0f, 1.0f - 1.0f)
-    };
-
-    rA = rB = rC = rD = 0.0f;
-    glm::ivec2 size = CApplication::getInstance()->getSize();
-    aspect = size.y != 0.0f ? static_cast<float>(size.x) / static_cast<float>(size.y) : 1.0f;
+    m_vertices.reserve(4);
+    m_vertices = {
+      //|  position              |  uv                    | colors                    |
+        {glm::vec2(-1.0f, -1.0f), glm::vec2(-1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f)},
+        {glm::vec2(-1.0f, 1.0f),  glm::vec2(-1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f)},
+        {glm::vec2(1.0f, 1.0f),   glm::vec2(-1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f)},
+        {glm::vec2(1.0f, -1.0f),  glm::vec2(-1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f)}};
 }
 
 CRectangle::~CRectangle()
@@ -111,50 +58,42 @@ void CRectangle::configure()
         float shiftX = (m_parent->getXMax() + m_parent->getXMin()) / 2.0f;
         float shiftY = (m_parent->getYMax() + m_parent->getYMin()) / 2.0f;
 
-        x = x * scWidth + shiftX;
-        y = y * scHeight + shiftY;
-        width = width * scWidth;
-        height = height * scHeight;
+        m_size.x = m_size.x * scWidth + shiftX;
+        m_size.y = m_size.y * scHeight + shiftY;
+        m_size.z *=  scWidth;
+        m_size.w *= scHeight;
     }
 
-    float halfOfMinSide = 0.5f * std::min(width, height);
-    rA *= halfOfMinSide;
-    rB *= halfOfMinSide;
-    rC *= halfOfMinSide;
-    rD *= halfOfMinSide;
+    float halfOfMinSide = 0.5f * std::min(m_size.z, m_size.w);
+    m_radius = m_radius * halfOfMinSide;
 
-    float minR = 0.0f;
-    minR = (rA > 0.0f && rB > 0.0f) ? std::min(rA, rB) : std::max(rA, rB);
-    minR = (rC > 0.0f && minR > 0.0f) ? std::min(minR, rC) : std::max(minR, rC);
-    minR = (rD > 0.0f && minR > 0.0f) ? std::min(minR, rD) : std::max(minR, rD);
+    m_border.width *= std::min(m_size.z, m_size.w) * 0.5f;
 
-    border.width *= std::min(width, height) * 0.5f;
+    m_vertices[0].vertex = glm::vec2(m_size.x, m_size.y);
+    m_vertices[1].vertex = glm::vec2(m_size.x + m_size.z, m_size.y);
+    m_vertices[2].vertex = glm::vec2(m_size.x + m_size.z, m_size.y + m_size.w);
+    m_vertices[3].vertex = glm::vec2(m_size.x, m_size.y + m_size.w);
 
-    vPos2[0] = glm::vec2(x, y);
-    vPos2[1] = glm::vec2(x + width, y);
-    vPos2[2] = glm::vec2(x + width, y + height);
-    vPos2[3] = glm::vec2(x, y + height);
+    if (m_texture.getId()) {
+        m_vertices[0].uv =  glm::vec2(0.0f, 1.0f - 0.0f);
+        m_vertices[1].uv =  glm::vec2(1.0f, 1.0f - 0.0f);
+        m_vertices[2].uv =  glm::vec2(1.0f, 1.0f - 1.0f);
+        m_vertices[3].uv =  glm::vec2(0.0f, 1.0f - 1.0f);
+    }
 
     CShader *shader = CShaderFactory::getInstance()->getShader("gui");
     if (shader) {
-        vao.genBuffer();
-        vao.bind();
+        m_vao.genBuffer();
+        m_vao.bind();
 
-        vertex.genBuffer();
-        vertex.setData(&vPos2);
-        shader->setAttribute("position", 2, 0, 0);
+        m_vertexVBO.genBuffer();
+        m_vertexVBO.setData(&m_vertices);
 
-        color.genBuffer();
-        color.setData(&vColor);
-        shader->setAttribute("color",3, 0, 0);
+        shader->setAttribute("a_position", 2, 0, sizeof(CVertex2D));
+        shader->setAttribute("a_uv", 2, 8, sizeof(CVertex2D));
+        shader->setAttribute("a_color", 3, 16, sizeof(CVertex2D));
 
-        if (texture.getId()) {
-            uv.genBuffer();
-            uv.setData(&vUV);
-            shader->setAttribute("UV", 2, 0, 0);
-        }
-
-        vao.disable();
+        m_vao.disable();
     }
 
     for (auto child: m_childs)
@@ -164,38 +103,25 @@ void CRectangle::configure()
 void CRectangle::paint() const
 {
     CShader *shader = CShaderFactory::getInstance()->getShader("gui");
-    if (shader) {
-        shader->setUniform("aspect", aspect);
-        shader->setUniform("x", x);
-        shader->setUniform("y", y);
-        shader->setUniform("width", width);
-        shader->setUniform("height", height);
-        shader->setUniform("rA", rA);
-        shader->setUniform("rB", rB);
-        shader->setUniform("rC", rC);
-        shader->setUniform("rD", rD);
-        shader->setUniform("alpha", alpha);
-        shader->setUniform("borderWidth", border.width);
-        shader->setUniform("borderColor", border.color);
+    if (shader && m_alpha > 0.0f) {
+        shader->setUniform("aspect", m_aspect);
+        shader->setUniform("alpha", m_alpha);
+        shader->setUniform("size", m_size);
+        shader->setUniform("radius", m_radius.toVec4());
+        shader->setUniform("border", m_border.toVec4());
 
-        if (texture.getId()) {
-            shader->setUniform("textureUse", 1);
+        if (m_texture.getId()) {
             shader->setUniform("texture", 0);
-        } else {
-            shader->setUniform("textureUse", 0);
-        }
-
-        if (texture.getId()) {
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
+            glBindTexture(GL_TEXTURE_2D, m_texture.getId());
         }
 
-        vao.bind();
+        m_vao.bind();
         glDrawArrays(GL_QUADS, 0, 4);
-        vao.disable();
+        m_vao.disable();
 
-        if (texture.getId())
+        if (m_texture.getId())
             glDisable(GL_TEXTURE_2D);
     }
 
@@ -205,17 +131,14 @@ void CRectangle::paint() const
 
 void CRectangle::setColor(const glm::vec3 &color)
 {
-    vColor[0] = color;
-    vColor[1] = color;
-    vColor[2] = color;
-    vColor[3] = color;
+    m_vertices[0].color = m_vertices[1].color = m_vertices[2].color = m_vertices[3].color = color;
 }
 
 bool CRectangle::contains(const glm::vec2 &point) const
 {
-    if (point.x < x || point.x > x+width)
+    if (point.x < m_size.x || point.x > m_size.x+m_size.z)
         return false;
-    if (point.y < y || point.y > y+height)
+    if (point.y < m_size.y || point.y > m_size.y+m_size.w)
         return false;
     return true;
 }
@@ -230,104 +153,100 @@ void CRectangle::onClicked(const CEventMouseClick &event)
 
 glm::vec3 CRectangle::getColor() const
 {
-    return vColor[0];
+    return m_vertices[0].color;
 }
 
 float CRectangle::getXMin() const
 {
-    return x;
+    return m_size.x;
 }
 
 float CRectangle::getXMax() const
 {
-    return x + width;
+    return m_size.x + m_size.z;
 }
 
 float CRectangle::getYMin() const
 {
-    return y;
+    return m_size.y;
 }
 
 float CRectangle::getYMax() const
 {
-    return y + height;
+    return m_size.y + m_size.w;
 }
 
 void CRectangle::setX(float x)
 {
-    this->x = x;
+    m_size.x = x;
 }
 
 void CRectangle::setY(float y)
 {
-    this->y = y;
+    m_size.y = y;
 }
 
 void CRectangle::setWidth(float width)
 {
-    this->width = std::abs(width);
+    m_size.z = std::abs(width);
 }
 
 float CRectangle::getWidth() const
 {
-    return width;
+    return m_size.z;
 }
 
 void CRectangle::setHeight(float height)
 {
-    this->height = std::abs(height);
+    m_size.w = std::abs(height);
 }
 
 float CRectangle::getHeight() const
 {
-    return height;
+    return m_size.w;
 }
 
 void CRectangle::setRadius(const CBorderRadius &radius)
 {
-    this->radius = radius;
-    this->rA = radius.getBottomLeft();
-    this->rB = radius.getTopLeft();
-    this->rC = radius.getTopRight();
-    this->rD = radius.getBottomRight();
+    m_radius = radius;
 }
 
 CBorderRadius CRectangle::getRadius() const
 {
-    return radius;
+    return m_radius;
 }
 
 void CRectangle::setBorder(const CBorder &border)
 {
-    this->border = border;
+    this->m_border = border;
 }
 
 CBorder CRectangle::getBorder() const
 {
-    return border;
+    return m_border;
 }
 
 void CRectangle::setTexture(const std::string &name)
 {
-    this->texture = CTextureFactory::getInstance()->getTexture(name);
+    this->m_texture = CTextureFactory::getInstance()->getTexture(name);
 }
 
 std::string CRectangle::getTexture() const
 {
-    return texture.getFileName();
+    return m_texture.getFileName();
 }
 
 void CRectangle::setGradient(const CGradient &gradient)
 {
-    vColor[0] = gradient.bottomLeft;
-    vColor[1] = gradient.topLeft;
-    vColor[2] = gradient.topRight;
-    vColor[3] = gradient.bottomRight;
+    m_vertices[0].color = gradient.bottomLeft;
+    m_vertices[3].color = gradient.topLeft;
+    m_vertices[2].color = gradient.topRight;
+    m_vertices[1].color = gradient.bottomRight;
 }
 
 CGradient CRectangle::getGradient() const
 {
-    return CGradient(vColor[0], vColor[1], vColor[2], vColor[3]);
+    return CGradient(m_vertices[0].color, m_vertices[3].color, m_vertices[2].color, m_vertices[1].color);
 }
 
 // от 0 до 1
@@ -342,23 +261,23 @@ float validateValue(float val)
 
 void CRectangle::setAlpha(float alpha)
 {
-    this->alpha = validateValue(alpha);
+    this->m_alpha = validateValue(alpha);
 }
 
 float CRectangle::getAlpha() const
 {
-    return alpha;
+    return m_alpha;
 }
 
 void CRectangle::setText(const CRectangleText &text)
 {
-    this->text = text;
-    addChild(&this->text);
+    this->m_text = text;
+    addChild(&this->m_text);
 }
 
 CRectangleText CRectangle::getText() const
 {
-    return text;
+    return m_text;
 }
 
 } // namespace behemoth

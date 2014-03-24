@@ -25,13 +25,12 @@ namespace behemoth {
 
 std::vector<CBasic2dEntity*> CBasic2dEntity::m_objects4Event;
 
-CBasic2dEntity::CBasic2dEntity() : m_id(), m_childs(), m_parent(nullptr), m_vertices(), vPos2(), vUV(), vColor()
+CBasic2dEntity::CBasic2dEntity() : CBasic2dEntity("")
 {
 }
 
 CBasic2dEntity::CBasic2dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(),
-    m_parent(nullptr), m_vertices(),
-    vPos2(), vUV(), vColor()
+    m_parent(nullptr), m_vertices(), m_vao(), m_vertexVBO()
 {
 }
 

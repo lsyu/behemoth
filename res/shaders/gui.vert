@@ -1,18 +1,17 @@
 #version 120
-attribute vec2 position;
-attribute vec3 color;
-attribute vec2 UV;
+attribute vec2 a_position;
+attribute vec3 a_color;
+attribute vec2 a_uv; // (-1,-1) if no texture
 
-varying vec4 fragmentColor;
-varying vec2 pos;
-varying vec2 uv;
+varying vec2 v_position;
+varying vec4 v_color;
+varying vec2 v_uv;
 
 void main(void)
 {
-    fragmentColor = vec4(color,1.0f);
-
-    pos = position;
-    uv = UV;
-
-    gl_Position = vec4(vec3(position, 0.0f), 1.0);
+    v_position = a_position;
+    v_color = vec4(a_color,1.0f);
+    v_uv = a_uv;
+    gl_Position = vec4(a_position, 0.0f, 1.0);
 }
+
