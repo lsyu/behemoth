@@ -1,5 +1,5 @@
 #include "core/application/application.h"
-#include "layers/guilayer.h"
+#include "core/application/basicguilayer.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     app->setSize(glm::ivec2(800, 600));
     app->setColorDepth(EColorDepth::_32);
 
-    GUILayer guiLayer("example_messagebox.lua");
+    CBasicGUILayer guiLayer("example_messagebox.lua");
     app->setGUILayer(&guiLayer);
 
     app->exec();

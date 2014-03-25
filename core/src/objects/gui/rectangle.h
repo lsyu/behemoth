@@ -22,6 +22,7 @@
 
 #include "basic2dentity.h"
 #include "rectangletext.h"
+#include "rectangledecoration.h"
 
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
@@ -39,11 +40,9 @@ class CShader;
 class CRectangle : public CBasic2dEntity
 {
 public:
-    // todo: factory! ---------------
     CRectangle();
     explicit CRectangle(const std::string &m_id);
     virtual ~CRectangle();
-    // -------------------------------
 
     // AbstractEntity interface
 public:

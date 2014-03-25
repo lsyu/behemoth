@@ -52,26 +52,16 @@ class CBasic2dEntity;
  */
 class CGUIManager
 {
+    friend class CEntity2dFactory;
 public:
     /**
      * @brief Получить экземпляр менеджера работы с Lua.
      */
     static CGUIManager *getInstance();
 
-    /**
-     * @brief Прочитать файл описания интерфейса с именем @a fileName.
-     *
-     * После парсинга скрипта луа наши декларативно описанные элементы
-     * сохраняются в вектор, получить доступ к которым можно, воспользовавшись
-     * методами @sa getObject, getObjects
-     * @return true если скрипт выполнен, false в противном случае.
-     */
-    bool readGui(const std::string &fileName);
 
-    CBasic2dEntity *getObject(const std::string &id);
-    CBasic2dEntity *getObject(int num);
-    CBasic2dEntity *getRootObject();
-    const std::vector<std::shared_ptr<CBasic2dEntity> > &getObjects() const;
+
+//    CBasic2dEntity *getRootObject();
 
     /**
      * @brief Выполнить onClick из скрипта Lua.
@@ -91,9 +81,17 @@ public:
 
 protected:
     /**
+     * @brief Прочитать файл описания интерфейса с именем @a fileName.
+     *
+     * После парсинга скрипта луа наши декларативно описанные элементы
+     * сохраняются в вектор. @n
+     * Для получения корневого элемента используйте CEntityFactory::loadGUI
+     * @return true если скрипт выполнен, false в противном случае.
+     */
+    bool readGui(const std::string &fileName);
+    /**
      * @brief добавить готовый объект в контейнер на вывод.
      */
-    template<class T>
     void addObject(CBasic2dEntity *entity);
     /**
      * @brief Инициализация и регистрирование всех доп. возможностей.
@@ -146,7 +144,7 @@ private:
 
     static CGUIManager *instance;
     lua_State *m_lua;                                                   /**< стек lua. */
-    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> > m_objects; /**< Элементы GUI */
+    std::vector< behemoth::CBasic2dEntity* > m_objects;                 /**< Элементы GUI */
 
     friend class __CGUIManagerImplDel;
 }; // class CGUIManager

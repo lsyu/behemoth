@@ -13,7 +13,7 @@ set(CORE_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/lightfactory.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/basic3dentity.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/entityfactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entity3dfactory.cpp
 
     
     PARENT_SCOPE
@@ -34,7 +34,7 @@ set(CORE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/lightfactory.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/basic3dentity.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/entityfactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entity3dfactory.cpp
     
     PARENT_SCOPE
 )

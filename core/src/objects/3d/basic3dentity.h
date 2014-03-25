@@ -33,7 +33,7 @@ namespace behemoth {
  */
 class CBasic3dEntity : public AbstractEntity
 {
-    friend class CEntityFactory;
+    friend class CEntity3dFactory;
 public:
     struct CVertex3D {
         glm::vec3 vertex;

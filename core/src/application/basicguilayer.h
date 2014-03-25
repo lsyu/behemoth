@@ -21,37 +21,59 @@
 #define BASICGUILAYER_H
 
 #include "abstractlayer.h"
+#include <string>
 
 namespace behemoth {
 
-class CShader;
 class CGUIManager;
 class CBasic2dEntity;
 
 /**
  * @brief Базовый класс слоя пользовательского интерфейса.
- *
- * Для того, чтобы создать пользовательский слой GUI, необходимо
- * наследоваться от данного класса и определить реализацию метода
- * virtual void prepareGL() из интерфейса AbstractLayer.
- * Для формирования данных для отрисовки пользовательского интерфейса
- * достаточно выполнить CGUIManager::getInstance()->readGui("example.lua");
  */
 class CBasicGUILayer : public AbstractLayer
 {
 public:
-    CBasicGUILayer();
+    explicit CBasicGUILayer(const std::string &fileName);
     virtual ~CBasicGUILayer();
 
+    // AbstractLayer interface
+public:
+    /**
+     * @note Если будешь писать свою реализацию, выполни
+     * @code
+     * m_root = CEntity2dFactory::getInstance()->loadGUI(fileName);
+     * if (m_root)
+     *    m_root->configure();
+     * @endcode
+     */
+    virtual void prepareGL() override;
     virtual bool updateGL() override;
-    virtual bool updateGL(CEventMouseClick *e) override;
+    virtual bool updateGL(CEventMouseClick *e) override final;
+    /**
+     * @note Если будешь писать свою реализацию, выполни что-то похожее на
+     * @code
+     * glDisable(GL_DEPTH_TEST);
+     * glEnable(GL_BLEND);
+     * glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+     * if (m_root)
+     *     m_root->paint();
+     * glDisable(GL_BLEND);
+     * glEnable(GL_DEPTH_TEST);
+     * @endcode
+     */
     virtual void paintGL() override;
+
+protected:
+    CBasic2dEntity *m_root;     /**< Корневой элемент GUI */
 
 private:
     /**
      * @brief Выполнить действие action
      */
     void executeAction(bool(CGUIManager::*action)(CBasic2dEntity *));
+
+    std::string m_fileName;     /**< Название скрипта описания GUI */
 }; // class CBasicGUILayer
 
 } // namespace behemoth

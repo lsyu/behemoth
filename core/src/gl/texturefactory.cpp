@@ -145,10 +145,8 @@ CTexture CTextureFactory::loadTexture(const string &name, const string &fileName
 CTexture CTextureFactory::getTexture(const string &name)
 {
     std::map<std::string, CTexture>::const_iterator texture = m_textures.find(name);
-    if (texture == m_textures.end()) {
-        CResourceManager *res = CResourceManager::getInstance();
-        return loadTexture(name, res->getTextureFolder()+ res->getFileSeparator() + name + ".dds");
-    }
+    if (texture == m_textures.end())
+        return loadTexture(name, CResourceManager::getInstance()->getTextureFolder() + name + ".dds");
     return texture->second;
 }
 

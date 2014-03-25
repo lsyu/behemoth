@@ -22,19 +22,28 @@
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
 #include "core/lua/guimanager.h"
-#include "core/objects/gui/basic2dentity.h"
-
+#include "core/objects/gui/entity2dfactory.h"
 #include "core/events/eventmouseclick.h"
 
 namespace behemoth {
 
 
-CBasicGUILayer::CBasicGUILayer() : AbstractLayer()
+CBasicGUILayer::CBasicGUILayer(const std::string &fileName) : AbstractLayer(),
+    m_root(nullptr), m_fileName(fileName)
 {
 }
 
 CBasicGUILayer::~CBasicGUILayer()
 {
+}
+
+void CBasicGUILayer::prepareGL()
+{
+    // m_root инициализируется здесь, потому что только к этому моменту можно сказать,
+    // что контекст OpenGl создан.
+    m_root = CEntity2dFactory::getInstance()->loadGUI(m_fileName);
+    if (m_root)
+        m_root->configure();
 }
 
 bool CBasicGUILayer::updateGL()
@@ -44,22 +53,23 @@ bool CBasicGUILayer::updateGL()
 
 bool CBasicGUILayer::updateGL(CEventMouseClick *e)
 {
-    static CBasic2dEntity *entityDown = nullptr, *entityUp = nullptr;
-    EMouseState state = e->getMouseState();
-    CBasic2dEntity *object = CGUIManager::getInstance()->getRootObject();
-    object->onClicked(*e);
-    if (!CBasic2dEntity::m_objects4Event.empty()) {
-        if (state == EMouseState::down) {
-            entityDown = CBasic2dEntity::m_objects4Event.back();
-            entityUp = nullptr;
-            executeAction(&CGUIManager::onPressed);
-        } else {
-            entityUp = CBasic2dEntity::m_objects4Event.back();
-            executeAction(&CGUIManager::onReleased);
-        }
-        if (entityUp && entityDown && entityDown->getId() == entityUp->getId()) {
-            entityUp = entityDown = nullptr;
-            executeAction(&CGUIManager::onClick);
+    if (m_root) {
+        static CBasic2dEntity *entityDown = nullptr, *entityUp = nullptr;
+        EMouseState state = e->getMouseState();
+        m_root->onClicked(*e);
+        if (!CEntity2dFactory::getInstance()->getEntities4Event().empty()) {
+            if (state == EMouseState::down) {
+                entityDown = CEntity2dFactory::getInstance()->getEntities4Event().back();
+                entityUp = nullptr;
+                executeAction(&CGUIManager::onPressed);
+            } else {
+                entityUp = CEntity2dFactory::getInstance()->getEntities4Event().back();
+                executeAction(&CGUIManager::onReleased);
+            }
+            if (entityUp && entityDown && entityDown->getId() == entityUp->getId()) {
+                entityUp = entityDown = nullptr;
+                executeAction(&CGUIManager::onClick);
+            }
         }
     }
     return true;
@@ -71,9 +81,8 @@ void CBasicGUILayer::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    CBasic2dEntity *root = CGUIManager::getInstance()->getRootObject();
-    if (root)
-        root->paint();
+    if (m_root)
+        m_root->paint();
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
@@ -81,15 +90,15 @@ void CBasicGUILayer::paintGL()
 
 void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(CBasic2dEntity *))
 {
-    std::vector<CBasic2dEntity*> tmp = CBasic2dEntity::m_objects4Event;
+    std::vector<CBasic2dEntity*> tmp = CEntity2dFactory::getInstance()->getEntities4Event();
     while (true) {
-        if ((CGUIManager::getInstance()->*action)(CBasic2dEntity::m_objects4Event.back()))
+        if ((CGUIManager::getInstance()->*action)(CEntity2dFactory::getInstance()->getEntities4Event().back()))
             break;
-        CBasic2dEntity::m_objects4Event.pop_back();
-        if (CBasic2dEntity::m_objects4Event.empty())
+        CEntity2dFactory::getInstance()->getEntities4Event().pop_back();
+        if (CEntity2dFactory::getInstance()->getEntities4Event().empty())
             break;
     }
-    CBasic2dEntity::m_objects4Event = tmp;
+    CEntity2dFactory::getInstance()->getEntities4Event() = tmp;
 }
 
 

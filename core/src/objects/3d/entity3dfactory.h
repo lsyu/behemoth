@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef ENTITYFACTORY_H
-#define ENTITYFACTORY_H
+#ifndef ENTITY3DFACTORY_H
+#define ENTITY3DFACTORY_H
 
 #include "basic3dentity.h"
 #include <map>
@@ -27,11 +27,12 @@ namespace behemoth {
 
 /**
  * @brief The Фабрика загрузки трехмерных сущностей.
+ * @note Сущности генерируются и удаляются здесь!
  */
-class CEntityFactory
+class CEntity3dFactory
 {
 public:
-    static CEntityFactory *getInstance();
+    static CEntity3dFactory *getInstance();
 
     /**
      * @brief loadEntity загрузить сущность из файла.
@@ -43,18 +44,18 @@ public:
     CBasic3dEntity *loadEntity(const std::string &fileName);
 
 private:
-    CEntityFactory();
-    CEntityFactory(const CEntityFactory &);
-    CEntityFactory &operator=(const CEntityFactory &);
-    ~CEntityFactory();
+    CEntity3dFactory();
+    CEntity3dFactory(const CEntity3dFactory &);
+    CEntity3dFactory &operator=(const CEntity3dFactory &);
+    ~CEntity3dFactory();
 
-    static CEntityFactory *instance;
+    static CEntity3dFactory *instance;
     std::map<std::string, CBasic3dEntity*> m_entities;  /**< Контейнер сущностей. */
     std::string m_pathToMesh;                           /**< Путь до ресурсов с mesh'ами. */
 
-    friend class __CEntityFactoryImplDel;
-}; // class CEntityFactory
+    friend class __CEntity3dFactoryImplDel;
+}; // class CEntity3dFactory
 
 } // namespace behemoth
 
-#endif // ENTITYFACTORY_H
+#endif // ENTITY3DFACTORY_H

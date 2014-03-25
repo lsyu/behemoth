@@ -20,10 +20,7 @@
 #include "guimanager.h"
 #include "luawrapper.h"
 
-#include "core/objects/abstractentity.h"
-#include "core/objects/gui/rectangle.h"
-#include "core/objects/gui/rectangletext.h"
-
+#include "core/objects/gui/entity2dfactory.h"
 #include "core/lua/resourcemanager.h"
 
 #include "glm/glm.h"
@@ -100,10 +97,10 @@ void CGUIManager::init()
 
 void CGUIManager::close()
 {
-    if (m_lua) {
-        if (!m_objects.empty())
-            m_objects.back()->configure();
-    }
+//    if (m_lua) {
+//        if (!m_objects.empty())
+//            m_objects.back()->configure();
+//    }
 }
 
 void CGUIManager::registerUI()
@@ -165,10 +162,10 @@ void CGUIManager::registerGradient()
 {
     CLuaWrapper<CGradient> g(m_lua, "gradient");
     g.addConstructor();
-    g.AddProperty(glm::vec3)("bottomLeft", &CGradient::bottomLeft);
-    g.AddProperty(glm::vec3)("topLeft", &CGradient::topLeft);
-    g.AddProperty(glm::vec3)("topRight", &CGradient::topRight);
-    g.AddProperty(glm::vec3)("bottomRight", &CGradient::bottomRight);
+    g.AddProperty(glm::vec3)("bottomLeft", &CGradient::m_bottomLeft);
+    g.AddProperty(glm::vec3)("topLeft", &CGradient::m_topLeft);
+    g.AddProperty(glm::vec3)("topRight", &CGradient::m_topRight);
+    g.AddProperty(glm::vec3)("bottomRight", &CGradient::m_bottomRight);
     g.addDestructor();
     g.complete(true);
 }
@@ -212,45 +209,21 @@ void CGUIManager::registerRectangle()
                   });
     r.addProperty({"sync", [](lua_State *l) {
                        CRectangle *t = __CLuaWrapper::checkUserData<CRectangle>(l, 1);
-                       CGUIManager::getInstance()->addObject<CRectangle>(t);
+                       CGUIManager::getInstance()->addObject(t);
                        return 1;
                    }
                   });
     r.complete(true);
 }
 
-behemoth::CBasic2dEntity *CGUIManager::getObject(const std::string &id)
-{
-    std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >::iterator it
-            = std::find_if(m_objects.begin(), m_objects.end(),
-            [&id](const std::shared_ptr<behemoth::CBasic2dEntity> &obj)
-            {
-                return obj->getId() == id;
-            });
-    return it != m_objects.end() ? static_cast<behemoth::CBasic2dEntity*>(&(*it->get())) : nullptr;
-}
+//CBasic2dEntity *CGUIManager::getRootObject()
+//{
+//    return m_objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(m_objects.back().get());
+//}
 
-behemoth::CBasic2dEntity *CGUIManager::getObject(int num)
-{
-    if (num < 0 || num >= static_cast<int>(m_objects.size()))
-        return nullptr;
-    return m_objects[num].get();
-}
-
-CBasic2dEntity *CGUIManager::getRootObject()
-{
-    return m_objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(m_objects.back().get());
-}
-
-const std::vector< std::shared_ptr<behemoth::CBasic2dEntity> >& CGUIManager::getObjects() const
-{
-    return m_objects;
-}
-
-template<class T>
 void CGUIManager::addObject(CBasic2dEntity *t)
 {
-    m_objects.push_back(std::shared_ptr<CBasic2dEntity>(dynamic_cast<T*>(t)));
+    m_objects.push_back(t);
 }
 
 bool CGUIManager::executeAction(CBasic2dEntity *entity, const std::string &action)

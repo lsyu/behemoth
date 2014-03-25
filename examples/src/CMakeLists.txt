@@ -4,8 +4,6 @@ cmake_minimum_required(VERSION 2.8.0)
 
 include_directories(../../include/)
 
-add_subdirectory(layers)
-
 add_executable(example_messagebox ${SRCS} ${HEADERS} example_messagebox.cpp)
 target_link_libraries(example_messagebox behemoth)
 

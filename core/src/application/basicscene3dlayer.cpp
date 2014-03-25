@@ -22,7 +22,7 @@
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
 
-#include "core/objects/3d/entityfactory.h"
+#include "core/objects/3d/entity3dfactory.h"
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
 
@@ -62,7 +62,7 @@ void CBasicScene3dLayer::paintGL()
 
     static CBasic3dEntity *obj = nullptr;
     if (!obj) {
-        obj = CEntityFactory::getInstance()->loadEntity("box.mesh");
+        obj = CEntity3dFactory::getInstance()->loadEntity("box.mesh");
         if (obj)
             obj->configure();
     }

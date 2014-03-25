@@ -17,7 +17,7 @@
  *
  */
 
-#include "entityfactory.h"
+#include "entity3dfactory.h"
 
 #include "core/lua/resourcemanager.h"
 
@@ -26,26 +26,26 @@
 
 namespace behemoth {
 
-CEntityFactory *CEntityFactory::instance = nullptr;
+CEntity3dFactory *CEntity3dFactory::instance = nullptr;
 
-class __CEntityFactoryImplDel {
+class __CEntity3dFactoryImplDel {
 public:
-    explicit __CEntityFactoryImplDel(CEntityFactory *obj) : obj(obj) {}
-    ~__CEntityFactoryImplDel() {delete obj;}
+    explicit __CEntity3dFactoryImplDel(CEntity3dFactory *obj) : obj(obj) {}
+    ~__CEntity3dFactoryImplDel() {delete obj;}
 private:
-    CEntityFactory *obj;
-}; // class __CEntityFactoryImplDel
+    CEntity3dFactory *obj;
+}; // class __CEntity3dFactoryImplDel
 
-CEntityFactory *CEntityFactory::getInstance()
+CEntity3dFactory *CEntity3dFactory::getInstance()
 {
     if (!instance) {
-        instance = new CEntityFactory;
-        static __CEntityFactoryImplDel implDel(instance);
+        instance = new CEntity3dFactory;
+        static __CEntity3dFactoryImplDel implDel(instance);
     }
     return instance;
 }
 
-CBasic3dEntity *CEntityFactory::loadEntity(const std::string &fileName)
+CBasic3dEntity *CEntity3dFactory::loadEntity(const std::string &fileName)
 {
     std::map<std::string, CBasic3dEntity*>::const_iterator it = m_entities.find(fileName);
     if (it != m_entities.end())
@@ -82,11 +82,11 @@ CBasic3dEntity *CEntityFactory::loadEntity(const std::string &fileName)
     return entity;
 }
 
-CEntityFactory::CEntityFactory() : m_entities(), m_pathToMesh(CResourceManager::getInstance()->getMeshFolder())
+CEntity3dFactory::CEntity3dFactory() : m_entities(), m_pathToMesh(CResourceManager::getInstance()->getMeshFolder())
 {
 }
 
-CEntityFactory::~CEntityFactory()
+CEntity3dFactory::~CEntity3dFactory()
 {
     for (auto item: m_entities)
         delete item.second;

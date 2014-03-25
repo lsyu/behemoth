@@ -23,8 +23,6 @@
 
 namespace behemoth {
 
-std::vector<CBasic2dEntity*> CBasic2dEntity::m_objects4Event;
-
 CBasic2dEntity::CBasic2dEntity() : CBasic2dEntity("")
 {
 }

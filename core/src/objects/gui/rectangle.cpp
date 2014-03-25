@@ -18,6 +18,7 @@
  */
 
 #include "rectangle.h"
+#include "entity2dfactory.h"
 
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
@@ -146,7 +147,7 @@ bool CRectangle::contains(const glm::vec2 &point) const
 void CRectangle::onClicked(const CEventMouseClick &event)
 {
     if (contains(event.getCoordinates()))
-        m_objects4Event.push_back(this);
+        CEntity2dFactory::getInstance()->getEntities4Event().push_back(this);
     for (int i = m_childs.size()-1; i >= 0; --i)
         dynamic_cast<CBasic2dEntity*>(m_childs[i])->onClicked(event);
 }
@@ -238,10 +239,10 @@ std::string CRectangle::getTexture() const
 
 void CRectangle::setGradient(const CGradient &gradient)
 {
-    m_vertices[0].color = gradient.bottomLeft;
-    m_vertices[3].color = gradient.topLeft;
-    m_vertices[2].color = gradient.topRight;
-    m_vertices[1].color = gradient.bottomRight;
+    m_vertices[0].color = gradient.m_bottomLeft;
+    m_vertices[3].color = gradient.m_topLeft;
+    m_vertices[2].color = gradient.m_topRight;
+    m_vertices[1].color = gradient.m_bottomRight;
 }
 
 CGradient CRectangle::getGradient() const

@@ -29,7 +29,7 @@
 #include "core/events/eventmouseclick.h"
 
 #include "core/lua/resourcemanager.h"
-#include "core/objects/gui/basic2dentity.h"
+#include "core/objects/gui/entity2dfactory.h"
 
 #include <iostream>
 #include <chrono>
@@ -165,7 +165,7 @@ void CApplication::key(unsigned char key, int x, int y )
 
 void CApplication::mouse(int button, int state, int x, int y)
 {
-    CBasic2dEntity::m_objects4Event.clear();
+    CEntity2dFactory::getInstance()->getEntities4Event().clear();
 
     EMouseButton btn  = EMouseButton::left;
     if (button == GLUT_RIGHT_BUTTON)
