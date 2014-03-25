@@ -21,31 +21,29 @@ float distFromPointToLine(vec2 point, vec2 lineA, vec2 lineB)
                / sqrt((lineB.x - lineA.x)*(lineB.x - lineA.x)+(lineB.y - lineA.y)*(lineB.y - lineA.y));
 }
 
+vec2 c1 = correct(vec2(size.x, size.y))+radius.x;
+vec2 c2 = correct(vec2(size.x, size.y + size.w)) + vec2(radius.y,-radius.y);
+vec2 c3 = correct(vec2(size.x + size.z, size.y + size.w))-radius.z;
+vec2 c4 = correct(vec2(size.x+size.z, size.y)) + vec2(-radius.w, radius.w);
+
+vec2 A1 = vec2(c1.x - radius.x, c1.y);
+vec2 B1 = vec2(c2.x - radius.y, c2.y);
+vec2 C1 = vec2(c3.x + radius.z, c3.y);
+vec2 D1 = vec2(c4.x + radius.w, c4.y);
+vec2 A2 = vec2(c1.x, c1.y - radius.x);
+vec2 B2 = vec2(c2.x, c2.y + radius.y);
+vec2 C2 = vec2(c3.x, c3.y + radius.z);
+vec2 D2 = vec2(c4.x, c4.y - radius.w);
+
 // return 0 - outside, 1 - is border, 2 - inside
 int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, float rC, float rD)
 {
+    if (point.x < size.x || point.x > point.x+size.z || point.y < size.y || point.y > size.y+size.w)
+        return 0;
     vec2 pos1 = correct(point);
-
-    vec2 c1 = correct(vec2(size.x, size.y))+rA;
-    vec2 c2 = correct(vec2(size.x, size.y + size.w));
-    c2 = vec2(c2.x+rB, c2.y-rB);
-    vec2 c3 = correct(vec2(size.x + size.z, size.y + size.w))-rC;
-    vec2 c4 = correct(vec2(size.x+size.z, size.y));
-    c4 = vec2(c4.x-rD, c4.y+rD);
-
-    vec2 A1 = vec2(c1.x - rA, c1.y);
-    vec2 B1 = vec2(c2.x - rB, c2.y);
-    vec2 C1 = vec2(c3.x + rC, c3.y);
-    vec2 D1 = vec2(c4.x + rD, c4.y);
-    vec2 A2 = vec2(c1.x, c1.y - rA);
-    vec2 B2 = vec2(c2.x, c2.y + rB);
-    vec2 C2 = vec2(c3.x, c3.y + rC);
-    vec2 D2 = vec2(c4.x, c4.y - rD);
 
     float dist = 0.0f;
     float A1B1 = distFromPointToLine(pos1, A1, B1);
-    float B2C2 = distFromPointToLine(pos1, B2, C2);
-    float C1D1 = distFromPointToLine(pos1, C1, D1);
     float A2D2 = distFromPointToLine(pos1, A2, D2);
 
     if (A1B1 <= rA && A2D2 <= rA) {
@@ -56,6 +54,7 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
         else
             return 0;
     }
+    float B2C2 = distFromPointToLine(pos1, B2, C2);
     if (A1B1 <= rB && B2C2 <= rB) {
         // top right
         dist = distance(pos1, c2) - rB;
@@ -64,6 +63,7 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
         else
             return 0;
     }
+    float C1D1 = distFromPointToLine(pos1, C1, D1);
     if (B2C2 <= rC && C1D1 <= rC) {
         // top left
         dist = distance(pos1, c3) - rC;
@@ -103,15 +103,15 @@ int genRoundedRectangle(vec2 point, float widthOfBorder, float rA, float rB, flo
 void main(void)
 {
     vec4 outColor;
-    if (v_uv.x >= 0.0 && v_uv.y >= 0.0)
-        outColor = texture2D(texture, v_uv);
-    else
-        outColor = vec4(v_color.rgb, alpha);
     int param = genRoundedRectangle(v_position, border.w, radius.x, radius.y, radius.z, radius.w);
     if (param == 0)
         outColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     else if (param == 1)
         outColor = vec4(border.rgb, 1.0f);
+    else if (v_uv.x >= 0.0 && v_uv.y >= 0.0)
+        outColor = texture2D(texture, v_uv);
+    else
+        outColor = vec4(v_color.rgb, alpha);
 
     gl_FragColor = outColor;
 }
