@@ -70,9 +70,16 @@ CFontFactory::Symbol *CFontFactory::getSymbol(char c, const CFont &font)
     // TODO: Обработка ошибок!
     FT_Load_Char(m_face, c, FT_LOAD_RENDER);
 
-    int advanceX =(g->metrics.width >>6) +10; // TODO: смещение м/ду символами.
-    int advanceY = g->metrics.vertAdvance >> 6;
     int height = (m_face->size->metrics.ascender - m_face->size->metrics.descender) >> 6;
+    if (c == ' ') {
+        ret->symbol.insert(ret->symbol.end(), height * height/2 * 4, 0);
+        ret->height = height;
+        ret->width = height/2;
+        return ret;
+    }
+
+    int advanceX =(g->metrics.width >>6) +1.0/10.0*height; // TODO: смещение м/ду символами.
+    int advanceY = g->metrics.vertAdvance >> 6;
     int bearningY = advanceY - g->bitmap_top;
 
 
@@ -184,7 +191,7 @@ CTextureBuffer *CFontFactory::getTextBuffer(char symbol, const CFont &font)
             std::make_move_iterator(std::end(s->symbol)));
     ret->m_width = s->width;
     ret->m_height = s->height;
-    delete s;
+//    delete s;
 
     return ret;
 }
