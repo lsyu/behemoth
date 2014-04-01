@@ -182,7 +182,7 @@ CTextureBuffer *CFontFactory::getTextBuffer(char symbol, const CFont &font)
 
     FT_Set_Pixel_Sizes( m_face, /* handle to face object */
             0, /* pixel_width */
-            font_h); /* pixel_height */
+            24); /* pixel_height */
 
     Symbol *s = getSymbol(symbol, font);
     CTextureBuffer *ret = new CTextureBuffer;
