@@ -1,14 +1,13 @@
 behemoth is graphics engine with lua-based declarative language for designing user interface and 3d stuff.
 
-behemoth - заготовка для графического движка с декларативным описанием элементов.
+behemoth - графическй движок с основанным на lua декларативным языком для разработки пользовательского интерфейса и трехмерных сцен.
 Спасибо проектам glm, gli, freeglut, lua, freetype.
 
 
-Например, messagebox выглядит так:
+Чтобы вывести подобный messagebox
  ![test](res/pictures/gui_messagebox_example.png "example of messagebox")
 
-
-Пример декларативного описания:
+необходимо написать примерно следующее:
 ``` lua
 -- Hello World Lua declarative
 
@@ -87,7 +86,7 @@ ui:rectangle "modal"
 };
 ```
 
-Загрузить этот код на c++ можно [вот так](examples/src/layers/guilayer.cpp). Подробнее - [тут](examples/src/)
+Загрузить этот код на c++ можно [вот так](examples/src/example_messagebox.cpp).
 
 Пример сборки:
 ``` bash
@@ -109,4 +108,4 @@ doxygen Doxyfile
 
 ---
 
-**Пока что разрабатывается (а потому и тестируется) только на Linux Fedora 20 (cmake version 2.8.12.2, gcc version 4.8.2)**
+**Пока что разрабатывается (а потому и тестируется) только на Linux Fedora 20 x86_64 (cmake version 2.8.12.2, gcc version 4.8.2)**
