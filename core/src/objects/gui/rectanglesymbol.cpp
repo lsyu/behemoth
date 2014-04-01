@@ -34,8 +34,8 @@ CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, 
     m_texture = CTextureFactory::getInstance()->getSymbol(symbol, *font);
 
     float scHeight = (parent->getYMax() - parent->getYMin()) / 2.0f;
-    float width = static_cast<float>(m_texture.getSize().x);
-    float height = static_cast<float>(m_texture.getSize().y);
+    float width = static_cast<float>(m_texture->getSize().x);
+    float height = static_cast<float>(m_texture->getSize().y);
     m_size.z = symbol == '\n' ? 0 : font->getHeight() * width / height * scHeight;
     m_size.w = font->getHeight() * scHeight;
 }

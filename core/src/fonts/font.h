@@ -46,16 +46,13 @@ public:
     void setHeight(float height);
     float getHeight() const;
 
-    static void setQuantity(int quantity);
-    static int getQuantity();
-
     void setColor(const glm::vec3 &color); // TODO: enum of color!
     glm::vec3 getColor() const;
 
+    bool operator ==(const CFont &other) const;
+    bool operator <(const CFont &other) const;
+
 private:
-    static int m_quantity;        /**< Качество шрифта. @n
-                                    * Настоящая высота шрифта при загрузке(в пикселях).
-                                    */
     std::string m_name;           /**< Название шрифта. */
     float m_height;               /**< Высота шрифта. @n
                                     * Отображаемая высота (относительная)

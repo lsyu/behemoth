@@ -23,8 +23,8 @@
 #include "core/fonts/font.h"
 #include "core/ogl/texture.h"
 
-#include <ft2build.h>
-#include <freetype/freetype.h>
+#include "ft2/ft2build.h"
+#include "ft2/freetype/freetype.h"
 
 #include <map>
 #include <vector>
@@ -44,21 +44,21 @@ public:
      */
     static CFontFactory *getInstance();
 
-    /**
-     * @brief Получить буфер для формирования изображения, содержащего текст text.
-     * @param text текст для вывода.
-     * @param font требуемый шрифт.
-     * @param parentWidth длина родителя(в пикселях).
-     * @param parentHeight высота родителя(в пикселях).
-     */
-    CTextBuffer getTextBuffer(const std::string &text, const CFont &font, int parentWidth, int parentHeight);
+//    /**
+//     * @brief Получить буфер для формирования изображения, содержащего текст text.
+//     * @param text текст для вывода.
+//     * @param font требуемый шрифт.
+//     * @param parentWidth длина родителя(в пикселях).
+//     * @param parentHeight высота родителя(в пикселях).
+//     */
+//    CTextureBuffer *getTextBuffer(const std::string &text, const CFont &font, int parentWidth, int parentHeight);
 
     /**
      * @brief Получить буфер для формирования изображения, содержащего символ symbol.
      * @param symbol текст для вывода.
      * @param font требуемый шрифт.
      */
-    CTextBuffer getTextBuffer(char symbol, const CFont &font);
+    CTextureBuffer *getTextBuffer(char symbol, const CFont &font);
 
 private:
     CFontFactory();
@@ -72,17 +72,28 @@ private:
         std::list<unsigned char> symbol;
     }; // struct Symbol
 
+//    class CFontInstance {
+//    public:
+//        char symbol;
+//        CFont font;
+
+//        bool operator < (const CFontInstance &other) const;
+//    };// struct CFontInstance
+
+     typedef std::pair<char, CFont> CFontInstance;
+    typedef std::map<CFontInstance, Symbol* > CSymbols;
+
     /**
      * @brief Получить символ c.
      * @todo Получение русских символов!
      * @param c символ.
      * @param font шрифт.
      */
-    Symbol getSymbol(char c, const CFont &font);
+    Symbol *getSymbol(char c, const CFont &font);
 
     static CFontFactory *instance;
 
-    std::map<char, Symbol > m_symbols;
+    CSymbols m_symbols;
     std::string m_currentFont;
 
     FT_Library m_library;

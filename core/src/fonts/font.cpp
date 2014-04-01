@@ -21,8 +21,6 @@
 
 namespace behemoth {
 
-int CFont::m_quantity = 50;
-
 CFont::CFont(const std::string &name, int height) : m_name(name), m_height(height), m_color(1, 0, 0)
 {
 }
@@ -39,16 +37,6 @@ void CFont::setName(const std::string &name)
 std::string CFont::getName() const
 {
     return m_name;
-}
-
-void CFont::setQuantity(int quantity)
-{
-    m_quantity = quantity;
-}
-
-int CFont::getQuantity()
-{
-    return m_quantity;
 }
 
 void CFont::setHeight(float height)
@@ -69,6 +57,16 @@ void CFont::setColor(const glm::vec3 &color)
 glm::vec3 CFont::getColor() const
 {
     return m_color;
+}
+
+bool CFont::operator ==(const CFont &other) const
+{
+    return  this->m_height == other.m_height && m_name == other.m_name;
+}
+
+bool CFont::operator <(const CFont &other) const
+{
+    return  this->m_height < other.m_height || m_name < other.m_name;
 }
 
 } // namespace behemoth

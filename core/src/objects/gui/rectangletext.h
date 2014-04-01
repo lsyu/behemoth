@@ -78,7 +78,7 @@ public:
     std::string getFontName() const;
     void setFont(float height);
     float getFontHeight() const;
-    void setFontQuantity(int quantity);
+//    void setFontQuantity(int quantity);
     void setFontAlign(behemoth::EVerticalAlign vAlign);
     EVerticalAlign getVerticalAlign() const;
     void setVerticalAlign(const std::string &vAlign);

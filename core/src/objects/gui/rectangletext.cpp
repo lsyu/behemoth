@@ -87,7 +87,8 @@ void CRectangleText::paint() const
         if (!prev || prev->m_symbol != (*it)->m_symbol) {
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, (*it)->m_texture.getId());
+            glBindTexture(GL_TEXTURE_2D, (*it)->m_texture->getId());
+            shader->setUniform("color", (*it)->m_font->getColor());
         }
         (*it)->paint();
         prev = *it;
@@ -128,10 +129,10 @@ float CRectangleText::getFontHeight() const
     return m_font.getHeight();
 }
 
-void CRectangleText::setFontQuantity(int quantity)
-{
-    this->m_font.setQuantity(quantity);
-}
+//void CRectangleText::setFontQuantity(int quantity)
+//{
+//    this->m_font.setQuantity(quantity);
+//}
 
 void CRectangleText::setFontAlign(EVerticalAlign vAlign)
 {

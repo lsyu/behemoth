@@ -48,33 +48,35 @@ CTextureFactory* CTextureFactory::getInstance()
 }
 
 
-CTextureFactory::CTextureFactory() : m_textures(std::map<std::string, CTexture>())
+CTextureFactory::CTextureFactory() : m_textures(), m_symbols()
 {
 }
 
 CTextureFactory::~CTextureFactory()
 {
-    for (std::map<std::string, CTexture>::const_iterator it = m_textures.begin(), end = m_textures.end();
+    for (std::map<std::string, CTexture*>::iterator it = m_textures.begin(), end = m_textures.end();
             it != end; ++it) {
-        unsigned int id = it->second.getId();
+        unsigned int id = it->second->getId();
         glDeleteTextures(1, &id);
+        delete it->second;
     }
-    for (std::map<std::string, CTexture>::const_iterator it = m_textures.begin(), end = m_textures.end();
+    for (std::map<std::pair<char, CFont>, CTexture*>::iterator it = m_symbols.begin(), end = m_symbols.end();
             it != end; ++it) {
-        unsigned int id = it->second.getId();
+        unsigned int id = it->second->getId();
         glDeleteTextures(1, &id);
+        delete it->second;
     }
 }
 
-CTexture CTextureFactory::createTexture2D(const std::string &filename)
+CTexture *CTextureFactory::createTexture2D(const std::string &filename)
 {
-    CTexture texture;
-    texture.m_fileName = filename;
     gli::texture2D Texture(gli::load_dds(filename.c_str()));
     if(Texture.empty())
-        return texture;
+        return nullptr;
 
-    texture.m_size = Texture.dimensions();
+    CTexture *texture = new CTexture;
+    texture->m_fileName = filename;
+    texture->m_size = Texture.dimensions();
 
     gli::detail::format_desc Desc = gli::detail::getFormatInfo(Texture.format());
 
@@ -121,48 +123,43 @@ CTexture CTextureFactory::createTexture2D(const std::string &filename)
     // Restaure previous states
     glBindTexture(GL_TEXTURE_2D, GLuint(CurrentTextureName));
     glPixelStorei(GL_UNPACK_ALIGNMENT, Alignment);
-    texture.m_id = Name;
-
+    texture->m_id = Name;
     return texture;
 }
 
-CTexture CTextureFactory::loadTexture(const string &name, const string &fileName)
+CTexture *CTextureFactory::loadTexture(const string &name, const string &fileName)
 {
     if (m_textures.find(name) != m_textures.end())
         return m_textures[name];
 
-    CTexture t = createTexture2D(fileName);
-
-    // добавим в наш словарь
-    m_textures[name] = t;
-
-    // возвращаем начальное состояние
+    CTexture *t = createTexture2D(fileName);
+    if (t)
+        m_textures[name] = t;
     glBindTexture(GL_TEXTURE_2D, 0);
 
     return t;
 }
 
-CTexture CTextureFactory::getTexture(const string &name)
+CTexture *CTextureFactory::getTexture(const string &name)
 {
-    std::map<std::string, CTexture>::const_iterator texture = m_textures.find(name);
+    std::map<std::string, CTexture*>::const_iterator texture = m_textures.find(name);
     if (texture == m_textures.end())
         return loadTexture(name, CResourceManager::getInstance()->getTextureFolder() + name + ".dds");
     return texture->second;
 }
 
-CTexture CTextureFactory::getSymbol(char symbol, const CFont &font)
+CTexture *CTextureFactory::getSymbol(char symbol, const CFont &font)
 {
-    std::map<char, CTexture>::const_iterator s = m_symbols.find(symbol);
+    std::map<std::pair<char, CFont>, CTexture*>::const_iterator s = m_symbols.find(std::pair<char, CFont>(symbol, font));
     if (s == m_symbols.end()) {
-        CTextBuffer buffer = CFontFactory::getInstance()->getTextBuffer(symbol, font);
-        CTexture retTexture = getTexture(buffer);
-        m_symbols[symbol] = retTexture;
+        CTextureBuffer *buffer = CFontFactory::getInstance()->getTextBuffer(symbol, font);
+        CTexture *retTexture = getTexture(buffer, font.getName() + symbol);
         return retTexture;
     }
     return s->second;
 }
 
-CTexture CTextureFactory::getTexture(const CTextBuffer &buffer) const
+CTexture *CTextureFactory::getTexture(CTextureBuffer *buffer, const std::string &textureName, bool deleteAfter)
 {
     glEnable(GL_TEXTURE_2D);
     uint t;
@@ -178,15 +175,21 @@ CTexture CTextureFactory::getTexture(const CTextBuffer &buffer) const
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_RGBA,
-                 buffer.width, buffer.height,
+                 buffer->m_width, buffer->m_height,
                  0,
                  GL_BGRA,
                  GL_UNSIGNED_BYTE,
-                 buffer.buffer.data());
+                 buffer->m_buffer.data());
 
-    CTexture ret;
-    ret.m_id = t;
-    ret.m_size = glm::uvec2(buffer.width, buffer.height);
+    CTexture *ret = new CTexture;
+    ret->m_id = t;
+    ret->m_size = glm::uvec2(buffer->m_width, buffer->m_height);
+    ret->m_fileName = textureName;
+    m_textures[textureName] = ret;
+
+    if (deleteAfter)
+        delete buffer;
+
     return ret;
 }
 

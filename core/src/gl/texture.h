@@ -27,36 +27,30 @@
 
 namespace behemoth {
 
-/**
- * @brief Абстракция текстуры.
- */
 class CTexture
 {
-public:
     friend class CTextureFactory;
-
-    CTexture();
-
+public:
     unsigned int getId() const;
     glm::uvec2 getSize() const;
     std::string getFileName() const;
 
 private:
-    unsigned int m_id;      /**< Идентификатор загруженной текстуры. */
-    glm::uvec2 m_size;      /**< Размер текстуры. */
-    std::string m_fileName; /**< Название файла, из которого загружена текстура. */
+    CTexture();
+    CTexture(const CTexture &);
+    CTexture &operator =(const CTexture &);
+    ~CTexture();
+
+    unsigned int m_id;          /**< Идентификатор загруженной текстуры. */
+    glm::uvec2 m_size;         /**< Размер текстуры. */
+    std::string m_fileName;  /**< Название файла, из которого загружена текстура. */
 }; // class CTexture
 
-/**
- * @brief Структура, содержащая буфер текста для рендера и вспомогательную информацию
- */
-class CTextBuffer {
+class CTextureBuffer {
 public:
-    CTextBuffer();
-    std::vector<unsigned char> buffer;  /**< Буффер текста */
-    unsigned int width;                 /**< Длина текста */
-    unsigned int height;                /**< Высота текста */
-    bool isLoad;                        /**< Успешно ли загружен текст */
+    std::vector<unsigned char> m_buffer;  /**< Буффер текста */
+    unsigned short int m_width;                  /**< Длина текста */
+    unsigned short int m_height;                /**< Высота текста */
 }; // struct CBuffer
 
 } // namespace behemoth

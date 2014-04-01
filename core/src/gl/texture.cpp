@@ -25,6 +25,10 @@ CTexture::CTexture() : m_id(0), m_size(), m_fileName()
 {
 }
 
+CTexture::~CTexture()
+{
+}
+
 unsigned int CTexture::getId() const
 {
     return m_id;
@@ -38,10 +42,6 @@ glm::uvec2 CTexture::getSize() const
 std::string CTexture::getFileName() const
 {
     return m_fileName;
-}
-
-CTextBuffer::CTextBuffer() : buffer(), width(0), height(0), isLoad(false)
-{
 }
 
 } // namespace behemoth

@@ -26,11 +26,11 @@
 
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
-#include "core/ogl/texture.h"
 
 namespace behemoth {
 
 class CShader;
+class CTexture;
 
 /**
  * @brief Прямоугольник.
@@ -130,7 +130,7 @@ protected:
     glm::vec4 m_size;       /**< Рамеры: (x, y, width, height) */
     CBorder m_border;       /**< Грань прямоугольника. */
     CBorderRadius m_radius; /**< Радиус сторон прямоугольника. */
-    CTexture m_texture;     /**< Текстура. */
+    CTexture *m_texture;     /**< Текстура. */
     CRectangleText m_text;  /**< Текст. */
 }; //class Rectangle
 

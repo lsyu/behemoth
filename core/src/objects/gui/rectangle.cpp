@@ -36,7 +36,7 @@ CRectangle::CRectangle() : CRectangle("")
 
 CRectangle::CRectangle(const std::string &id) : CBasic2dEntity(id),
     m_aspect(CApplication::getInstance()->getAspectRatio()), m_alpha(1.0f),
-    m_size(glm::vec4(-1, -1, 2, 2)), m_border(), m_radius(), m_texture(), m_text()
+    m_size(glm::vec4(-1, -1, 2, 2)), m_border(), m_radius(), m_texture(nullptr), m_text()
 {
     m_vertices.reserve(4);
     m_vertices = {
@@ -75,7 +75,7 @@ void CRectangle::configure()
     m_vertices[2].vertex = glm::vec2(m_size.x + m_size.z, m_size.y + m_size.w);
     m_vertices[3].vertex = glm::vec2(m_size.x, m_size.y + m_size.w);
 
-    if (m_texture.getId()) {
+    if (m_texture && m_texture->getId()) {
         m_vertices[0].uv =  glm::vec2(0.0f, 1.0f - 0.0f);
         m_vertices[1].uv =  glm::vec2(1.0f, 1.0f - 0.0f);
         m_vertices[2].uv =  glm::vec2(1.0f, 1.0f - 1.0f);
@@ -111,18 +111,18 @@ void CRectangle::paint() const
         shader->setUniform("radius", m_radius.toVec4());
         shader->setUniform("border", m_border.toVec4());
 
-        if (m_texture.getId()) {
+        if (m_texture && m_texture->getId()) {
             shader->setUniform("texture", 0);
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_texture.getId());
+            glBindTexture(GL_TEXTURE_2D, m_texture->getId());
         }
 
         m_vao.bind();
         glDrawArrays(GL_QUADS, 0, 4);
         m_vao.disable();
 
-        if (m_texture.getId())
+        if (m_texture && m_texture->getId())
             glDisable(GL_TEXTURE_2D);
     }
 
@@ -234,7 +234,7 @@ void CRectangle::setTexture(const std::string &name)
 
 std::string CRectangle::getTexture() const
 {
-    return m_texture.getFileName();
+    return m_texture->getFileName();
 }
 
 void CRectangle::setGradient(const CGradient &gradient)

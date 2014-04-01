@@ -36,7 +36,6 @@ class CFont;
 /**
  * @brief Фабрика загрузки текстур.
  *
- * Архитектура - singleton. @n
  * Каждая текстура загружается один раз.
  * Для загрузки текстур используется библиотека GLI.
  * @note Текстуры должны храниться в формате *.dds
@@ -53,17 +52,17 @@ public:
     /**
      * @brief Получить текстуру по имени.
      * @param name название текстуры без расширения, т.е. для "texture.dds" имя текстуры будет "texture".
-     * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
      */
-    CTexture getTexture(const std::string &name);
+    CTexture *getTexture(const std::string &name);
     /**
      * @brief Получить текстуру по данным.
-     * @param buffer буфер для генерирования текстуры текста.
-     * @return код текстуры. В случае, если текстура не загружена, возвращается 0.
+     * @param buffer буфер для генерирования текстуры.
+     * @param deleteAfter - удалять ли буффер после генерирования текстуры.
      */
-    CTexture getTexture(const CTextBuffer &buffer) const;
+    CTexture *getTexture(CTextureBuffer *buffer, const std::string &textureName, bool deleteAfter = true);
 
-    CTexture getSymbol(char symbol, const CFont &font);
+    CTexture *getSymbol(char symbol, const CFont &font);
+    CTexture *getText(const std::string &text, const CFont &font);
 
 private:
     CTextureFactory();
@@ -79,22 +78,20 @@ private:
      *
      * @param name имя текстуры.
      * @param textureName имя файла изображения.
-     * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
-    CTexture loadTexture(const std::string &name, const std::string &textureName);
+    CTexture *loadTexture(const std::string &name, const std::string &textureName);
 
     /**
      * @brief Загрузка текстуры символа @a symbol.
-     * @return id текстуры в случае удачной загрузки, 0 в противном случае.
      */
-    CTexture loadSymbol(char symbol);
+    CTexture *loadSymbol(char symbol);
 
     //from http://www.g-truc.net/project-0024.html#menu
-    CTexture createTexture2D(const std::string &filename);
-    
+    CTexture *createTexture2D(const std::string &filename);
+
     static CTextureFactory *instance;
-    std::map<std::string, CTexture> m_textures; /**< Контейнер текстур, загруженных из файлов. */
-    std::map<char, CTexture> m_symbols;         /**< Контейнер текстур, сгенерированных для символов. */
+    std::map< std::string, CTexture* > m_textures;                        /**< Контейнер текстур, загруженных из файлов. */
+     std::map<std::pair<char, CFont>, CTexture*> m_symbols; /**< Контейнер текстур, сгенерированных для символов. */
 
     friend class __CTextureFactoryImplDel;
 }; // class TextureFactory
