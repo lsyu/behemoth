@@ -30,7 +30,7 @@ ui:rectangle "root"
         alignHorizontal = "center";
         text = "Background is opengl!\nThis label is declarative (in example.lua)";
         height = 0.5;
-        font = "DejaVuSans";
+        font = "DejaVuSerifCondensed-BoldItalic";
       };
 
     }; -- rectangle "label"

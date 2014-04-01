@@ -163,6 +163,7 @@ CTexture *CTextureFactory::getTexture(CTextureBuffer *buffer, const std::string 
 {
     glEnable(GL_TEXTURE_2D);
     uint t;
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &t);
     glBindTexture(GL_TEXTURE_2D, t);
 
@@ -174,10 +175,10 @@ CTexture *CTextureFactory::getTexture(CTextureBuffer *buffer, const std::string 
 
     glTexImage2D(GL_TEXTURE_2D,
                  0,
-                 GL_RGBA,
+                 GL_R8,
                  buffer->m_width, buffer->m_height,
                  0,
-                 GL_BGRA,
+                 GL_RED,
                  GL_UNSIGNED_BYTE,
                  buffer->m_buffer.data());
 
@@ -189,6 +190,8 @@ CTexture *CTextureFactory::getTexture(CTextureBuffer *buffer, const std::string 
 
     if (deleteAfter)
         delete buffer;
+
+     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     return ret;
 }

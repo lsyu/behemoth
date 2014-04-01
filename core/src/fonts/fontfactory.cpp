@@ -21,8 +21,6 @@
 #include "core/lua/resourcemanager.h"
 #include "core/application/application.h"
 
-#include <iostream>
-
 namespace behemoth {
 
 CFontFactory *CFontFactory::instance = nullptr;
@@ -72,7 +70,7 @@ CFontFactory::Symbol *CFontFactory::getSymbol(char c, const CFont &font)
 
     int height = (m_face->size->metrics.ascender - m_face->size->metrics.descender) >> 6;
     if (c == ' ') {
-        ret->symbol.insert(ret->symbol.end(), height * height/2 * 4, 0);
+        ret->symbol.insert(ret->symbol.end(), height * height/2, 0);
         ret->height = height;
         ret->width = height/2;
         return ret;
@@ -84,18 +82,13 @@ CFontFactory::Symbol *CFontFactory::getSymbol(char c, const CFont &font)
 
 
     // забиваем по высоте
-    ret->symbol.insert(ret->symbol.end(), bearningY * advanceX * 4, 0);
+    ret->symbol.insert(ret->symbol.end(), bearningY * advanceX, 0);
     // Рисуем основную часть буквы
     for (int y = 0, n = g->bitmap.rows; y < n; ++y) {
-        for (int x = 0, m = g->bitmap.width; x < m; ++x) {
-            ret->symbol.insert(ret->symbol.end(), {static_cast<unsigned char>(font.getColor().r),
-                                                 static_cast<unsigned char>(font.getColor().g),
-                                                 static_cast<unsigned char>(font.getColor().b),
-                                                 g->bitmap.buffer[y * m + x]});
-        }
-        ret->symbol.insert(ret->symbol.end(), (advanceX - g->bitmap.width)*4, 0);
+        ret->symbol.insert(ret->symbol.end(), &g->bitmap.buffer[y * g->bitmap.width], &g->bitmap.buffer[(y+1) * g->bitmap.width]);
+        ret->symbol.insert(ret->symbol.end(), advanceX - g->bitmap.width, 0);
     }
-    int correct = (height - g->bitmap.rows - bearningY)*advanceX*4;
+    int correct = (height - g->bitmap.rows - bearningY)*advanceX;
     if (correct > 0) // если есть место, добиваем
             ret->symbol.insert(ret->symbol.end(), correct, 0);
     else if (correct < 0) // если нет, удаляем.
@@ -182,11 +175,11 @@ CTextureBuffer *CFontFactory::getTextBuffer(char symbol, const CFont &font)
 
     FT_Set_Pixel_Sizes( m_face, /* handle to face object */
             0, /* pixel_width */
-            24); /* pixel_height */
+            32); /* pixel_height */
 
     Symbol *s = getSymbol(symbol, font);
     CTextureBuffer *ret = new CTextureBuffer;
-    ret->m_buffer.reserve(s->height*s->width);
+    ret->m_buffer.resize(s->height*s->width);
     ret->m_buffer = std::vector<unsigned char>(std::make_move_iterator(std::begin(s->symbol)),
             std::make_move_iterator(std::end(s->symbol)));
     ret->m_width = s->width;
