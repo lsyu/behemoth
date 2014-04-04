@@ -88,7 +88,7 @@ void CBasicGUILayer::paintGL()
     glEnable(GL_DEPTH_TEST);
 }
 
-void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(CBasic2dEntity *))
+void CBasicGUILayer::executeAction(bool (CGUIManager::*action)(AbstractEntity *))
 {
     std::vector<CBasic2dEntity*> tmp = CEntity2dFactory::getInstance()->getEntities4Event();
     while (true) {

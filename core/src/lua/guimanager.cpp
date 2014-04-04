@@ -45,13 +45,14 @@ CGUIManager *CGUIManager::getInstance()
     if (!instance) {
         instance = new CGUIManager();
         static __CGUIManagerImplDel delHelper(instance);
-        instance->init();
     }
     return instance;
 }
 
-CGUIManager::CGUIManager() : m_lua(nullptr), m_objects()
+CGUIManager::CGUIManager() : AbstractEventListener(), CBasicLuaManager(), m_objects()
 {
+    if (m_lua)
+        registerUI();
 }
 
 CGUIManager::~CGUIManager()
@@ -61,7 +62,7 @@ CGUIManager::~CGUIManager()
 bool CGUIManager::readGui(const std::string &fileName)
 {
     if (!m_lua)
-        init();
+        return false;
     std::string scriptPath = CResourceManager::getInstance()->getGUIFolder() + fileName;
     bool ret = !luaL_dofile(m_lua, scriptPath.c_str());
     if(!ret) {
@@ -69,38 +70,7 @@ bool CGUIManager::readGui(const std::string &fileName)
         std::string log(lua_tostring(m_lua, -1));
         std::cout << log;
     }
-    close();
     return ret;
-}
-
-void CGUIManager::init()
-{
-    m_lua = luaL_newstate();
-    if (m_lua) {
-        const luaL_Reg lualibs[] =
-        {
-            { "base", luaopen_base },
-            { LUA_IOLIBNAME, luaopen_io},
-            { LUA_TABLIBNAME, luaopen_table},
-            { NULL, NULL}
-        };
-
-        const luaL_Reg *lib = lualibs;
-        for(; lib->func != NULL; lib++)
-        {
-            lib->func(m_lua);
-            lua_settop(m_lua, 0);
-        }
-        registerUI();
-    }
-}
-
-void CGUIManager::close()
-{
-//    if (m_lua) {
-//        if (!m_objects.empty())
-//            m_objects.back()->configure();
-//    }
 }
 
 void CGUIManager::registerUI()
@@ -216,17 +186,27 @@ void CGUIManager::registerRectangle()
     r.complete(true);
 }
 
-//CBasic2dEntity *CGUIManager::getRootObject()
-//{
-//    return m_objects.empty() ? nullptr : dynamic_cast<CBasic2dEntity*>(m_objects.back().get());
-//}
-
 void CGUIManager::addObject(CBasic2dEntity *t)
 {
     m_objects.push_back(t);
 }
 
-bool CGUIManager::executeAction(CBasic2dEntity *entity, const std::string &action)
+bool CGUIManager::onClick(AbstractEntity *entity)
+{
+    return executeAction(entity, "onClick");
+}
+
+bool CGUIManager::onPressed(AbstractEntity *entity)
+{
+    return executeAction(entity, "onPressed");
+}
+
+bool CGUIManager::onReleased(AbstractEntity *entity)
+{
+    return executeAction(entity, "onReleased");
+}
+
+bool CGUIManager::executeAction(AbstractEntity *entity, const std::string &action)
 {
     lua_getglobal(m_lua, "ui");
     if (lua_istable(m_lua, -1))
@@ -248,21 +228,6 @@ bool CGUIManager::executeAction(CBasic2dEntity *entity, const std::string &actio
         return true;
     }
     return false;
-}
-
-bool CGUIManager::onClick(CBasic2dEntity *entity)
-{
-    return executeAction(entity, "onClick");
-}
-
-bool CGUIManager::onPressed(CBasic2dEntity *entity)
-{
-    return executeAction(entity, "onPressed");
-}
-
-bool CGUIManager::onReleased(CBasic2dEntity *entity)
-{
-    return executeAction(entity, "onReleased");
 }
 
 } // namespace behemoth

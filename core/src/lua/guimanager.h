@@ -20,25 +20,23 @@
 #ifndef GUIMANAGER_H
 #define GUIMANAGER_H
 
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
+#include "abstracteventlistener.h"
+#include "basicluamanager.h"
 
 #include "lua/lua.h"
+
+#include <string>
+#include <vector>
 
 namespace behemoth {
 
 class CBasic2dEntity;
 
 /**
- * @brief Менеджер работы с Lua.
+ * @brief Менеджер GUI.
  *
- * Архитектура - singleton. @n
- * Позволяет декларативно описывать данные, используя язык Lua. @n
+ * Позволяет загружать элементы интерфейса, описанные с помощью Lua. @n
  *
- * На данный момент есть возможность загрузки элементов графического пользовательского интерфейса,
- * а также загрузка путей ресурсов. @n
  * Элементы GUI:
  * - glm::vec2 - 2хмерный вектор
  * - glm::vec3 - 3хмерный вектор
@@ -50,42 +48,28 @@ class CBasic2dEntity;
  * @todo Пример описания интерфейса
  *
  */
-class CGUIManager
+class CGUIManager : public AbstractEventListener, public CBasicLuaManager
 {
     friend class CEntity2dFactory;
 public:
-    /**
-     * @brief Получить экземпляр менеджера работы с Lua.
-     */
     static CGUIManager *getInstance();
 
+    // AbstractEventListener interface
+public:
+    virtual bool onClick(AbstractEntity *entity) override;
+    virtual bool onPressed(AbstractEntity *entity) override;
+    virtual bool onReleased(AbstractEntity *entity) override;
+protected:
+    virtual bool executeAction(AbstractEntity *entity, const std::string &action) override;
 
-
-//    CBasic2dEntity *getRootObject();
-
-    /**
-     * @brief Выполнить onClick из скрипта Lua.
-     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
-     */
-    bool onClick(CBasic2dEntity *entity);
-    /**
-     * @brief Выполнить onPressed из скрипта Lua.
-     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
-     */
-    bool onPressed(CBasic2dEntity *entity);
-    /**
-     * @brief Выполнить onReleased из скрипта Lua.
-     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
-     */
-    bool onReleased(CBasic2dEntity *entity);
-
+    // CGUIManager interface
 protected:
     /**
      * @brief Прочитать файл описания интерфейса с именем @a fileName.
      *
      * После парсинга скрипта луа наши декларативно описанные элементы
      * сохраняются в вектор. @n
-     * Для получения корневого элемента используйте CEntityFactory::loadGUI
+     * Для получения корневого элемента используйте CEntity2dFactory::loadGUI
      * @return true если скрипт выполнен, false в противном случае.
      */
     bool readGui(const std::string &fileName);
@@ -94,15 +78,7 @@ protected:
      */
     void addObject(CBasic2dEntity *entity);
     /**
-     * @brief Инициализация и регистрирование всех доп. возможностей.
-     */
-    void init();
-    /**
-     * @brief Закрытие.
-     */
-    void close();
-    /**
-     * @brief Регистрация таблицы ui
+     * @brief Регистрация таблицы ui и всех содержащихся в ней элементов.
      */
     void registerUI();
     /**
@@ -130,21 +106,14 @@ protected:
      */
     void registerRectangle();
 
-    /**
-     * @brief Выполнить действие из скрипта в lua
-     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
-     */
-    bool executeAction(CBasic2dEntity *entity, const std::string &action);
-
 private:
     CGUIManager();
-    ~CGUIManager();
+    virtual ~CGUIManager();
     CGUIManager(const CGUIManager &);
     CGUIManager &operator=(const CGUIManager&);
 
     static CGUIManager *instance;
-    lua_State *m_lua;                                                   /**< стек lua. */
-    std::vector< behemoth::CBasic2dEntity* > m_objects;                 /**< Элементы GUI */
+    std::vector< behemoth::CBasic2dEntity* > m_objects; /**< Элементы GUI */
 
     friend class __CGUIManagerImplDel;
 }; // class CGUIManager

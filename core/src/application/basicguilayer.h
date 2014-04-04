@@ -26,6 +26,7 @@
 namespace behemoth {
 
 class CGUIManager;
+class AbstractEntity;
 class CBasic2dEntity;
 
 /**
@@ -71,7 +72,7 @@ private:
     /**
      * @brief Выполнить действие action
      */
-    void executeAction(bool(CGUIManager::*action)(CBasic2dEntity *));
+    void executeAction(bool(CGUIManager::*action)(AbstractEntity *));
 
     std::string m_fileName;     /**< Название скрипта описания GUI */
 }; // class CBasicGUILayer

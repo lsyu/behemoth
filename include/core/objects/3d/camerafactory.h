@@ -1,1 +1,1 @@
-#include "../../../../core/src/objects/3d/camerafactory.h"
+#include "../../../../core/src/objects/3d/camera/camerafactory.h"

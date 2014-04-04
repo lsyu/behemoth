@@ -56,7 +56,7 @@ void CBasic3dEntity::configure()
 
         shader->setAttribute("vertex", 3, 0, sizeof(CVertex3D));
         shader->setAttribute("normal", 3, 12, sizeof(CVertex3D));
-        shader->setAttribute("uv", 2, 24, sizeof(CVertex3D));
+//        shader->setAttribute("uv", 2, 24, sizeof(CVertex3D));
 
         m_vao.disable();
     }

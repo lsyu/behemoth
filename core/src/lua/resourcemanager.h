@@ -24,6 +24,8 @@
 #include <memory>
 #include <map>
 
+#include "basicluamanager.h"
+
 #include "lua/lua.h"
 
 namespace behemoth {
@@ -56,7 +58,7 @@ class CApplication;
  * @note Файл конфигурации называется core.conf и находится в той же директории,
  * что и исполняемый файл!
  */
-class CResourceManager
+class CResourceManager : public CBasicLuaManager
 {
 public:
     friend class CApplication;
@@ -136,7 +138,6 @@ private:
 
     std::string m_pathToApplication;                /**< Путь до директории с приложением. */
     std::map<std::string, std::string> m_paths;     /**< Контейнер, содержащий пути до различных ресурсов. */
-    lua_State *m_lua;                               /**< Стек lua. */
 
     friend class __CResourceManagerImplDel;
 }; // class ResourceManager

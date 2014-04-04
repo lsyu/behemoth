@@ -97,29 +97,13 @@ void CResourceManager::readConfFile()
                       "  return config\n"
                       "end");
         luaL_dofile(m_lua, confFile.c_str());
-        lua_close(m_lua);
+        closeLua();
     }
 }
 
-CResourceManager::CResourceManager() : m_pathToApplication(), m_paths(std::map<std::string, std::string>()),
-        m_lua(luaL_newstate())
+CResourceManager::CResourceManager() : CBasicLuaManager(),
+    m_pathToApplication(), m_paths(std::map<std::string, std::string>())
 {
-    if (m_lua) {
-        const luaL_Reg lualibs[] =
-        {
-            { "base", luaopen_base },
-            { LUA_IOLIBNAME, luaopen_io},
-            { LUA_TABLIBNAME, luaopen_table},
-            { NULL, NULL}
-        };
-
-        const luaL_Reg *lib = lualibs;
-        for(; lib->func != NULL; lib++)
-        {
-            lib->func(m_lua);
-            lua_settop(m_lua, 0);
-        }
-    }
 }
 
 CResourceManager::~CResourceManager() {}
