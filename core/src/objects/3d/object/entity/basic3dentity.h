@@ -34,13 +34,14 @@ namespace behemoth {
 class CBasic3dEntity : public AbstractEntity
 {
     friend class CEntity3dFactory;
+    friend class CObject3d;
 public:
-    struct CVertex3D {
+    struct CVertex3d {
         glm::vec3 vertex;
         glm::vec3 normal;
         glm::vec2 uv;
     }; // struct CVertex3D
-    typedef std::vector<CVertex3D> CVertices3D;
+    typedef std::vector<CVertex3d> CVertices3d;
     typedef std::vector< std::array<unsigned short int, 3> > CIndexes;
     typedef std::vector<CBasic3dEntity*> CChilds3D;
 
@@ -67,7 +68,7 @@ protected:
     CChilds3D m_childs;          /**< Список детей */
     CBasic3dEntity *m_parent;    /**< Родитель сущности. */
 
-    CVertices3D m_vertices; /**< список атрибутов вершины. */
+    CVertices3d m_vertices; /**< список атрибутов вершины. */
     CIndexes m_indexes;     /**< список индексов вершин. */
 
     CVertexArrayObject m_vao;

@@ -218,10 +218,10 @@ void CApplication::exec()
         glutMouseFunc(&CApplication::mouse);
         glutDisplayFunc(&CApplication::display);
         glutIdleFunc(&CApplication::idle);
-        if (instance->m_sceneLayer)
-            instance->m_sceneLayer->prepareGL();
         if (instance->m_guiLayer)
             instance->m_guiLayer->prepareGL();
+        if (instance->m_sceneLayer)
+            instance->m_sceneLayer->prepareGL();
 
         glutMainLoop();
     }
@@ -234,12 +234,16 @@ void CApplication::close()
 
 void CApplication::setGUILayer(AbstractLayer *guiLayer)
 {
-    this->m_guiLayer = guiLayer;
+    if (m_guiLayer && m_guiLayer != guiLayer)
+        delete m_guiLayer;
+    m_guiLayer = guiLayer;
 }
 
 void CApplication::setScene3DLayer(AbstractLayer *scene3D)
 {
-    this->m_sceneLayer = scene3D;
+    if (m_sceneLayer && m_sceneLayer != scene3D)
+        delete m_sceneLayer;
+    m_sceneLayer = scene3D;
 }
 
 } // namespace behemoth

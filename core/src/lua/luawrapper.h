@@ -554,7 +554,7 @@ private:
         }
 
 
-//        std::cout << doStr;
+//        std::cout << m_doStr;
     }
 
     lua_State *m_lua;                           /**< Стек lua. */

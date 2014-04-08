@@ -17,37 +17,39 @@
  *
  */
 
-#ifndef BASICLUAMANAGER_H
-#define BASICLUAMANAGER_H
+#ifndef OBJECT3D_H
+#define OBJECT3D_H
 
-#include "lua/lua.h"
+#include "entity/basic3dentity.h"
+#include "node/basicnode.h"
+
+#include "glm/glm.h"
 
 namespace behemoth {
 
 /**
- * @brief Базовый класс менеджера Lua.
- * @note Необходим, чтобы не беспокоиться о памяти, связанной с Lua.
+ * @brief Объект сцены.
  */
-class CBasicLuaManager
+class CObject3d
 {
 public:
-    /**
-     * @brief Очистить стек Lua
-     */
-    void closeLua();
+    CObject3d();
+    ~CObject3d();
 
-protected:
-    CBasicLuaManager();
-    virtual ~CBasicLuaManager();
+//    void setPosition(const glm::vec3 &position);
+//    glm::vec3 getPosition() const;
+
+    void setEntity(const std::string &entity);
+    std::string getEntity() const;
+
+    void configure();
+    void paint();
 
 private:
-    CBasicLuaManager(const CBasicLuaManager &);
-    CBasicLuaManager &operator =(const CBasicLuaManager &);
-
-protected:
-    static lua_State *m_lua;   /**< стек Lua. */
-}; // class CBasicLuaManager
+    CBasic3dEntity *m_entity; /**< Отображаемая сущность. */
+    CBasicNode *m_node;       /**< Узел графа сцены. */
+}; // class CObject3d
 
 } // namespace behemoth
 
-#endif // BASICLUAMANAGER_H
+#endif // OBJECT3D_H

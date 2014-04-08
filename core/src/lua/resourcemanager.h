@@ -117,6 +117,11 @@ public:
     std::string getGUIFolder() const;
 
     /**
+     * @brief Путь до папки с декларативным описанием сцен.
+     */
+    std::string getScene3dFolder() const;
+
+    /**
      * @return string разделитель.
      */
     std::string getFileSeparator() const;

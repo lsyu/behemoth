@@ -23,11 +23,7 @@
 
 #include "glm/ext.h"
 
-#include "core/objects/3d/camerafactory.h"
-#include "core/objects/3d/lightfactory.h"
-
 #include "core/ogl/ogl.h"
-#include "core/ogl/shaderfactory.h"
 
 namespace behemoth {
 
@@ -44,22 +40,13 @@ CBasic3dEntity::~CBasic3dEntity()
 
 void CBasic3dEntity::configure()
 {
-    CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
-    if (shader) {
-        m_vao.genBuffer();
-        m_vao.bind();
-
-        m_vertexVBO.genBuffer();
-        m_vertexVBO.setData(&m_vertices);
-        m_indexVBO.genBuffer();
-        m_indexVBO.setData(&m_indexes);
-
-        shader->setAttribute("vertex", 3, 0, sizeof(CVertex3D));
-        shader->setAttribute("normal", 3, 12, sizeof(CVertex3D));
-//        shader->setAttribute("uv", 2, 24, sizeof(CVertex3D));
-
-        m_vao.disable();
-    }
+    m_vao.genBuffer();
+    m_vao.bind();
+    m_vertexVBO.genBuffer();
+    m_vertexVBO.setData(&m_vertices);
+    m_indexVBO.genBuffer();
+    m_indexVBO.setData(&m_indexes);
+    m_vao.disable();
 
     for (CBasic3dEntity *obj: m_childs)
         obj->configure();
@@ -67,29 +54,14 @@ void CBasic3dEntity::configure()
 
 void CBasic3dEntity::paint() const
 {
-    static AbstractCamera *cam = CCameraFactory::getInstance()->getActiveCamera();
-    static CPointLight *light = CLightFactory::getInstance()->getLight("test");
-    cam->rotatePosition(1, 0, 0, 1);
-    if (cam) {
-        CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
-        static glm::mat4 model; //! TODO: Вынести в CSceneNode
 
-        if (shader) {
-            shader->setUniform("modelview_matrix", model * cam->getViewMatrix());
-            shader->setUniform("projection_matrix", cam->getProjectionMatrix());
-            shader->setUniform("normal_matrix", cam->getNormalMatrix(model));
-            shader->setUniform("light_position", light->getPosition());
-            shader->setUniform("eye_position", cam->getEye());
+    // Индексы - unsigned short int по 3 на полигон
+    m_vao.bind();
+    glDrawElements(GL_TRIANGLES, m_indexes.size() * 3, GL_UNSIGNED_SHORT, static_cast<void*>(0));
+    m_vao.disable();
 
-            // Индексы - unsigned short int по 3 на полигон
-            m_vao.bind();
-            glDrawElements(GL_TRIANGLES, m_indexes.size() * 3, GL_UNSIGNED_SHORT, static_cast<void*>(0));
-            m_vao.disable();
-        }
-
-        for (CBasic3dEntity *obj: m_childs)
-            obj->paint();
-    }
+    for (CBasic3dEntity *obj: m_childs)
+        obj->paint();
 }
 
 std::string CBasic3dEntity::getId() const

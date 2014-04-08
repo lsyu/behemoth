@@ -26,9 +26,11 @@
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
 
+#include "core/objects/3d/object3dfactory.h"
+
 namespace behemoth {
 
-CBasicScene3dLayer::CBasicScene3dLayer() : AbstractLayer()
+CBasicScene3dLayer::CBasicScene3dLayer(const std::string &fileName) : AbstractLayer(), m_objects(), m_fileName(fileName)
 {
 }
 
@@ -46,6 +48,11 @@ void CBasicScene3dLayer::prepareGL()
     CLightFactory::getInstance()->makeLight("test", ELightType::point);
     CPointLight *light = CLightFactory::getInstance()->getLight("test", ELightType::point);
     light->setPosition(7, 7, 5);
+
+    m_objects = CObjectFactory::getInstance()->loadScene3d(m_fileName);
+    for(CObject3d *obj: m_objects) {
+        obj->configure();
+    }
 }
 
 bool CBasicScene3dLayer::updateGL()
@@ -60,14 +67,9 @@ void CBasicScene3dLayer::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_BLEND);
 
-    static CBasic3dEntity *obj = nullptr;
-    if (!obj) {
-        obj = CEntity3dFactory::getInstance()->loadEntity("box.mesh");
-        if (obj)
-            obj->configure();
-    }
-    if (obj)
+    for(CObject3d *obj : m_objects) {
         obj->paint();
+    }
 }
 
 } // namespace behemoth

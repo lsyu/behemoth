@@ -65,9 +65,9 @@ CBasic3dEntity *CEntity3dFactory::loadEntity(const std::string &fileName)
         unsigned short indOfVert[4]; // 4th - always 0
     };
     file.read(reinterpret_cast<char*>(&meshHeader), sizeof(CHeader));
-    CBasic3dEntity::CVertices3D vertices(meshHeader.vertices);
+    CBasic3dEntity::CVertices3d vertices(meshHeader.vertices);
     std::vector<CPolygon> polygons(meshHeader.polygons);
-    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(CBasic3dEntity::CVertex3D) * vertices.size());
+    file.read(reinterpret_cast<char*>(vertices.data()), sizeof(CBasic3dEntity::CVertex3d) * vertices.size());
     file.read(reinterpret_cast<char*>(polygons.data()), sizeof(CPolygon) * polygons.size());
     file.close();
 

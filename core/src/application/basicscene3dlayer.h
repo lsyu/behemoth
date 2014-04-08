@@ -21,25 +21,29 @@
 #define BASICSCENE3DLAYER_H
 
 #include "abstractlayer.h"
+#include <vector>
+#include <string>
 
 namespace behemoth {
 
+class CObject3d;
+
 /**
  * @brief Базовый класс слоя трехмерной сцены.
- *
- * Для того, чтобы создать пользовательский слой 3D, необходимо
- * наследоваться от данного класса и определить реализацию метода
- * virtual void prepareGL() из интерфейса AbstractLayer.
  */
 class CBasicScene3dLayer : public AbstractLayer
 {
 public:
-    CBasicScene3dLayer();
+    explicit CBasicScene3dLayer(const std::string &fileName);
     virtual ~CBasicScene3dLayer();
 
     virtual void prepareGL() override;
     virtual bool updateGL() override;
     virtual void paintGL() override;
+
+protected:
+    std::vector<CObject3d*> m_objects;  /**< Объекты сцены. */
+    std::string m_fileName;             /**< Название скрипта описания GUI */
 }; // class CBasicScene3dLayer
 
 } // namespace behemoth

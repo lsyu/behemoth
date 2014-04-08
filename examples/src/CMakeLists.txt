@@ -11,5 +11,6 @@ add_executable(example_cube_with_label ${SRCS} ${HEADERS} example_cube_with_labe
 target_link_libraries(example_cube_with_label behemoth)
 
 file(COPY gui DESTINATION  ${CMAKE_BINARY_DIR}/bin/res)
+file(COPY scenes DESTINATION  ${CMAKE_BINARY_DIR}/bin/res)
 file(COPY core.conf DESTINATION  ${CMAKE_BINARY_DIR}/bin)
 

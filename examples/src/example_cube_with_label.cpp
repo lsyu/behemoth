@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     CBasicGUILayer guiLayer("example_cube_with_label.lua");
     app->setGUILayer(&guiLayer);
-    CBasicScene3dLayer sceneLayer;
+    CBasicScene3dLayer sceneLayer("scene_with_box.lua");
     app->setScene3DLayer(&sceneLayer);
 
     app->exec();

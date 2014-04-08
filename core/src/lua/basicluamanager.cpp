@@ -21,7 +21,9 @@
 
 namespace behemoth {
 
-CBasicLuaManager::CBasicLuaManager() : m_lua(luaL_newstate())
+lua_State *CBasicLuaManager::m_lua = luaL_newstate();
+
+CBasicLuaManager::CBasicLuaManager()
 {
     if (m_lua) {
         const luaL_Reg lualibs[] =
@@ -43,8 +45,10 @@ CBasicLuaManager::CBasicLuaManager() : m_lua(luaL_newstate())
 
 CBasicLuaManager::~CBasicLuaManager()
 {
-    if (m_lua)
+    if (m_lua) {
         lua_close(m_lua);
+        m_lua = nullptr;
+    }
 }
 
 void CBasicLuaManager::closeLua()

@@ -97,7 +97,7 @@ void CResourceManager::readConfFile()
                       "  return config\n"
                       "end");
         luaL_dofile(m_lua, confFile.c_str());
-        closeLua();
+//        closeLua();
     }
 }
 
@@ -153,6 +153,11 @@ string CResourceManager::getFontFolder() const
 std::string CResourceManager::getGUIFolder() const
 {
     return getResource("gui");
+}
+
+string CResourceManager::getScene3dFolder() const
+{
+    return getResource("scenes");
 }
 
 string CResourceManager::getFileSeparator() const
