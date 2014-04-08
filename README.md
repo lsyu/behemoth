@@ -4,89 +4,74 @@ behemoth - графическй движок с основанным на lua д
 Спасибо проектам glm, gli, freeglut, lua, freetype.
 
 
-Чтобы вывести подобный messagebox
- ![test](res/pictures/gui_messagebox_example.png "example of messagebox")
+"Hello world" с использованием движка
+ ![test](res/pictures/scene3d_with_label.png "cube with label")
 
-необходимо написать примерно следующее:
+Интерфейс:
+
 ``` lua
--- Hello World Lua declarative
-
-ui:rectangle "modal"
+ui:rectangle "label"
 {
-  x = -0.5;
-  y = -0.5;
-  width = 1.0;
-  height = 1.0;
-  radius = 0.1;
-
-  color = ui:vec3(0.6, 0.6, 0.6);
+  x = -0.9;
+  y = -0.9;
+  width = 1.8;
+  height = 0.2;
+  alpha = 0.5;
+  color = glm:vec3(0.5, 0.5, 0.5);
+  radius = ui:radius { radius = 0.5; };
 
   border = ui:border
   {
-    color = ui:vec3(0.2, 0.2, 0.2);
+    color = glm:vec3(0.9, 0.9, 0.9);
     width = 0.02;
   };
 
-  ui:rectangle "hideItem"
+  text = ui:text
   {
-    x = -0.9;
-    y = -0.6;
-    width = 1.8;
-    height = 1.6;
-    alpha = 0.0;
-
-    text = ui:text
-    {
-      alignVerical = "center";
-      alignHorizontal = "center";
-      text = "'Hello world' from lua! :)\nMessageBox example...";
-      height = 0.2;
-      font = "DejaVuSans";
-    };
+    alignVerical = "center";
+    alignHorizontal = "center";
+    text = "Background is opengl!\nThis label is declarative (in example.lua)";
+    height = 0.5;
+    font = "DejaVuSerifCondensed-BoldItalic";
   };
+}; -- rectangle "label"
+```
+Сцена:
+``` lua
+s3d:object {
+entity = "box.mesh";
+-- position = glm:vec3(0.0, 0.0, 0.0);
+}
+```
+Загрузка на С++:
+``` cpp
+#include "core/application/application.h"
+#include "core/application/basicguilayer.h"
+#include "core/application/basicscene3dlayer.h"
 
-  ui:rectangle "button"
-  {
-    x = -0.9;
-    y = -0.9;
-    width = 1.8;
-    height = 0.35;
-    radius = 0.5;
+int main(int argc, char *argv[])
+{
+    using namespace behemoth;
 
-    color = ui:vec3(0.4, 0.4, 0.4);
+    CApplication *app = CApplication::getInstance();
+    app->initialize(argc, argv);
+    app->setWindowTitle("Cube with label example");
+    app->setFullScreen(false);
+    app->setSize(glm::ivec2(800, 600));
+    app->setColorDepth(EColorDepth::_32);
 
-    border = ui:border
-    {
-      color = ui:vec3(0.2, 0.2, 0.2);
-      width = 0.1;
-    };
+    CBasicGUILayer guiLayer("example_cube_with_label.lua");
+    app->setGUILayer(&guiLayer);
+    CBasicScene3dLayer sceneLayer("scene_with_box.lua");
+    app->setScene3DLayer(&sceneLayer);
 
-    text = ui:text
-    {
-      alignVerical = "center";
-      alignHorizontal = "center";
-      text = "Exit";
-      height = 1;
-      font = "DejaVuSans";
-    };
+    app->exec();
 
-    onPressed = function()
-      print ("Pressed BUTTON")
-    end;
-
-    onClick = function()
-      print ("Clicked BUTTON!")
-    end;
-
-    onReleased = function()
-      print ("Released BUTTON")
-    end;
-    
-  };
-};
+    return 0;
+}
 ```
 
-Загрузить этот код на c++ можно [вот так](examples/src/example_messagebox.cpp).
+Больше примеров - [здесь](examples/src/).
 
 Пример сборки:
 ``` bash
