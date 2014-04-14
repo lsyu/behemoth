@@ -17,39 +17,6 @@
  *
  */
 
-#ifndef OBJECT3D_H
-#define OBJECT3D_H
+#include "luawrapperimpl.h"
 
-#include "entity/basic3dentity.h"
-#include "node/basicnode.h"
-
-#include "glm/glm.h"
-
-namespace behemoth {
-
-/**
- * @brief Объект сцены.
- */
-class CObject3d
-{
-public:
-    CObject3d();
-    ~CObject3d();
-
-    void setPosition(const glm::vec3 &position);
-    glm::vec3 getPosition() const;
-
-    void setEntity(const std::string &entity);
-    std::string getEntity() const;
-
-    void configure();
-    void paint();
-
-private:
-    CBasic3dEntity *m_entity; /**< Отображаемая сущность. */
-    CBasicNode *m_node;       /**< Узел графа сцены. */
-}; // class CObject3d
-
-} // namespace behemoth
-
-#endif // OBJECT3D_H
+std::map<std::type_index, std::string> __CLuaWrapper::types = std::map<std::type_index, std::string>();

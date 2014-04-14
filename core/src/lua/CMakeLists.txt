@@ -7,6 +7,8 @@ set(CORE_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/guimanager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scene3dmanager.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/luawrapperimpl.cpp
+
     PARENT_SCOPE
 )
 
@@ -19,6 +21,7 @@ set(CORE_HEADERS
 
 
     ${CMAKE_CURRENT_SOURCE_DIR}/luawrapper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/luawrapperimpl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/abstracteventlistener.h
 
     PARENT_SCOPE

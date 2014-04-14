@@ -27,28 +27,26 @@
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
 
+#include "glm/ext.h"
+
 behemoth::CObject3d::CObject3d() : m_entity(nullptr), m_node(nullptr)
 {
-    m_node = CNodeFactory::getInstance()->addNode("ololo");
+    m_node = CNodeFactory::getInstance()->addNode("ololo"); // TODO: КАК???
 }
 
 behemoth::CObject3d::~CObject3d()
 {
 }
 
-//void behemoth::CObject3d::setPosition(const glm::vec3 &position)
-//{
+void behemoth::CObject3d::setPosition(const glm::vec3 &position)
+{
+    m_node->setPosition(position);
+}
 
-//    m_node = CNodeFactory::getInstance()->addNode("ololo");
-//    m_node->setPosition(position);
-//}
-
-//glm::vec3 behemoth::CObject3d::getPosition() const
-//{
-//    if (m_node)
-//        return m_node->getPosition();
-//    return glm::vec3();
-//}
+glm::vec3 behemoth::CObject3d::getPosition() const
+{
+    return glm::vec3(glm::column(m_node->getModelMatrix(), 4));
+}
 
 void behemoth::CObject3d::setEntity(const std::string &entity)
 {
@@ -81,9 +79,8 @@ void behemoth::CObject3d::paint()
         static AbstractCamera *cam = CCameraFactory::getInstance()->getActiveCamera();
         static CPointLight *light = CLightFactory::getInstance()->getLight("test");
         if (cam) {
-            cam->rotatePosition(1, 0, 0, 1); //! TODO: Декларативно!
+            cam->rotatePosition(1, 1, 0, 0); //! TODO: Декларативно!
             CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
-//            static glm::mat4 model; //! TODO: Вынести в CSceneNode
             if (shader) {
                 shader->setUniform("modelview_matrix", m_node->getModelMatrix() * cam->getViewMatrix());
                 shader->setUniform("projection_matrix", cam->getProjectionMatrix());
