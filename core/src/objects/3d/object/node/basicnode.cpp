@@ -22,14 +22,14 @@
 
 namespace behemoth {
 
-CBasicNode::CBasicNode(const std::string &name) : m_name(name), m_modelMatrix(), m_childs()
+CBasicNode::CBasicNode(const std::string &name) : m_name(name), m_orientation(), m_position()
 {
 }
 
 CBasicNode::~CBasicNode()
 {
-    for(CBasicNode *node: m_childs)
-        delete node;
+//    for(CBasicNode *node: m_childs)
+//        delete node;
 }
 
 std::string CBasicNode::getName() const
@@ -39,32 +39,33 @@ std::string CBasicNode::getName() const
 
 void CBasicNode::setPosition(const glm::vec3 &position)
 {
-    m_modelMatrix = glm::translate(glm::mat4(), position);
+    m_position = position;
 }
 
-const glm::vec3 &CBasicNode::getPosition() const
+glm::vec3 CBasicNode::getPosition() const
 {
-    return glm::vec3(glm::column(m_modelMatrix, 4));
+    return m_position;
 }
 
 void CBasicNode::rotate(float angle, const glm::vec3 &axis)
 {
-    m_modelMatrix = glm::rotate(m_modelMatrix, angle, axis);
+
+    m_orientation *= glm::angleAxis(angle, axis);
 }
 
 void CBasicNode::translate(const glm::vec3 &shift)
 {
-    m_modelMatrix = glm::translate(m_modelMatrix, shift);
+    m_position += shift;
 }
 
 glm::mat4 CBasicNode::getModelMatrix() const
 {
-    return m_modelMatrix;
+    return glm::translate(glm::mat4(), m_position) * glm::toMat4(m_orientation);
 }
 
-CBasicNode::CChilds CBasicNode::getChilds() const
-{
-    return m_childs;
-}
+//CBasicNode::CChilds CBasicNode::getChilds() const
+//{
+//    return m_childs;
+//}
 
 } // namespace behemoth

@@ -25,6 +25,8 @@
 
 #include "glm/glm.h"
 
+#include <string>
+
 namespace behemoth {
 
 /**
@@ -33,7 +35,7 @@ namespace behemoth {
 class CObject3d
 {
 public:
-    CObject3d();
+    CObject3d(const std::string &name);
     ~CObject3d();
 
     void setPosition(const glm::vec3 &position);

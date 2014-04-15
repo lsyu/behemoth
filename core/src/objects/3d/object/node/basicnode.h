@@ -21,6 +21,8 @@
 #define BASICNODE_H
 
 #include "glm/glm.h"
+#include "glm/gtx/quaternion.hpp"
+
 #include <string>
 #include <vector>
 
@@ -37,7 +39,7 @@ class CBasicNode
 {
     friend class CNodeFactory;
 public:
-    using CChilds = std::vector<CBasicNode*>;
+//    using CChilds = std::vector<CBasicNode*>;
 
     explicit CBasicNode(const std::string &name);
     ~CBasicNode();
@@ -50,7 +52,7 @@ public:
      * @brief Установить позицию узла.
      */
     void setPosition(const glm::vec3 &position);
-    const glm::vec3 &getPosition() const;
+    glm::vec3 getPosition() const;
     /**
      * @brief вращение узла.
      */
@@ -64,15 +66,17 @@ public:
      * @brief Получить модельную матрицу.
      */
     glm::mat4 getModelMatrix() const;
-    /**
-     * @brief Получить детей.
-     */
-    CChilds getChilds() const;
+//    /**
+//     * @brief Получить детей.
+//     */
+//    CChilds getChilds() const;
 private:
 
-    std::string m_name;             /**< Название ребра. */
-    glm::mat4 m_modelMatrix;        /**< Модельная матрица. */
-    CChilds m_childs;               /**< Дети данной вершины. */
+    std::string m_name;             /**< TODO: Нужно ли вообще?
+                                     * Название ребра. */
+//    CChilds m_childs;               /**< Дети данной вершины. */
+    glm::quat m_orientation;    /**< Ориентация. */
+    glm::vec3 m_position;       /**< Позиция. */
 }; // class behemoth
 
 } // class behemoth

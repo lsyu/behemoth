@@ -29,9 +29,10 @@
 
 #include "glm/ext.h"
 
-behemoth::CObject3d::CObject3d() : m_entity(nullptr), m_node(nullptr)
+behemoth::CObject3d::CObject3d(const std::string &name)
+    : m_entity(nullptr),
+      m_node(CNodeFactory::getInstance()->addNode(name))
 {
-    m_node = CNodeFactory::getInstance()->addNode("ololo"); // TODO: КАК???
 }
 
 behemoth::CObject3d::~CObject3d()
@@ -45,7 +46,7 @@ void behemoth::CObject3d::setPosition(const glm::vec3 &position)
 
 glm::vec3 behemoth::CObject3d::getPosition() const
 {
-    return glm::vec3(glm::column(m_node->getModelMatrix(), 4));
+    return m_node->getPosition();
 }
 
 void behemoth::CObject3d::setEntity(const std::string &entity)
@@ -80,6 +81,7 @@ void behemoth::CObject3d::paint()
         static CPointLight *light = CLightFactory::getInstance()->getLight("test");
         if (cam) {
             cam->rotatePosition(1, 1, 0, 0); //! TODO: Декларативно!
+            m_node->rotate(1);
             CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
             if (shader) {
                 shader->setUniform("modelview_matrix", m_node->getModelMatrix() * cam->getViewMatrix());

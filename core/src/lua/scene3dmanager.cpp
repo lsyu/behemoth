@@ -114,7 +114,7 @@ void CScene3dManager::registerObject()
 {
     CLuaWrapper<CObject3d> o(m_lua, "object");
     o.setNameSpace("s3d");
-    o.addConstructor();
+    o.addConstructor<std::string>();
     o.AddProperty(std::string)("entity", &CObject3d::getEntity, &CObject3d::setEntity);
     o.AddProperty(glm::vec3)("position", &CObject3d::getPosition, &CObject3d::setPosition);
     o.addProperty({"sync", [](lua_State *l) {
