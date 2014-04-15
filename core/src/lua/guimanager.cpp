@@ -206,6 +206,11 @@ bool CGUIManager::onReleased(AbstractEntity *entity)
     return executeAction(entity, "onReleased");
 }
 
+bool CGUIManager::onUpdate(AbstractEntity *entity)
+{
+    return executeAction(entity, "onUpdate");
+}
+
 bool CGUIManager::executeAction(AbstractEntity *entity, const std::string &action)
 {
     lua_getglobal(m_lua, "ui");

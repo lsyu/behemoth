@@ -50,6 +50,11 @@ public:
      * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
      */
     virtual bool onReleased(AbstractEntity *entity) = 0;
+    /**
+     * @brief Выполнить onUpdate из скрипта Lua.
+     * @return true, если все хорошо. В случае, если не удастся выполнить действие, вернется false.
+     */
+    virtual bool onUpdate(AbstractEntity *entity) = 0;
 protected:
     /**
      * @brief Выполнить действие action из скрипта в lua.

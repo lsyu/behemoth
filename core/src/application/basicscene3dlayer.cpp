@@ -21,12 +21,11 @@
 
 #include "core/ogl/ogl.h"
 #include "core/ogl/shaderfactory.h"
-
 #include "core/objects/3d/entity3dfactory.h"
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
-
 #include "core/objects/3d/object3dfactory.h"
+#include "core/lua/scene3dmanager.h"
 
 namespace behemoth {
 
@@ -57,6 +56,10 @@ void CBasicScene3dLayer::prepareGL()
 
 bool CBasicScene3dLayer::updateGL()
 {
+    for(CObject3d *obj : m_objects) {
+        if (!CScene3dManager::getInstance()->onUpdate(obj->getEntity3d()))
+            return false;
+    }
     return true;
 }
 

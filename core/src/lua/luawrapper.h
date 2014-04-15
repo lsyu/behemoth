@@ -317,6 +317,7 @@ private:
             m_doStr += "    elseif k == \"onClick\" then\n      ret.onClick = v\n";
             m_doStr += "    elseif k == \"onPressed\" then\n      ret.onPressed = v\n";
             m_doStr += "    elseif k == \"onReleased\" then\n      ret.onReleased = v\n";
+            m_doStr += "    elseif k == \"onUpdate\" then\n      ret.onUpdate = v\n";
 
             if (m_isAddChild)
                 m_doStr += "    else\n      r:addChild(v.obj)\n";
@@ -358,7 +359,7 @@ private:
                 }
             }
             if (containId)
-                m_doStr += "  ui[arg0] = ret\n"; //TODO: придумать, как передать явно!
+                m_doStr += m_nsp + "[arg0] = ret\n"; //TODO: придумать, как передать явно!
 
             m_doStr += "  return ret\n";
             if (m_cntArgConstr)

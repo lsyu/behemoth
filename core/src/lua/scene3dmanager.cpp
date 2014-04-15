@@ -77,9 +77,35 @@ bool CScene3dManager::onReleased(AbstractEntity *entity)
     return executeAction(entity, "onReleased");
 }
 
+bool CScene3dManager::onUpdate(AbstractEntity *entity)
+{
+    return executeAction(entity, "onUpdate");
+}
+
 bool CScene3dManager::executeAction(AbstractEntity *entity, const std::string &action)
 {
-    return true;
+    lua_getglobal(m_lua, "bgm");
+    if (lua_istable(m_lua, -1))
+    {
+        lua_getfield(m_lua, -1, entity->getId().c_str());
+        if (lua_istable(m_lua, -1)) {
+            lua_getfield(m_lua, -1, action.c_str());
+            if (!lua_isfunction(m_lua, -1)) {
+                lua_pop(m_lua, 3);
+                return false;
+            }
+            lua_getfield(m_lua, -3, entity->getId().c_str());
+            if (lua_pcall(m_lua, 1, 0, 0)) {
+                std::string log(lua_tostring(m_lua, -1));
+                std::cout << log;
+                lua_pop(m_lua, 2);
+                return false;
+            }
+        }
+        lua_pop(m_lua, 2);
+        return true;
+    }
+    return false;
 }
 
 bool CScene3dManager::readScene3d(const std::string &fileName)
@@ -104,7 +130,7 @@ void CScene3dManager::addObject(CObject3d *object)
 
 void CScene3dManager::registerScene3d()
 {
-    luaL_dostring(m_lua, "s3d = {}");
+    luaL_dostring(m_lua, "bgm = {}");
     registerObject();
     registerCamera();
     registerLight();
@@ -113,10 +139,19 @@ void CScene3dManager::registerScene3d()
 void CScene3dManager::registerObject()
 {
     CLuaWrapper<CObject3d> o(m_lua, "object");
-    o.setNameSpace("s3d");
+    o.setNameSpace("bgm");
     o.addConstructor<std::string>();
+    o.AddProperty(std::string)("id", &CObject3d::getId, &CObject3d::setId);
     o.AddProperty(std::string)("entity", &CObject3d::getEntity, &CObject3d::setEntity);
     o.AddProperty(glm::vec3)("position", &CObject3d::getPosition, &CObject3d::setPosition);
+    o.addProperty({"rotate", [](lua_State *l) {
+                       CObject3d *t =  __CLuaWrapper::checkUserData<CObject3d>(l, 1);
+                       float angle = __CLuaWrapper::checkType<float>(l, 2);
+                       glm::vec3 *axis = __CLuaWrapper::checkUserData<glm::vec3>(l, 3);
+                       t->rotate(angle, *axis);
+                       return 1;
+                   }
+                  });
     o.addProperty({"sync", [](lua_State *l) {
                        CObject3d *t = __CLuaWrapper::checkUserData<CObject3d>(l, 1);
                        CScene3dManager::getInstance()->addObject(t);

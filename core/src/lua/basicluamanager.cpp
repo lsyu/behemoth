@@ -29,8 +29,6 @@ CBasicLuaManager::CBasicLuaManager()
         const luaL_Reg lualibs[] =
         {
             { "base", luaopen_base },
-            { LUA_IOLIBNAME, luaopen_io},
-            { LUA_TABLIBNAME, luaopen_table},
             { NULL, NULL}
         };
 

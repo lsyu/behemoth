@@ -31,7 +31,8 @@
 
 behemoth::CObject3d::CObject3d(const std::string &name)
     : m_entity(nullptr),
-      m_node(CNodeFactory::getInstance()->addNode(name))
+      m_node(CNodeFactory::getInstance()->addNode(name)),
+      m_name(name)
 {
 }
 
@@ -49,9 +50,15 @@ glm::vec3 behemoth::CObject3d::getPosition() const
     return m_node->getPosition();
 }
 
+void behemoth::CObject3d::rotate(float angle, const glm::vec3 &axis)
+{
+    m_node->rotate(angle, axis);
+}
+
 void behemoth::CObject3d::setEntity(const std::string &entity)
 {
     m_entity = CEntity3dFactory::getInstance()->loadEntity(entity);
+    m_entity->setId(m_name);
 }
 
 std::string behemoth::CObject3d::getEntity() const
@@ -59,6 +66,23 @@ std::string behemoth::CObject3d::getEntity() const
     if (m_entity)
         return m_entity->getId();
     return std::string();
+}
+
+behemoth::CBasic3dEntity *behemoth::CObject3d::getEntity3d() const
+{
+    return m_entity;
+}
+
+void behemoth::CObject3d::setId(const std::string &id)
+{
+    m_name = id;
+    if (m_entity)
+        m_entity->setId(id);
+}
+
+std::string behemoth::CObject3d::getId() const
+{
+    return m_name;
 }
 
 void behemoth::CObject3d::configure()
@@ -80,8 +104,6 @@ void behemoth::CObject3d::paint()
         static AbstractCamera *cam = CCameraFactory::getInstance()->getActiveCamera();
         static CPointLight *light = CLightFactory::getInstance()->getLight("test");
         if (cam) {
-            cam->rotatePosition(1, 1, 0, 0); //! TODO: Декларативно!
-            m_node->rotate(1);
             CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
             if (shader) {
                 shader->setUniform("modelview_matrix", m_node->getModelMatrix() * cam->getViewMatrix());

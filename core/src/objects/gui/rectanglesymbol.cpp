@@ -51,7 +51,7 @@ void CRectangleSymbol::paint() const
     m_vao.disable();
 }
 
-void CRectangleSymbol::onClicked(const CEventMouseClick &event)
+void CRectangleSymbol::onClicked(const CEventMouseClick &/*event*/)
 {
 }
 

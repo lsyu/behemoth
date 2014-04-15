@@ -38,6 +38,11 @@ CBasic3dEntity::~CBasic3dEntity()
         delete item;
 }
 
+void CBasic3dEntity::setId(const std::string &id)
+{
+    m_id = id;
+}
+
 void CBasic3dEntity::configure()
 {
     m_vao.genBuffer();

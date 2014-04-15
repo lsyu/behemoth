@@ -50,6 +50,7 @@ public:
     virtual bool onClick(AbstractEntity *entity);
     virtual bool onPressed(AbstractEntity *entity);
     virtual bool onReleased(AbstractEntity *entity);
+    virtual bool onUpdate(AbstractEntity *entity);
 protected:
     virtual bool executeAction(AbstractEntity *entity, const std::string &action);
 

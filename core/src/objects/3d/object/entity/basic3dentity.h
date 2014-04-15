@@ -64,6 +64,11 @@ protected:
     explicit CBasic3dEntity(const std::string &id);
     virtual ~CBasic3dEntity();
 
+    /**
+     * @brief Установить идентификатор данной сущности.
+     */
+    void setId(const std::string &id);
+
     std::string m_id;            /**< Идентификатор */
     CChilds3D m_childs;          /**< Список детей */
     CBasic3dEntity *m_parent;    /**< Родитель сущности. */

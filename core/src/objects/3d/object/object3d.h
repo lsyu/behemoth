@@ -41,15 +41,22 @@ public:
     void setPosition(const glm::vec3 &position);
     glm::vec3 getPosition() const;
 
+    void rotate(float angle, const glm::vec3 &axis);
+
     void setEntity(const std::string &entity);
     std::string getEntity() const;
+    CBasic3dEntity *getEntity3d() const;
+
+    void setId(const std::string &id);
+    std::string getId() const;
 
     void configure();
     void paint();
 
 private:
-    CBasic3dEntity *m_entity; /**< Отображаемая сущность. */
-    CBasicNode *m_node;       /**< Узел графа сцены. */
+    CBasic3dEntity *m_entity;   /**< Отображаемая сущность. */
+    CBasicNode *m_node;         /**< Узел графа сцены. */
+    std::string m_name;         /**< Имя объекта. */
 }; // class CObject3d
 
 } // namespace behemoth

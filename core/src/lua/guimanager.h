@@ -59,6 +59,7 @@ public:
     virtual bool onClick(AbstractEntity *entity) override;
     virtual bool onPressed(AbstractEntity *entity) override;
     virtual bool onReleased(AbstractEntity *entity) override;
+    virtual bool onUpdate(AbstractEntity *entity) override;
 protected:
     virtual bool executeAction(AbstractEntity *entity, const std::string &action) override;
 

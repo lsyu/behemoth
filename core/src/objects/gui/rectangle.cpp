@@ -149,7 +149,7 @@ void CRectangle::onClicked(const CEventMouseClick &event)
     if (contains(event.getCoordinates()))
         CEntity2dFactory::getInstance()->getEntities4Event().push_back(this);
     for (int i = m_childs.size()-1; i >= 0; --i)
-        dynamic_cast<CBasic2dEntity*>(m_childs[i])->onClicked(event);
+        m_childs[i]->onClicked(event);
 }
 
 glm::vec3 CRectangle::getColor() const
