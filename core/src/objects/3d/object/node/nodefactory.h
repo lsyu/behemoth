@@ -34,17 +34,14 @@ class CNodeFactory
 public:
     static CNodeFactory *getInstance();
 
-    CBasicNode *addNode(const std::string &name);
+    CBasicNode *getNode(const std::string &name);
     /**
      * @brief Получить корневой элемент графа сцены.
      * @note Если граф пустой, вернется nullptr.
      */
     CBasicNode *getRootNode() const;
-    /**
-     * @brief Получить элемент графа сцены по имени.
-     * @note Если элемент отсутствует, вернется nullptr.
-     */
-    CBasicNode *getNode(const std::string &name) const;
+
+    CBasicNode *loadScene3d(const std::string fileName);
 
 private:
     CNodeFactory();

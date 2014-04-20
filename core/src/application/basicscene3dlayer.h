@@ -26,7 +26,7 @@
 
 namespace behemoth {
 
-class CObject3d;
+class CBasicNode;
 
 /**
  * @brief Базовый класс слоя трехмерной сцены.
@@ -42,8 +42,8 @@ public:
     virtual void paintGL() override;
 
 protected:
-    std::vector<CObject3d*> m_objects;  /**< Объекты сцены. */
-    std::string m_fileName;             /**< Название скрипта описания GUI */
+    CBasicNode* m_rootNode; /**< Главный узел сцены. */
+    std::string m_fileName; /**< Название скрипта описания GUI */
 }; // class CBasicScene3dLayer
 
 } // namespace behemoth

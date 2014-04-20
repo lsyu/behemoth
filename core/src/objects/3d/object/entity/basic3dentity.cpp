@@ -24,10 +24,12 @@
 #include "glm/ext.h"
 
 #include "core/ogl/ogl.h"
+#include "core/objects/3d/nodefactory.h"
 
 namespace behemoth {
 
-CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(), m_parent(nullptr),
+CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(),
+    m_parent(nullptr), m_node(nullptr),
     m_vertices(), m_indexes(), m_vao(), m_vertexVBO(), m_indexVBO(EArrayType::Index)
 {
 }
@@ -41,6 +43,11 @@ CBasic3dEntity::~CBasic3dEntity()
 void CBasic3dEntity::setId(const std::string &id)
 {
     m_id = id;
+}
+
+void CBasic3dEntity::setNode(CBasicNode *node)
+{
+    m_node = node;
 }
 
 void CBasic3dEntity::configure()
@@ -109,6 +116,16 @@ CBasic3dEntity *CBasic3dEntity::getChild(const std::string &id)
 std::vector<CBasic3dEntity *> &CBasic3dEntity::getChilds()
 {
     return m_childs;
+}
+
+CBasicNode *CBasic3dEntity::getNode() const
+{
+    return m_node;
+}
+
+bool CBasic3dEntity::operator <(const CBasic3dEntity &other) const
+{
+    return m_id < other.m_id;
 }
 
 } // namespace behemoth

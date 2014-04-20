@@ -24,12 +24,12 @@
 #include "core/objects/3d/entity3dfactory.h"
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
-#include "core/objects/3d/object3dfactory.h"
+#include "core/objects/3d/nodefactory.h"
 #include "core/lua/scene3dmanager.h"
 
 namespace behemoth {
 
-CBasicScene3dLayer::CBasicScene3dLayer(const std::string &fileName) : AbstractLayer(), m_objects(), m_fileName(fileName)
+CBasicScene3dLayer::CBasicScene3dLayer(const std::string &fileName) : AbstractLayer(), m_rootNode(), m_fileName(fileName)
 {
 }
 
@@ -48,19 +48,16 @@ void CBasicScene3dLayer::prepareGL()
     CPointLight *light = CLightFactory::getInstance()->getLight("test", ELightType::point);
     light->setPosition(7, 7, 5);
 
-    m_objects = CObjectFactory::getInstance()->loadScene3d(m_fileName);
-    for(CObject3d *obj: m_objects) {
-        obj->configure();
-    }
+    m_rootNode = CNodeFactory::getInstance()->loadScene3d(m_fileName);
+    if (m_rootNode)
+        m_rootNode->configureEntities();
 }
 
 bool CBasicScene3dLayer::updateGL()
 {
-    for(CObject3d *obj : m_objects) {
-        if (!CScene3dManager::getInstance()->onUpdate(obj->getEntity3d()))
-            return false;
-    }
-    return true;
+    if (m_rootNode)
+        return m_rootNode->onUpdateEntities();
+    return false;
 }
 
 void CBasicScene3dLayer::paintGL()
@@ -70,8 +67,16 @@ void CBasicScene3dLayer::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_BLEND);
 
-    for(CObject3d *obj : m_objects) {
-        obj->paint();
+    if (m_rootNode) {
+        static AbstractCamera *cam = CCameraFactory::getInstance()->getActiveCamera();
+        static CPointLight *light = CLightFactory::getInstance()->getLight("test");
+        CShader *shader = CShaderFactory::getInstance()->getShader("phong"); //! TODO: Вынести в CMaterial
+        if (cam && light && shader) {
+            shader->setUniform("projection_matrix", cam->getProjectionMatrix());
+            shader->setUniform("light_position", light->getPosition());
+            shader->setUniform("eye_position", cam->getEye());
+            m_rootNode->paintEntities();
+        }
     }
 }
 

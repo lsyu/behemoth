@@ -18,6 +18,7 @@
  */
 
 #include "nodefactory.h"
+#include "core/lua/scene3dmanager.h"
 
 namespace behemoth {
 
@@ -41,7 +42,7 @@ CNodeFactory *CNodeFactory::getInstance()
     return instance;
 }
 
-CBasicNode *CNodeFactory::addNode(const std::string &name)
+CBasicNode *CNodeFactory::getNode(const std::string &name)
 {
     std::map<std::string, CBasicNode*>::iterator it = m_nodes.find(name);
     if (it != m_nodes.end())
@@ -59,12 +60,20 @@ CBasicNode *CNodeFactory::getRootNode() const
     return m_rootNode;
 }
 
-CBasicNode *CNodeFactory::getNode(const std::string &name) const
+CBasicNode *CNodeFactory::loadScene3d(const std::string fileName)
 {
-    std::map<std::string, CBasicNode*>::const_iterator it = m_nodes.find(name);
-    if (it != m_nodes.end())
-        return it->second;
-    return nullptr;
+    if (!CScene3dManager::getInstance()->m_nodes.empty()) {
+        // TODO: Что делать, если второй раз загружает?
+        return m_rootNode;
+    }
+    if (!CScene3dManager::getInstance()->readScene3d(fileName))
+        return nullptr;
+    for(CBasicNode *node: CScene3dManager::getInstance()->m_nodes) {
+        m_nodes[node->getId()] = node;
+        if (!m_rootNode)
+            m_rootNode = node;
+    }
+    return m_rootNode;
 }
 
 CNodeFactory::CNodeFactory() : m_nodes()

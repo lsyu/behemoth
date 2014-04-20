@@ -24,59 +24,66 @@
 #include "glm/gtx/quaternion.hpp"
 
 #include <string>
-#include <vector>
+#include <set>
 
 namespace behemoth {
+
+class CBasic3dEntity;
 
 /**
  * @brief Базовый класс вершины графа сцены.
  * Данная сущность необходима для определения положения сущности в пределах сцены.
+ * @note Для того, чтобы отрисовать сущность, необходимо знание о ее положении в пространстве.
  * @todo Реализовать отсечение простанства.
- * @todo Реализовать вращение при помощи кватернионов.
- * @todo перемещение/вращение детей.
  */
 class CBasicNode
 {
     friend class CNodeFactory;
 public:
-//    using CChilds = std::vector<CBasicNode*>;
+    using CChilds = std::set<CBasicNode*>;
+    using CEntities3d = std::set<CBasic3dEntity*>;
 
-    explicit CBasicNode(const std::string &name);
+    explicit CBasicNode(const std::string &id);
     ~CBasicNode();
 
-    /**
-     * @brief Получить имя.
-     */
-    std::string getName() const;
-    /**
-     * @brief Установить позицию узла.
-     */
+    void setId(const std::string &id);
+    std::string getId() const;
+
     void setPosition(const glm::vec3 &position);
     glm::vec3 getPosition() const;
-    /**
-     * @brief вращение узла.
-     */
+
+    void setOrientation(float angle, const glm::vec3 &axis);
+    glm::quat getOrientation() const;
+    glm::vec3 getDirection() const;
+
     void rotate(float angle, const glm::vec3 &axis = {0.0f, 0.0f, 1.0f});
-    /**
-     * @brief Перемещение узла.
-     * @param shift вектор смещения.
-     */
     void translate(const glm::vec3 &shift);
-    /**
-     * @brief Получить модельную матрицу.
-     */
+
     glm::mat4 getModelMatrix() const;
-//    /**
-//     * @brief Получить детей.
-//     */
-//    CChilds getChilds() const;
+
+    void addEntity3d(CBasic3dEntity *entity);
+    void addEntity3d(const std::string &nameOfEntity);
+    CEntities3d getEntities() const;
+    CBasic3dEntity *getEntity(const std::string &nameOfEntity) const;
+    std::string getNameOfFirstEntity() const;
+
+    void addChild(CBasicNode *node);
+    void addChild(const std::string &nameOfNode);
+    CChilds getChilds() const;
+    CBasicNode *getChild(const std::string &nameOfNode) const;
+
+    void configureEntities();
+    bool onUpdateEntities();
+    void paintEntities();
+
+    bool operator <(const CBasicNode &other) const;
 private:
 
-    std::string m_name;             /**< TODO: Нужно ли вообще?
-                                     * Название ребра. */
-//    CChilds m_childs;               /**< Дети данной вершины. */
+    std::string m_id;           /**< Название ребра. */
     glm::quat m_orientation;    /**< Ориентация. */
     glm::vec3 m_position;       /**< Позиция. */
+    CEntities3d m_entities;     /**< Объекты, прикрепленные к данному узлу. */
+    CChilds m_childs;           /**< Дочерние узлы данного узла. */
 }; // class behemoth
 
 } // class behemoth

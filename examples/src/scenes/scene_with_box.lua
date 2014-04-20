@@ -1,7 +1,7 @@
 speed = 0.01;
 flag = 1
 
-bgm:object "test"
+bgm:node "root"
 {
     entity = "box.mesh";
     position = glm:vec3(0.5, 0.0, 0.0);
@@ -13,6 +13,6 @@ bgm:object "test"
       elseif speed < -2 then
         flag = 1;
       end
-      bgm.test.obj:rotate(speed, glm:vec3(0.0, 0.0, 1.0).obj);
+      bgm.root.obj:rotate(speed, glm:vec3(0.0, 0.0, 1.0).obj);
     end;
 }

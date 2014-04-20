@@ -30,7 +30,7 @@
 
 namespace behemoth {
 
-class CObject3d;
+class CBasicNode;
 
 /**
  * @brief Менеджер 3D-сцены.
@@ -39,7 +39,7 @@ class CObject3d;
  */
 class CScene3dManager : public AbstractEventListener, public CBasicLuaManager
 {
-    friend class CObjectFactory;
+    friend class CNodeFactory;
     friend class CCameraFactory;
     friend class CLightFactory;
 public:
@@ -68,15 +68,15 @@ protected:
     /**
      * @brief добавить готовый объект в контейнер на вывод.
      */
-    void addObject(CObject3d *object);
+    void addObject(CBasicNode *node);
     /**
      * @brief Регистрация таблицы s3d (scene3d) и всех содержащихся в ней элементов.
      */
     void registerScene3d();
     /**
-     * @brief регистрация объектов
+     * @brief регистрация узлов сцены.
      */
-    void registerObject();
+    void registerNode();
     /**
      * @brief регистрация источников света.
      */
@@ -93,7 +93,7 @@ private:
     CScene3dManager &operator =(const CScene3dManager &);
 
     static CScene3dManager *instance;
-    std::vector<CObject3d*> m_objects;/**< Элементы сцены. */
+    std::vector<CBasicNode*> m_nodes;/**< Элементы сцены. */
 
     friend class __CScene3dManagerImplDel;
 }; // class CScene3dManager

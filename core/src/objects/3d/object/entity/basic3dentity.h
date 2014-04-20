@@ -28,13 +28,15 @@
 
 namespace behemoth {
 
+class CBasicNode;
+
 /**
  * @brief Базовая сущность трехмерного объекта
  */
 class CBasic3dEntity : public AbstractEntity
 {
     friend class CEntity3dFactory;
-    friend class CObject3d;
+    friend class CBasicNode;
 public:
     struct CVertex3d {
         glm::vec3 vertex;
@@ -60,18 +62,24 @@ public:
     virtual CBasic3dEntity *getChild(const std::string &id) final;
     virtual std::vector<CBasic3dEntity *> &getChilds() final;
 
+    CBasicNode *getNode() const;
+
+    bool operator <(const CBasic3dEntity &other) const;
 protected:
     explicit CBasic3dEntity(const std::string &id);
     virtual ~CBasic3dEntity();
+
 
     /**
      * @brief Установить идентификатор данной сущности.
      */
     void setId(const std::string &id);
+    void setNode(CBasicNode *node);
 
     std::string m_id;            /**< Идентификатор */
     CChilds3D m_childs;          /**< Список детей */
     CBasic3dEntity *m_parent;    /**< Родитель сущности. */
+    CBasicNode *m_node;          /**< Узел, к которому привязана сущность. */
 
     CVertices3d m_vertices; /**< список атрибутов вершины. */
     CIndexes m_indexes;     /**< список индексов вершин. */

@@ -23,7 +23,7 @@
 #include "core/objects/3d/entity3dfactory.h"
 #include "core/objects/3d/camerafactory.h"
 #include "core/objects/3d/lightfactory.h"
-#include "core/objects/3d/object3d.h"
+#include "core/objects/3d/nodefactory.h"
 
 #include "core/lua/resourcemanager.h"
 
@@ -84,26 +84,33 @@ bool CScene3dManager::onUpdate(AbstractEntity *entity)
 
 bool CScene3dManager::executeAction(AbstractEntity *entity, const std::string &action)
 {
-    lua_getglobal(m_lua, "bgm");
-    if (lua_istable(m_lua, -1))
-    {
-        lua_getfield(m_lua, -1, entity->getId().c_str());
-        if (lua_istable(m_lua, -1)) {
-            lua_getfield(m_lua, -1, action.c_str());
-            if (!lua_isfunction(m_lua, -1)) {
-                lua_pop(m_lua, 3);
-                return false;
-            }
-            lua_getfield(m_lua, -3, entity->getId().c_str());
-            if (lua_pcall(m_lua, 1, 0, 0)) {
-                std::string log(lua_tostring(m_lua, -1));
+    CBasic3dEntity *entity3d = dynamic_cast<CBasic3dEntity*>(entity);
+    if (entity3d && entity3d->getNode()) {
+        std::string nodeName = entity3d->getNode()->getId();
+        lua_getglobal(m_lua, "bgm");
+        if (lua_istable(m_lua, -1))
+        {
+            lua_getfield(m_lua, -1, nodeName.c_str());
+            if (lua_istable(m_lua, -1)) {
+                lua_getfield(m_lua, -1, action.c_str());
+                if (!lua_isfunction(m_lua, -1)) {
+                    lua_pop(m_lua, 3);
+                    return false;
+                }
+                lua_getfield(m_lua, -3, nodeName.c_str());
+                if (lua_pcall(m_lua, 1, 0, 0)) {
+                    std::string log(lua_tostring(m_lua, -1));
+                    std::cout << log;
+                    lua_pop(m_lua, 2);
+                    return false;
+                }
+            } else {
+                std::string log(nodeName + " is not exists in table bgm!\n");
                 std::cout << log;
-                lua_pop(m_lua, 2);
-                return false;
             }
+            lua_pop(m_lua, 2);
+            return true;
         }
-        lua_pop(m_lua, 2);
-        return true;
     }
     return false;
 }
@@ -123,37 +130,44 @@ bool CScene3dManager::readScene3d(const std::string &fileName)
 
 }
 
-void CScene3dManager::addObject(CObject3d *object)
+void CScene3dManager::addObject(CBasicNode *node)
 {
-    m_objects.push_back(object);
+    m_nodes.push_back(node);
 }
 
 void CScene3dManager::registerScene3d()
 {
     luaL_dostring(m_lua, "bgm = {}");
-    registerObject();
+    registerNode();
     registerCamera();
     registerLight();
 }
 
-void CScene3dManager::registerObject()
+void CScene3dManager::registerNode()
 {
-    CLuaWrapper<CObject3d> o(m_lua, "object");
+    CLuaWrapper<CBasicNode> o(m_lua, "node");
     o.setNameSpace("bgm");
     o.addConstructor<std::string>();
-    o.AddProperty(std::string)("id", &CObject3d::getId, &CObject3d::setId);
-    o.AddProperty(std::string)("entity", &CObject3d::getEntity, &CObject3d::setEntity);
-    o.AddProperty(glm::vec3)("position", &CObject3d::getPosition, &CObject3d::setPosition);
+    o.AddProperty(std::string)("id", &CBasicNode::getId, &CBasicNode::setId);
+    o.AddProperty(std::string)("entity", &CBasicNode::getNameOfFirstEntity, &CBasicNode::addEntity3d);
+    o.AddProperty(glm::vec3)("position", &CBasicNode::getPosition, &CBasicNode::setPosition);
     o.addProperty({"rotate", [](lua_State *l) {
-                       CObject3d *t =  __CLuaWrapper::checkUserData<CObject3d>(l, 1);
+                       CBasicNode *t =  __CLuaWrapper::checkUserData<CBasicNode>(l, 1);
                        float angle = __CLuaWrapper::checkType<float>(l, 2);
                        glm::vec3 *axis = __CLuaWrapper::checkUserData<glm::vec3>(l, 3);
                        t->rotate(angle, *axis);
                        return 1;
                    }
                   });
+    o.addProperty({"addChild", [](lua_State *l) {
+                       CBasicNode *node = __CLuaWrapper::checkUserData<CBasicNode>(l, 1);
+                       CBasicNode *child = *static_cast<CBasicNode **>(lua_touserdata(l, 2));
+                       node->addChild(child);
+                       return 1;
+                   }
+                  });
     o.addProperty({"sync", [](lua_State *l) {
-                       CObject3d *t = __CLuaWrapper::checkUserData<CObject3d>(l, 1);
+                       CBasicNode *t = __CLuaWrapper::checkUserData<CBasicNode>(l, 1);
                        CScene3dManager::getInstance()->addObject(t);
                        return 1;
                    }
