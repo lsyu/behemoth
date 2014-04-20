@@ -20,7 +20,7 @@
 #include "eventmouseclick.h"
 #include "core/application/application.h"
 
-namespace behemoth {
+namespace bhm {
 
 CEventMouseClick::CEventMouseClick(int x, int y, EMouseButton btn, EMouseState state) : AbstractEvent(),
     m_x(), m_y(), m_btn(btn), m_state(state)

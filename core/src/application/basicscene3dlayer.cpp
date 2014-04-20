@@ -27,7 +27,7 @@
 #include "core/objects/3d/nodefactory.h"
 #include "core/lua/scene3dmanager.h"
 
-namespace behemoth {
+namespace bhm {
 
 CBasicScene3dLayer::CBasicScene3dLayer(const std::string &fileName) : AbstractLayer(), m_rootNode(), m_fileName(fileName)
 {

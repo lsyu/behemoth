@@ -21,7 +21,7 @@
 
 #include "glm/ext.hpp"
 
-namespace behemoth {
+namespace bhm {
 
 COrthoCamera::COrthoCamera(float left, float right, float bottom, float top, float near, float far)
     : CBasicCamera()

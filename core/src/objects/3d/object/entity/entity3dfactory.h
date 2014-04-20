@@ -23,7 +23,7 @@
 #include "basic3dentity.h"
 #include <map>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief The Фабрика загрузки трехмерных сущностей.

@@ -21,7 +21,7 @@
 
 #include <algorithm>
 
-namespace behemoth {
+namespace bhm {
 
 CBasic2dEntity::CBasic2dEntity() : CBasic2dEntity("")
 {

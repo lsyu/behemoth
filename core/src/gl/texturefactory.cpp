@@ -24,7 +24,7 @@
 
 #include "gli/gli.h"
 
-namespace behemoth {
+namespace bhm {
 
 using namespace std;
 

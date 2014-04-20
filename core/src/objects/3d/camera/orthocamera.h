@@ -22,7 +22,7 @@
 
 #include "basiccamera.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Камера с ортогональной проекцией.

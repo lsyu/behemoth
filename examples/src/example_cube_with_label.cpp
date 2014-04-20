@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    using namespace behemoth;
+    using namespace bhm;
 
     CApplication *app = CApplication::getInstance();
     app->initialize(argc, argv);

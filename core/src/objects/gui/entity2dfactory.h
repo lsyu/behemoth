@@ -27,7 +27,7 @@
 #include <string>
 #include <map>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief The Фабрика загрузки двумерных сущностей сущностей.

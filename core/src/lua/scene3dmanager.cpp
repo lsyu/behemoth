@@ -31,7 +31,7 @@
 
 #include <iostream>
 
-namespace behemoth {
+namespace bhm {
 
 CScene3dManager *CScene3dManager::instance = nullptr;
 

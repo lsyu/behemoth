@@ -24,7 +24,7 @@
 #include <map>
 #include <string>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Фабрика загрузки камер.

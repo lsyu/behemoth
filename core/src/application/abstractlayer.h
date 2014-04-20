@@ -20,7 +20,7 @@
 #ifndef ABSTRACTLAYER_H
 #define ABSTRACTLAYER_H
 
-namespace behemoth {
+namespace bhm {
 
 class CEventMouseClick;
 

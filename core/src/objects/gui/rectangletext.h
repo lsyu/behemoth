@@ -25,7 +25,7 @@
 #include <vector>
 #include <set>
 
-namespace behemoth {
+namespace bhm {
 
 class CRectangleSymbol;
 
@@ -79,11 +79,11 @@ public:
     void setFont(float height);
     float getFontHeight() const;
 //    void setFontQuantity(int quantity);
-    void setFontAlign(behemoth::EVerticalAlign vAlign);
+    void setFontAlign(bhm::EVerticalAlign vAlign);
     EVerticalAlign getVerticalAlign() const;
     void setVerticalAlign(const std::string &vAlign);
     std::string getVericalAlignStr() const;
-    void setFontAlign(behemoth::EHorizontalAlign hAlign);
+    void setFontAlign(bhm::EHorizontalAlign hAlign);
     EHorizontalAlign getHorizontalAlign() const;
     void setHorizontalAlign(const std::string &hAlign);
     std::string getHorizontalAlignStr() const;

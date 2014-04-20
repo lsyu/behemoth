@@ -26,7 +26,7 @@
 #include <string>
 #include <set>
 
-namespace behemoth {
+namespace bhm {
 
 class CBasic3dEntity;
 

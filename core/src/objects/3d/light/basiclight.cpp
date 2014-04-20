@@ -19,7 +19,7 @@
 
 #include "basiclight.h"
 
-namespace behemoth {
+namespace bhm {
 
 CBasicLight::CBasicLight() : AbstractLight(), m_ambient(0.0f, 0.0f, 0.0f),
     m_diffuse(1.0f, 1.0f, 1.0f), m_specular(1.0f, 1.0f, 1.0f)

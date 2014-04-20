@@ -21,7 +21,7 @@
 #include "core/lua/resourcemanager.h"
 #include "core/application/application.h"
 
-namespace behemoth {
+namespace bhm {
 
 CFontFactory *CFontFactory::instance = nullptr;
 

@@ -19,7 +19,7 @@
 
 #include "font.h"
 
-namespace behemoth {
+namespace bhm {
 
 CFont::CFont(const std::string &name, int height) : m_name(name), m_height(height), m_color(1, 0, 0)
 {

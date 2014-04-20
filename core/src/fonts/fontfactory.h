@@ -31,7 +31,7 @@
 #include <list>
 #include <string>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Фабрика получения шрифтов.

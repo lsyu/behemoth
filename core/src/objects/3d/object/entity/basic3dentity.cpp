@@ -26,7 +26,7 @@
 #include "core/ogl/ogl.h"
 #include "core/objects/3d/nodefactory.h"
 
-namespace behemoth {
+namespace bhm {
 
 CBasic3dEntity::CBasic3dEntity(const std::string &id) : AbstractEntity(), m_id(id), m_childs(),
     m_parent(nullptr), m_node(nullptr),

@@ -24,7 +24,7 @@
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CEventMouseClick;
 class CApplication;

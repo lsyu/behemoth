@@ -22,7 +22,7 @@
 
 #include "abstractcamera.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Базовый класс камеры, реализующий методы, одинаковые для всех камер.

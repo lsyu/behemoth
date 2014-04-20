@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace behemoth {
+namespace bhm {
 
 class AbstractEntity;
 

@@ -25,7 +25,7 @@
 #include "core/objects/gui/entity2dfactory.h"
 #include "core/events/eventmouseclick.h"
 
-namespace behemoth {
+namespace bhm {
 
 
 CBasicGUILayer::CBasicGUILayer(const std::string &fileName) : AbstractLayer(),

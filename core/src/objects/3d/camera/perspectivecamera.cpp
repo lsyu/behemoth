@@ -21,7 +21,7 @@
 
 #include "glm/ext.h"
 
-namespace behemoth {
+namespace bhm {
 
 CPerspectiveCamera::CPerspectiveCamera(float widthOfVieport, float heightOfVieport, float fov, float nearPlane, float farPlane)
     : CBasicCamera()

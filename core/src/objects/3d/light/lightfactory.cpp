@@ -20,7 +20,7 @@
 #include "lightfactory.h"
 #include <limits>
 
-namespace behemoth {
+namespace bhm {
 
 CLightFactory *CLightFactory::instance = nullptr;
 

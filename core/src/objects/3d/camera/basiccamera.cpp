@@ -22,7 +22,7 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/ext.hpp"
 
-namespace behemoth {
+namespace bhm {
 
 CBasicCamera::CBasicCamera() : AbstractCamera(), m_eye(0.0f, 0.0f, 1.0f), m_center(0.0f, 0.0f, 0.0f),
     m_up(0.0f, 1.0f, 0.0f), m_viewMatrix(), m_projectionMatrix()

@@ -34,7 +34,7 @@
 #include <iostream>
 #include <chrono>
 
-namespace behemoth {
+namespace bhm {
 
 CApplication *CApplication::instance = nullptr;
 

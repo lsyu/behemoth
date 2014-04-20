@@ -19,7 +19,7 @@
 
 #include "basicluamanager.h"
 
-namespace behemoth {
+namespace bhm {
 
 lua_State *CBasicLuaManager::m_lua = luaL_newstate();
 

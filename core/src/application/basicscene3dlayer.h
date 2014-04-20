@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 
-namespace behemoth {
+namespace bhm {
 
 class CBasicNode;
 

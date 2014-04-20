@@ -20,7 +20,7 @@
 #include "entity2dfactory.h"
 #include "core/lua/guimanager.h"
 
-namespace behemoth {
+namespace bhm {
 
 CEntity2dFactory *CEntity2dFactory::instance = nullptr;
 

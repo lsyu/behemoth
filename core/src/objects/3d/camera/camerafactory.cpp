@@ -22,7 +22,7 @@
 #include "perspectivecamera.h"
 #include "orthocamera.h"
 
-namespace behemoth {
+namespace bhm {
 
 CCameraFactory *CCameraFactory::instance = nullptr;
 

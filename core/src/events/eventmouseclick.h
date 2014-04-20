@@ -24,7 +24,7 @@
 
 #include "glm/glm.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Клавиши мыши

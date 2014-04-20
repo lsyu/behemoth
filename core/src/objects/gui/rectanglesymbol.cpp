@@ -24,7 +24,7 @@
 #include "core/ogl/shaderfactory.h"
 #include "core/fonts/fontfactory.h"
 
-namespace behemoth {
+namespace bhm {
 
 CRectangleSymbol::CRectangleSymbol(char symbol, CFont *font, float parentWidth, float parentHeight,
     float fontHeight, CRectangleText *parent) :CRectangle(), m_font(font), m_symbol(symbol),

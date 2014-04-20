@@ -26,7 +26,7 @@
 
 #include "glm/glm.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Содержит все необходимое для работы с шейдерными программами GLSL 1.2

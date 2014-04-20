@@ -26,7 +26,7 @@
 
 #include <array>
 
-namespace behemoth {
+namespace bhm {
 
 class CBasicNode;
 

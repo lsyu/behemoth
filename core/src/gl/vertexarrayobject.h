@@ -20,7 +20,7 @@
 #ifndef VERTEXARRAYOBJECT_H
 #define VERTEXARRAYOBJECT_H
 
-namespace behemoth {
+namespace bhm {
 /**
  * @brief Адаптер для работы с VAO.
  *

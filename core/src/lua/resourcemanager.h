@@ -28,7 +28,7 @@
 
 #include "lua/lua.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CApplication;
 

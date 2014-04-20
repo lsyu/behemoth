@@ -25,7 +25,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace behemoth {
+namespace bhm {
 
 CShaderFactory *CShaderFactory::instance = nullptr;
 
@@ -46,8 +46,8 @@ CShaderFactory *CShaderFactory::getInstance()
     return instance;
 }
 
-CShaderFactory::CShaderFactory() : m_prefix(behemoth::CResourceManager::getInstance()->getShaderFolder()
-    + behemoth::CResourceManager::getInstance()->getFileSeparator()), m_shaders(), m_activeShader(nullptr)
+CShaderFactory::CShaderFactory() : m_prefix(bhm::CResourceManager::getInstance()->getShaderFolder()
+    + bhm::CResourceManager::getInstance()->getFileSeparator()), m_shaders(), m_activeShader(nullptr)
 {
 }
 

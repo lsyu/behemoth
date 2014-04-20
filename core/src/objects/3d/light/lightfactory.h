@@ -26,7 +26,7 @@
 #include <string>
 #include <map>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Тип источника освещения

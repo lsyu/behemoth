@@ -22,7 +22,7 @@
 #include "gl/gl.h"
 #include "gl/glext.h"
 
-namespace behemoth {
+namespace bhm {
 
 CVertexArrayObject::CVertexArrayObject() : m_vao(0)
 {

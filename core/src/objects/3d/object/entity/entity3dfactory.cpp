@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace behemoth {
+namespace bhm {
 
 CEntity3dFactory *CEntity3dFactory::instance = nullptr;
 

@@ -29,7 +29,7 @@
 
 #include "glm/glm.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CFont;
 

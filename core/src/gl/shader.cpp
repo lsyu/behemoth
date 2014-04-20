@@ -22,7 +22,7 @@
 #include "core/ogl/ogl.h"
 #include "glm/gtc/type_ptr.hpp"
 
-namespace behemoth {
+namespace bhm {
 
 CShader::CShader(const std::string &id) : m_cacheAttribute(), m_cacheUniform(), m_vertexShader(0), m_fragmentShader(0),
     m_shaderProgram(0), m_id(id)

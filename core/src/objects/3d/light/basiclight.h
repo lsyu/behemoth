@@ -22,7 +22,7 @@
 
 #include "abstractlight.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CLightFactory;
 

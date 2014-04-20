@@ -27,7 +27,7 @@
 
 #include "algorithm"
 
-namespace behemoth {
+namespace bhm {
 
 CRectangleText::CRectangleText() : CBasic2dEntity(), m_font("DejaVuSans", 14), m_vAlign(EVerticalAlign::center),
     m_hAlign(EHorizontalAlign::center), m_lines(), m_symbols(), m_fontHeight(0.5f), m_x(-1.0f), m_y(-1.0f),

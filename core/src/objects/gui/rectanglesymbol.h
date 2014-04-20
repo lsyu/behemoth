@@ -22,7 +22,7 @@
 
 #include "rectangle.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CFont;
 class CRectangleText;

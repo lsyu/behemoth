@@ -19,7 +19,7 @@
 
 #include "pointlight.h"
 
-namespace behemoth {
+namespace bhm {
 
 CPointLight::CPointLight() : CBasicLight(), m_position(0.0f, 0.0f, 0.0f)
 {

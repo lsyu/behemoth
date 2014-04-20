@@ -26,7 +26,7 @@
 
 #include "core/ogl/shader.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Перечисления тип шейдера.

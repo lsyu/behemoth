@@ -28,7 +28,7 @@
 
 #include <iostream>
 
-namespace behemoth {
+namespace bhm {
 
 CRectangle::CRectangle() : CRectangle("")
 {

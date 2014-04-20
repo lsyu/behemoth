@@ -28,7 +28,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace behemoth {
+namespace bhm {
 
 CGUIManager *CGUIManager::instance = nullptr;
 

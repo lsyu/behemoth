@@ -19,7 +19,7 @@
 
 #include "directionlight.h"
 
-namespace behemoth {
+namespace bhm {
 
 CDirectionLight::CDirectionLight() : CPointLight(), m_direction(0.0f, 0.0f, -1.0f)
 {

@@ -19,7 +19,7 @@
 
 #include "abstractlayer.h"
 
-namespace behemoth {
+namespace bhm {
 
 AbstractLayer::AbstractLayer()
 {

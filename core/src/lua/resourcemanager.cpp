@@ -22,7 +22,7 @@
 
 #include <fstream>
 
-namespace behemoth {
+namespace bhm {
 
 using namespace std;
 

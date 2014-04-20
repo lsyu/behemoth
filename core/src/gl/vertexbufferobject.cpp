@@ -22,7 +22,7 @@
 #include "gl/gl.h"
 #include "gl/glext.h"
 
-namespace behemoth {
+namespace bhm {
 
 CVertexBufferObject::CVertexBufferObject(EArrayType type) : m_vbo(0), m_type(type)
 {

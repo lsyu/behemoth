@@ -23,7 +23,7 @@
 #include "abstractlayer.h"
 #include <string>
 
-namespace behemoth {
+namespace bhm {
 
 class CGUIManager;
 class AbstractEntity;

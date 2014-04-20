@@ -20,7 +20,7 @@
 #ifndef RECTANGLEDECORATION_H
 #define RECTANGLEDECORATION_H
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Грани области.

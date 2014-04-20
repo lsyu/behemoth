@@ -27,7 +27,7 @@
 #include "core/ogl/shaderfactory.h"
 #include "core/lua/scene3dmanager.h"
 
-namespace behemoth {
+namespace bhm {
 
 CBasicNode::CBasicNode(const std::string &id) : m_id(id), m_orientation(), m_position(), m_entities()
 {

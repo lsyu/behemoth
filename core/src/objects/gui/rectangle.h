@@ -27,7 +27,7 @@
 #include "core/ogl/vertexbufferobject.h"
 #include "core/ogl/vertexarrayobject.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CShader;
 class CTexture;

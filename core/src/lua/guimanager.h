@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-namespace behemoth {
+namespace bhm {
 
 class CBasic2dEntity;
 
@@ -114,7 +114,7 @@ private:
     CGUIManager &operator=(const CGUIManager&);
 
     static CGUIManager *instance;
-    std::vector< behemoth::CBasic2dEntity* > m_objects; /**< Элементы GUI */
+    std::vector< bhm::CBasic2dEntity* > m_objects; /**< Элементы GUI */
 
     friend class __CGUIManagerImplDel;
 }; // class CGUIManager

@@ -23,7 +23,7 @@
 #include <vector>
 #include "glm/glm.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Перечисления типа массива данных.

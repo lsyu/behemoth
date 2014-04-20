@@ -20,7 +20,7 @@
 #include "nodefactory.h"
 #include "core/lua/scene3dmanager.h"
 
-namespace behemoth {
+namespace bhm {
 
 CNodeFactory *CNodeFactory::instance = nullptr;
 CBasicNode *CNodeFactory::m_rootNode = nullptr;

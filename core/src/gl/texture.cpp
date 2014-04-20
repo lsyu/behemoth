@@ -19,7 +19,7 @@
 
 #include "texture.h"
 
-namespace behemoth {
+namespace bhm {
 
 CTexture::CTexture() : m_id(0), m_size(), m_fileName()
 {

@@ -20,7 +20,7 @@
 #ifndef ABSTRACTEVENT_H
 #define ABSTRACTEVENT_H
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Событие

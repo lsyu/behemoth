@@ -22,7 +22,7 @@
 
 #include "lua/lua.h"
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Базовый класс менеджера Lua.

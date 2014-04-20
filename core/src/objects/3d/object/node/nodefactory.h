@@ -24,7 +24,7 @@
 #include <string>
 #include <map>
 
-namespace behemoth {
+namespace bhm {
 
 /**
  * @brief Фабрика получения вершины графа сцены.

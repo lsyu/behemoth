@@ -22,7 +22,7 @@
 
 #include "pointlight.h"
 
-namespace behemoth {
+namespace bhm {
 
 class CLightFactory;
 
