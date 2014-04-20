@@ -4,7 +4,7 @@ behemoth - графическй движок с основанным на lua д
 Спасибо проектам glm, gli, freeglut, lua, freetype.
 
 
-"Hello world" с использованием движка
+"Hello world" с использованием движка (вращающийся красный куб и GUI - надпись внизу экрана)
  ![test](res/pictures/scene3d_with_label.png "cube with label")
 
 Интерфейс:
@@ -38,9 +38,23 @@ ui:rectangle "label"
 ```
 Сцена:
 ``` lua
-s3d:object {
-entity = "box.mesh";
--- position = glm:vec3(0.0, 0.0, 0.0);
+speed = 0.01;
+flag = 1
+
+bgm:node "root"
+{
+    entity = "box.mesh";
+    position = glm:vec3(0.5, 0.0, 0.0);
+
+    onUpdate = function()
+      speed = speed + flag * 0.01;
+      if speed > 2 then
+        flag = -1;
+      elseif speed < -2 then
+        flag = 1;
+      end
+      bgm.root.obj:rotate(speed, glm:vec3(0.0, 0.0, 1.0).obj);
+    end;
 }
 ```
 Загрузка на С++:
